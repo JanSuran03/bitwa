@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
 
-        <link rel="stylesheet" href="css/{% block page %}{% endblock %}.css">
-    </head>
-    <body>
-        {% block content %}{% endblock %}
-    </body>
+    <link rel="stylesheet" href="css/{% block page %}{% endblock %}.css">
+</head>
+<body>
+<nav>
+    <span><a href="{{ path('app_index') }}">Domu</a></span>
+    <span><a href="{{ path('app_groups') }}">Skupiny</a></span>
+    <span><a href="{{ path('app_rooms') }}">Mistnosti</a></span>
+    <span><a href="{{ path('app_register') }}">Registrace</a></span>
+    <span><a href="{{ path('app_login') }}">Prihlaseni</a></span>
+</nav>
+{% block content %}{% endblock %}
+</body>
 </html>
