@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
+#[ORM\Table(name: 'rooms')]
 class Room
 {
     #[ORM\Id]
@@ -22,10 +23,10 @@ class Room
     private Collection $managers;
 
     #[ORM\Column]
-    private ?int $building = null;
+    private ?string $building = null;
 
     #[ORM\Column]
-    private ?int $number = null;
+    private ?string $number = null;
 
     public function __construct()
     {
@@ -92,24 +93,24 @@ class Room
         return $this;
     }
 
-    public function getBuilding(): ?int
+    public function getBuilding(): ?string
     {
         return $this->building;
     }
 
-    public function setBuilding(int $building): static
+    public function setBuilding(string $building): static
     {
         $this->building = $building;
 
         return $this;
     }
 
-    public function getNumber(): ?int
+    public function getNumber(): ?string
     {
         return $this->number;
     }
 
-    public function setNumber(int $number): static
+    public function setNumber(string $number): static
     {
         $this->number = $number;
 

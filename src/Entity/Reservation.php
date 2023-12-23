@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
+#[ORM\Table(name: 'reservations')]
 class Reservation
 {
     #[ORM\Id]
@@ -31,8 +32,8 @@ class Reservation
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $invited_users;
 
-    #[ORM\Column]
-    private ?int $room = null;
+    #[ORM\ManyToOne]
+    private ?Room $room = null;
 
     public function __construct()
     {
@@ -116,12 +117,12 @@ class Reservation
         return $this;
     }
 
-    public function getRoom(): ?int
+    public function getRoom(): Room
     {
         return $this->room;
     }
 
-    public function setRoom(int $room): static
+    public function setRoom(Room $room): static
     {
         $this->room = $room;
 

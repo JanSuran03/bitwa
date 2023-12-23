@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
+#[ORM\Table(name: 'users')]
 class User
 {
     #[ORM\Id]
@@ -20,15 +20,19 @@ class User
     private Collection $reservations;
 
     #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'members')]
+    #[ORM\JoinTable(name: 'group_members')]
     private Collection $group_memberships;
 
     #[ORM\ManyToMany(targetEntity: Room::class, inversedBy: 'members')]
+    #[ORM\JoinTable(name: 'room_members')]
     private Collection $room_memberships;
 
     #[ORM\ManyToMany(targetEntity: Room::class, inversedBy: 'managers')]
+    #[ORM\JoinTable(name: 'room_managers')]
     private Collection $managed_rooms;
 
     #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'managers')]
+    #[ORM\JoinTable(name: 'group_managers')]
     private Collection $managed_groups;
 
     #[ORM\Column(length: 255)]
