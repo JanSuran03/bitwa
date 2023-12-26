@@ -5,5 +5,47 @@
 {% block page %}rooms{% endblock %}
 
 {% block content %}
-    <h3>Hello, rooms!</h3>
+    <h1>Místnosti</h1>
+
+    {% if rooms is empty %}
+
+        <p>Nebyly nalezeny žádné místnosti. Pro zobrazení neveřejných místností je potřeba být přihlášen účtem správného uživatele.</p>
+
+    {% else %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Místnost</th>
+                    <th>Budova</th>
+                    <th>Stav</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+            {% for room in rooms %}
+                <tr>
+                    <td>{{ room.getFullName() }}</td>
+                    <td>{{ room.getBuilding() }}</td>
+                    <td>
+                        {% if currentAvailabilityMap[room.getId()] %}
+                            Volná
+                        {% else %}
+                            Obsazená
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_room_book', {'roomUrlName': room.getUrlName()}) }}">
+                            Rezervovat
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    {% endif %}
+
+
 {% endblock %}

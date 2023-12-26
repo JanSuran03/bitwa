@@ -116,4 +116,14 @@ class Room
 
         return $this;
     }
+
+    public function getFullName(): ?string
+    {
+        return $this->building . ':' . $this->number;
+    }
+
+    public function getUrlName(): ?string
+    {
+        return $this->building . '-' . $this->number;
+    }
 }
