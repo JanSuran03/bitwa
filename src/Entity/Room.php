@@ -28,6 +28,12 @@ class Room
     #[ORM\Column]
     private ?string $number = null;
 
+    #[ORM\Column]
+    private ?bool $isPublic = false;
+
+    #[ORM\Column]
+    private ?bool $isLocked = true;
+
     public function __construct()
     {
         $this->members = new ArrayCollection();
@@ -125,5 +131,29 @@ class Room
     public function getUrlName(): ?string
     {
         return $this->building . '-' . $this->number;
+    }
+
+    public function isPublic(): ?bool
+    {
+        return $this->isPublic;
+    }
+
+    public function setPublic(bool $isPublic): static
+    {
+        $this->isPublic = $isPublic;
+
+        return $this;
+    }
+
+    public function isLocked(): ?bool
+    {
+        return $this->isLocked;
+    }
+
+    public function setLocked(bool $isLocked): static
+    {
+        $this->isLocked = $isLocked;
+
+        return $this;
     }
 }
