@@ -1,22 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mistnosti{% endblock %}
+{% block title %}Učebny{% endblock %}
 
 {% block page %}rooms{% endblock %}
 
 {% block content %}
-    <h1>Místnosti</h1>
+    <h1>Učebny</h1>
 
     {% if rooms is empty %}
 
-        <p>Nebyly nalezeny žádné místnosti. Pro zobrazení neveřejných místností je potřeba být přihlášen účtem správného uživatele.</p>
+        <p>Nebyly nalezeny žádné učebny. Pro zobrazení neveřejných učeben je potřeba být přihlášen správným účtem.</p>
 
     {% else %}
 
         <table>
             <thead>
                 <tr>
-                    <th>Místnost</th>
+                    <th>Učebna</th>
                     <th>Budova</th>
                     <th>Stav</th>
                     <th>Akce</th>

@@ -1,9 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Přihlášení{% endblock %}
 
 {% block page %}login{% endblock %}
 
 {% block content %}
-<h3>Hello, login!</h3>
+
+    <h1>Přihlášení</h1>
+
+    {% if error %}
+        <p>Chyba s přihlášením: {{ error.messageKey|trans(error.messageData, 'security') }}</p>
+    {% endif %}
+
+    <form action="{{ path('app_login') }}" method="post">
+        <label for="username">E-mail:</label>
+        <input type="text" id="username" name="_username" value="{{ last_username }}">
+
+        <label for="password">Heslo:</label>
+        <input type="password" id="password" name="_password">
+
+        <input type="hidden" name="_target_path" value="/">
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button type="submit">Přihlásit se</button>
+    </form>
+
 {% endblock %}

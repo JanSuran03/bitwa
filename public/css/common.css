@@ -2,6 +2,17 @@ body {
     background: hsl(200, 100%, 88%);
 }
 
-nav span {
+header {
+    display: flex;
+    justify-content: space-between;
+}
+
+header nav span {
     font-size: 2em;
+}
+
+header .user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }

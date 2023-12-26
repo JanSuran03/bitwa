@@ -6,10 +6,12 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -38,14 +40,14 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    #[ORM\Column]
-    private ?bool $isAdmin = null;
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
 
     public function __construct()
     {
@@ -211,27 +213,43 @@ class User
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
         $this->password = $password;
 
         return $this;
     }
 
-    public function isAdmin(): ?bool
+    public function getSalt(): ?string
     {
-        return $this->isAdmin;
+        return null;
     }
 
-    public function setAdmin(bool $isAdmin): static
+    public function getRoles(): array
     {
-        $this->isAdmin = $isAdmin;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
 
         return $this;
     }
+
+    public function eraseCredentials() {}
 }

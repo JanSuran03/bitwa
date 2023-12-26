@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class RoomsController extends AbstractController {
 
@@ -31,6 +32,7 @@ class RoomsController extends AbstractController {
         );
     }
 
+    #[IsGranted('IS_AUTHENTICATED')]
     #[Route('/rooms/{roomUrlName}/book', name: 'app_room_book')]
     public function booking(Request $request): Response {
         return $this->render('reservation.html.twig');

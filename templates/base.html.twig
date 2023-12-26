@@ -7,15 +7,37 @@
     <link rel="stylesheet" href="/css/{% block page %}{% endblock %}.css">
 </head>
 <body>
-<nav>
-    <span><a href="{{ path('app_index') }}">Domu</a></span>
-    <span><a href="{{ path('app_groups') }}">Skupiny</a></span>
-    <span><a href="{{ path('app_rooms') }}">Mistnosti</a></span>
-    <span><a href="{{ path('app_register') }}">Registrace</a></span>
-    <span><a href="{{ path('app_login') }}">Prihlaseni</a></span>
-    <span><a href="{{ path('app_users') }}">Uzivatele</a></span>
-    <span><a href="{{ path('app_managed_reservations') }}">Sprava rezervaci</a></span>
-</nav>
-{% block content %}{% endblock %}
+
+    <header>
+
+        <nav>
+            <span><a href="{{ path('app_index') }}">Domů</a></span>
+            <span><a href="{{ path('app_rooms') }}">Učebny</a></span>
+            {% if is_granted('IS_AUTHENTICATED') %}
+                <span><a href="{{ path('app_users') }}">Uživatelé</a></span>
+                <span><a href="{{ path('app_managed_reservations') }}">Žádosti ke schválení</a></span>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <span><a href="{{ path('app_groups') }}">Správa skupin místností</a></span>
+                {% endif %}
+            {% endif %}
+        </nav>
+
+        <div class="user-info">
+            {% if is_granted('IS_AUTHENTICATED') %}
+                <p>Jste přihlášen jako <b>{{ app.user.name }}</b> ({{ app.user.email }})</p>
+                <a href="{{ path('app_logout') }}">Odhlásit se</a>
+            {% else %}
+                <p>Nejste přihlášen</p>
+                <a href="{{ path('app_login') }}">Přihlásit se</a>
+                <!-- <a href="{{ path('app_register') }}">Vytvořit účet</a> -->
+            {% endif %}
+        </div>
+
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
 </body>
 </html>
