@@ -21,6 +21,16 @@ class ReservationRepository extends ServiceEntityRepository
         parent::__construct($registry, Reservation::class);
     }
 
+    public function create(Reservation $reservation): Reservation
+    {
+        $em = $this->getEntityManager();
+        $em->persist($reservation);
+        $em->flush();
+
+        return $reservation;
+    }
+
+
 //    /**
 //     * @return Reservation[] Returns an array of Reservation objects
 //     */

@@ -37,7 +37,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="{{ path('app_room_book', {'roomUrlName': room.getUrlName()}) }}">
+                        <a href="{{ path('app_book', {'room': room.getId()}) }}">
                             Rezervovat
                         </a>
                     </td>
