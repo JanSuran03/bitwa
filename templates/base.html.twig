@@ -11,25 +11,25 @@
 <body>
 <header>
     <nav>
-        <span><a href="{{ path('app_index') }}">Domů</a></span>
-        <span><a href="{{ path('app_rooms') }}">Učebny</a></span>
+        <span class="nav-item"><a href="{{ path('app_index') }}">Domů</a></span>
+        <span class="nav-item"><a href="{{ path('app_rooms') }}">Učebny</a></span>
         {% if is_granted('IS_AUTHENTICATED') %}
-            <span><a href="{{ path('app_users') }}">Uživatelé</a></span>
-            <span><a href="{{ path('app_managed_reservations') }}">Žádosti ke schválení</a></span>
+            <span class="nav-item"><a href="{{ path('app_users') }}">Uživatelé</a></span>
+            <span class="nav-item"><a href="{{ path('app_managed_reservations') }}">Žádosti ke schválení</a></span>
             {% if is_granted('ROLE_ADMIN') %}
-                <span><a href="{{ path('app_groups') }}">Správa skupin místností</a></span>
+                <span class="nav-item"><a href="{{ path('app_groups') }}">Správa skupin místností</a></span>
             {% endif %}
         {% endif %}
     </nav>
 
     <div class="user-info">
         {% if is_granted('IS_AUTHENTICATED') %}
-            <p>Jste přihlášen jako <b>{{ app.user.name }}</b> ({{ app.user.email }})</p>
+            <div class="login-info">Jste přihlášen jako <b>{{ app.user.name }}</b> ({{ app.user.email }})</div>
             <form action="{{ path('app_logout') }}" method="get">
                 <button type="submit">Odhlásit se</button>
             </form>
         {% else %}
-            <p>Nejste přihlášen</p>
+            <div class="login-info">Nejste přihlášen</div>
             <a href="{{ path('app_login') }}">Přihlásit se</a>
             <!-- <a href="{{ path('app_register') }}">Vytvořit účet</a> -->
         {% endif %}
