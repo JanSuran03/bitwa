@@ -14,35 +14,12 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Room[]    findAll()
  * @method Room[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class RoomRepository extends ServiceEntityRepository
-{
-    public function __construct(ManagerRegistry $registry)
-    {
+class RoomRepository extends ServiceEntityRepository {
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, Room::class);
     }
 
-//    /**
-//     * @return Room[] Returns an array of Room objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Room
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findPublicRooms(): array {
+        return $this->findBy(["isPublic" => true]);
+    }
 }

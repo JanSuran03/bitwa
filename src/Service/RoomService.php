@@ -2,27 +2,36 @@
 
 namespace App\Service;
 
-use App\Entity\Reservation;
 use App\Entity\Room;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ReservationRepository;
+use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Bundle\SecurityBundle\Security;
 use function Symfony\Component\Clock\now;
 
 class RoomService {
     private EntityRepository $roomRepository;
     private EntityRepository $reservationRepository;
+    private Security $security;
 
-    public function __construct(EntityManagerInterface $entityManager) {
-        $this->roomRepository = $entityManager->getRepository(Room::class);
-        $this->reservationRepository = $entityManager->getRepository(Reservation::class);
+    public function __construct(RoomRepository        $roomRepository,
+                                ReservationRepository $reservationRepository,
+                                Security              $security) {
+        $this->roomRepository = $roomRepository;
+        $this->reservationRepository = $reservationRepository;
+        $this->security = $security;
     }
 
     public function getAll(): array {
-        return $this->roomRepository->findAll();
+        if ($this->security->getUser() != null) {
+            return $this->roomRepository->findAll();
+        } else {
+            return $this->roomRepository->findPublicRooms();
+        }
     }
 
     public function getAllByName(?string $query): array {
-        $allRooms = $this->roomRepository->findAll();
+        $allRooms = $this->getAll();
 
         if ($query === null || $query === '')
             return $allRooms;
@@ -30,7 +39,7 @@ class RoomService {
         return array_values(
             array_filter(
                 $allRooms,
-                fn ($room) => str_contains(strtolower($room->getFullName()), strtolower($query))
+                fn($room) => str_contains(strtolower($room->getFullName()), strtolower($query))
             )
         );
     }
