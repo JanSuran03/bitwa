@@ -35,6 +35,10 @@ class ReservationsController extends AbstractController {
         /** @var User $user */
         $user = $this->getUser();
 
+        if (! $room->isPublic() && ! $room->getMembers()->contains($user)) {
+            throw $this->createAccessDeniedException('Tuto soukromou učebnu si nemůžete rezervovat, protože nejste jejím uživatelem!');
+        }
+
         $reservation = new Reservation();
         $reservation->setIsApproved(false);
         $reservation->setRoom($room);

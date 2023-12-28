@@ -18,8 +18,10 @@
                 <tr>
                     <th>Učebna</th>
                     <th>Budova</th>
-                    <th>Stav</th>
-                    <th>Akce</th>
+                    <th>Typ</th>
+                    <th>Aktuální obsazenost</th>
+                    <th>Mám přístup</th>
+                    <th>Možnosti</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +32,13 @@
                     <td>{{ room.getFullName() }}</td>
                     <td>{{ room.getBuilding() }}</td>
                     <td>
+                        {% if room.isPublic() %}
+                            Veřejná
+                        {% else %}
+                            Soukromá
+                        {% endif %}
+                    </td>
+                    <td>
                         {% if currentAvailabilityMap[room.getId()] %}
                             Volná
                         {% else %}
@@ -37,9 +46,18 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="{{ path('app_book', {'room': room.getId()}) }}">
-                            Rezervovat
-                        </a>
+                        {% if room.isPublic() or app.user in room.getMembers() %}
+                            &#10003;
+                        {% else %}
+                            &#10007;
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if room.isPublic() or app.user in room.getMembers() %}
+                            <a href="{{ path('app_book', {'room': room.getId()}) }}">
+                                Rezervovat
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
