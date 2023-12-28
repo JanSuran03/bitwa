@@ -15,7 +15,7 @@
             <span><a href="{{ path('app_rooms') }}">Učebny</a></span>
             {% if is_granted('IS_AUTHENTICATED') %}
                 <span><a href="{{ path('app_users') }}">Uživatelé</a></span>
-                <span><a href="{{ path('app_managed_reservations') }}">Žádosti ke schválení</a></span>
+                <span><a href="{{ path('app_reservations_managed') }}">Žádosti ke schválení</a></span>
                 {% if is_granted('ROLE_ADMIN') %}
                     <span><a href="{{ path('app_groups') }}">Správa skupin místností</a></span>
                 {% endif %}

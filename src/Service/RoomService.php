@@ -5,6 +5,9 @@ namespace App\Service;
 use App\Entity\Room;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use function Symfony\Component\Clock\now;
@@ -60,7 +63,7 @@ class RoomService {
         $map = [];
         foreach ($rooms as $room) {
             $roomId = $room->getId();
-            if ($this->isBookedNow($room))
+            if ($this->isOccupiedNow($room))
                 $map[$roomId] = false;
             else
                 $map[$roomId] = true;
@@ -68,15 +71,22 @@ class RoomService {
         return $map;
     }
 
-    private function isBookedNow(Room $room): ?bool {
-        $result = false;
-        $reservations = $this->reservationRepository->findBy(['room' => $room]);
+    public function isBookedBetween(Room $room, DateTimeInterface $from, DateTimeInterface $to, bool $onlyApproved = false): ?bool {
+        $conditions = ['room' => $room];
+        if ($onlyApproved) {
+            $conditions['is_approved'] = true;
+        }
+        $reservations = $this->reservationRepository->findBy($conditions);
+
         foreach ($reservations as $reservation) {
-            if ($reservation->getTimeFrom() < now() && $reservation->getTimeTo() > now() && $reservation->isIsApproved()) {
-                $result = true;
-                break;
+            if ($reservation->getTimeFrom() < $to && $reservation->getTimeTo() > $from) {
+                return true;
             }
         }
-        return $result;
+        return false;
+    }
+
+    private function isOccupiedNow(Room $room): ?bool {
+        return $this->isBookedBetween($room, now(), now(), true);
     }
 }

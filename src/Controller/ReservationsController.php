@@ -60,7 +60,12 @@ class ReservationsController extends AbstractController {
         );
     }
 
-    #[Route('/reservations/managed', name: 'app_managed_reservations')]
+    #[Route('/reservations/my', name: 'app_reservations_my')]
+    public function my(): Response {
+        return $this->render('my-reservations.html.twig');
+    }
+
+    #[Route('/reservations/managed', name: 'app_reservations_managed')]
     public function managed(): Response {
         return $this->render('managed-reservations.html.twig');
     }

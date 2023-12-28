@@ -7,9 +7,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as CustomAssert;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 #[ORM\Table(name: 'reservations')]
+#[CustomAssert\FutureTimespan]
+#[CustomAssert\ChronologicalTimespan]
+#[CustomAssert\RoomAvailability]
 class Reservation
 {
     #[ORM\Id]
@@ -18,21 +23,28 @@ class Reservation
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?bool $is_approved = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank]
+    #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeInterface $time_from = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank]
+    #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeInterface $time_to = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
+    #[Assert\NotBlank]
     private ?User $author = null;
 
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $invited_users;
 
     #[ORM\ManyToOne]
+    #[Assert\NotBlank]
     private ?Room $room = null;
 
     public function __construct()

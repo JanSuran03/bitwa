@@ -16,3 +16,7 @@ header .user-info {
     align-items: center;
     gap: 1rem;
 }
+
+label.required:after {
+    content: " *";
+}
