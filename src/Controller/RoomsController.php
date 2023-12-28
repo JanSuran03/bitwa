@@ -31,10 +31,4 @@ class RoomsController extends AbstractController {
             ]
         );
     }
-
-    #[IsGranted('IS_AUTHENTICATED')]
-    #[Route('/rooms/{roomUrlName}/book', name: 'app_room_book')]
-    public function booking(Request $request): Response {
-        return $this->render('reservation.html.twig');
-    }
 }
