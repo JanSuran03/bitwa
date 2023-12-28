@@ -24,6 +24,6 @@ class RoomRepository extends ServiceEntityRepository {
     }
 
     public function findByName(string $name): ?Room {
-        return $this->findOneBy(["number" => $name]);
+        return $this->findOneBy(["name" => $name]);
     }
 }

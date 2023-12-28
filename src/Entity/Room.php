@@ -26,7 +26,7 @@ class Room
     private ?string $building = null;
 
     #[ORM\Column]
-    private ?string $number = null;
+    private ?string $name = null;
 
     #[ORM\Column]
     private ?bool $isPublic = false;
@@ -111,26 +111,26 @@ class Room
         return $this;
     }
 
-    public function getNumber(): ?string
+    public function getName(): ?string
     {
-        return $this->number;
+        return $this->name;
     }
 
-    public function setNumber(string $number): static
+    public function setName(string $name): static
     {
-        $this->number = $number;
+        $this->name = $name;
 
         return $this;
     }
 
     public function getFullName(): ?string
     {
-        return $this->building . ':' . $this->number;
+        return $this->building . ':' . $this->name;
     }
 
     public function getUrlName(): ?string
     {
-        return $this->building . '-' . $this->number;
+        return $this->building . '-' . $this->name;
     }
 
     public function isPublic(): ?bool
