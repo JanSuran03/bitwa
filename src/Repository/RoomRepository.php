@@ -29,4 +29,17 @@ class RoomRepository extends ServiceEntityRepository {
             "building" => $building
         ]);
     }
+
+    public function createRoom(string $name, string $building, bool $isPublic): Room {
+        $room = new Room();
+        $room->setName($name);
+        $room->setBuilding($building);
+        $room->setPublic($isPublic);
+        $room->setLocked(true);
+
+        $this->_em->persist($room);
+        $this->_em->flush();
+
+        return $room;
+    }
 }

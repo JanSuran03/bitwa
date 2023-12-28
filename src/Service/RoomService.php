@@ -22,6 +22,10 @@ class RoomService {
         $this->security = $security;
     }
 
+    public function createRoom(string $name, string $building, bool $isPublic): Room {
+        return $this->roomRepository->createRoom($name, $building, $isPublic);
+    }
+
     public function getAll(): array {
         if ($this->security->getUser() != null) {
             return $this->roomRepository->findAll();
@@ -44,7 +48,7 @@ class RoomService {
         );
     }
 
-    public function findByNameAndBuilding(string $name, string $building) : ?Room {
+    public function findByNameAndBuilding(string $name, string $building): ?Room {
         error_log($name);
         return $this->roomRepository->findByNameAndBuilding($name, $building);
     }

@@ -16,9 +16,10 @@
         <table>
             <thead>
             <tr>
-                <th>Učebna</th>
                 <th>Budova</th>
+                <th>Učebna</th>
                 <th>Stav</th>
+                <th>Pristupnost</th>
                 <th>Akce</th>
             </tr>
             </thead>
@@ -27,8 +28,8 @@
             </tbody>
             {% for room in rooms %}
                 <tr>
-                    <td>{{ room.getFullName() }}</td>
                     <td>{{ room.getBuilding() }}</td>
+                    <td>{{ room.getName() }}</td>
                     <td>
                         {% if currentAvailabilityMap[room.getId()] %}
                             Volná
@@ -36,6 +37,7 @@
                             Obsazená
                         {% endif %}
                     </td>
+                    <td>{% if room.isPublic %} Verejna {% else %} Soukroma {% endif %}</td>
                     <td>
                         <a href="{{ path('app_book', {'room': room.getId()}) }}">
                             Rezervovat
@@ -49,11 +51,11 @@
 
     {% if is_granted('ROLE_ADMIN') %}
         <form action="{{ path('app_create_room') }}" method="post">
-            <label for="room_name">Nazev mistnosti:</label>
-            <input type="text" id="room_name" name="_room_name">
-
             <label for="building_name">Nazev budovy:</label>
             <input type="text" id="building_name" name="_building_name">
+
+            <label for="room_name">Nazev mistnosti:</label>
+            <input type="text" id="room_name" name="_room_name">
 
             <label for="is_public">Verejna?</label>
             <input type="checkbox" id="is_public" value="0">

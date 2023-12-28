@@ -40,7 +40,8 @@ class RoomsController extends AbstractController {
         $isPublic = $request->request->get('_is_public') === 1;
 
         if ($this->roomService->findByNameAndBuilding($roomName, $buildingName) === null) {
-            // ignore db for now
+            $this->roomService->createRoom($roomName, $buildingName, $isPublic);
+
             $this->addFlash('success', 'Room created successfully');
             return $this->redirectToRoute('app_rooms');
         } else {
