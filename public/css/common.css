@@ -1,5 +1,7 @@
 body {
     background: hsl(200, 100%, 88%);
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 1.2em;
 }
 
 header {
@@ -32,4 +34,69 @@ label.required:after {
 
 .flash-error {
     background: hsl(0, 100%, 65%);
+}
+
+table {
+    border-collapse: collapse;
+    margin: 0.3em;
+}
+
+td, th {
+    border: 0.1em solid black;
+    padding: 0.2em;
+}
+
+thead tr {
+    background: rgba(238, 232, 118, 0.3);
+}
+
+tbody tr:nth-child(odd) {
+    background: rgba(0, 255, 243, var(--table-bg-opacity));
+}
+
+tbody tr:nth-child(even) {
+    background: rgba(26, 255, 0, var(--table-bg-opacity));
+}
+
+:root {
+    --a-color: hsl(178, 89%, 21%);
+    --table-bg-opacity: 0.13;
+}
+
+a {
+    color: var(--a-color);
+    text-decoration: none;
+}
+
+a:visited {
+    color: var(--a-color);
+}
+
+a:hover {
+    color: hsl(182, 99%, 39%);
+    text-decoration: underline;
+}
+
+button {
+    background: #ffffff;
+    border: 0.12em solid #666666;
+    border-radius: 0.5em;
+    font-family: inherit;
+    padding: 0.4em;
+    font-size: 0.85em;
+}
+
+button:hover {
+    background: #dddddd;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+input {
+    border-radius: 0.35em;
+    border: 0.1em groove black;
+}
+
+input:hover, input:focus {
+    border-width: 0.15em;
 }
