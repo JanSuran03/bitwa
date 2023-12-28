@@ -37,15 +37,18 @@ class RoomsController extends AbstractController {
     public function createRoom(Request $request): ?Response {
         $roomName = $request->request->get('_room_name');
         $buildingName = $request->request->get('_building_name');
-        $isPublic = $request->request->get('_is_public') === 1;
+        $isPublic = $request->request->has('_is_public') ? 1 : 0;
 
-        if ($this->roomService->findByNameAndBuilding($roomName, $buildingName) === null) {
-            $this->roomService->createRoom($roomName, $buildingName, $isPublic);
+        if (empty($roomName) || empty($buildingName)) {
+            $this->addFlash('error', 'Vyplnte budovu a mistnost.');
+            return $this->redirectToRoute('app_rooms');
+        } else if ($this->roomService->findByNameAndBuilding($roomName, $buildingName) === null) {
+            $this->roomService->createRoom($roomName, $buildingName, $isPublic === 1);
 
-            $this->addFlash('success', 'Room created successfully');
+            $this->addFlash('success', 'Mistnost uspesne vytvorena.');
             return $this->redirectToRoute('app_rooms');
         } else {
-            $this->addFlash('error', 'Room with the same name already exists.');
+            $this->addFlash('error', 'Mistnost s touto budovou a jmenem jiz existuje.');
 
             $rooms = $this->roomService->getAll(); // TODO: query?
             $currentAvailabilityMap = $this->roomService->getCurrentAvailabilityMap($rooms);

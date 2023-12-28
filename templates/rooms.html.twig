@@ -52,13 +52,16 @@
     {% if is_granted('ROLE_ADMIN') %}
         <form action="{{ path('app_create_room') }}" method="post">
             <label for="building_name">Nazev budovy:</label>
-            <input type="text" id="building_name" name="_building_name">
+            <input type="text" id="building_name" name="_building_name"
+                   value="{{ previous_input.building_name | default('') }}" required>
 
             <label for="room_name">Nazev mistnosti:</label>
-            <input type="text" id="room_name" name="_room_name">
+            <input type="text" id="room_name" name="_room_name"
+                   value="{{ previous_input.room_name | default('') }}" required>
 
             <label for="is_public">Verejna?</label>
-            <input type="checkbox" id="is_public" value="0">
+            <input type="checkbox" id="is_public" name="_is_public"
+                    {% if previous_input is defined and previous_input.is_public == 1 %}checked{% endif %}>
 
             <button type="submit">Vytvorit mistnost</button>
         </form>
