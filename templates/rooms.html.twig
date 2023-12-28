@@ -15,12 +15,12 @@
 
         <table>
             <thead>
-                <tr>
-                    <th>Učebna</th>
-                    <th>Budova</th>
-                    <th>Stav</th>
-                    <th>Akce</th>
-                </tr>
+            <tr>
+                <th>Učebna</th>
+                <th>Budova</th>
+                <th>Stav</th>
+                <th>Akce</th>
+            </tr>
             </thead>
             <tbody>
 
@@ -47,5 +47,19 @@
 
     {% endif %}
 
+    {% if is_granted('ROLE_ADMIN') %}
+        <form action="{{ path('app_create_room') }}" method="post">
+            <label for="room_name">Nazev mistnosti:</label>
+            <input type="text" id="room_name" name="_room_name">
+
+            <label for="building_name">Nazev budovy:</label>
+            <input type="text" id="building_name" name="_building_name">
+
+            <label for="is_public">Verejna?</label>
+            <input type="checkbox" id="is_public" value="0">
+
+            <button type="submit">Vytvorit mistnost</button>
+        </form>
+    {% endif %}
 
 {% endblock %}

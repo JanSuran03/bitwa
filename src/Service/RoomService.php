@@ -10,8 +10,8 @@ use Symfony\Bundle\SecurityBundle\Security;
 use function Symfony\Component\Clock\now;
 
 class RoomService {
-    private EntityRepository $roomRepository;
-    private EntityRepository $reservationRepository;
+    private RoomRepository $roomRepository;
+    private ReservationRepository $reservationRepository;
     private Security $security;
 
     public function __construct(RoomRepository        $roomRepository,
@@ -42,6 +42,11 @@ class RoomService {
                 fn($room) => str_contains(strtolower($room->getFullName()), strtolower($query))
             )
         );
+    }
+
+    public function findOneByName(string $name) : ?Room {
+        error_log($name);
+        return $this->roomRepository->findByName($name);
     }
 
     public function getOneById(int $id): Room {
