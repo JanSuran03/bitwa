@@ -20,3 +20,16 @@ header .user-info {
 label.required:after {
     content: " *";
 }
+
+.flash {
+    padding: 0.3em;
+    border-radius: 0 0.6em 0.6em 0;
+}
+
+.flash-success {
+    background: hsl(120, 100%, 65%);
+}
+
+.flash-error {
+    background: hsl(0, 100%, 65%);
+}

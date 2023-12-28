@@ -16,12 +16,12 @@
         <table>
             <thead>
                 <tr>
-                    <th>Učebna</th>
                     <th>Budova</th>
-                    <th>Typ</th>
-                    <th>Aktuální obsazenost</th>
+                    <th>Učebna</th>
+                    <th>Stav</th>
+                    <th>Přístupnost</th>
                     <th>Mám přístup</th>
-                    <th>Možnosti</th>
+                    <th>Akce</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,20 +29,20 @@
             </tbody>
             {% for room in rooms %}
                 <tr>
-                    <td>{{ room.getFullName() }}</td>
                     <td>{{ room.getBuilding() }}</td>
-                    <td>
-                        {% if room.isPublic() %}
-                            Veřejná
-                        {% else %}
-                            Soukromá
-                        {% endif %}
-                    </td>
+                    <td>{{ room.getName() }}</td>
                     <td>
                         {% if currentAvailabilityMap[room.getId()] %}
                             Volná
                         {% else %}
                             Obsazená
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if room.isPublic() %}
+                            Veřejná
+                        {% else %}
+                            Soukromá
                         {% endif %}
                     </td>
                     <td>
@@ -65,5 +65,22 @@
 
     {% endif %}
 
+    {% if is_granted('ROLE_ADMIN') %}
+        <form action="{{ path('app_create_room') }}" method="post">
+            <label for="building_name">Název budovy:</label>
+            <input type="text" id="building_name" name="_building_name"
+                   value="{{ previous_input.building_name | default('') }}" required>
+
+            <label for="room_name">Název místnosti:</label>
+            <input type="text" id="room_name" name="_room_name"
+                   value="{{ previous_input.room_name | default('') }}" required>
+
+            <label for="is_public">Veřejná?</label>
+            <input type="checkbox" id="is_public" name="_is_public"
+                    {% if previous_input is defined and previous_input.is_public == 1 %}checked{% endif %}>
+
+            <button type="submit">Vytvořit místnost</button>
+        </form>
+    {% endif %}
 
 {% endblock %}
