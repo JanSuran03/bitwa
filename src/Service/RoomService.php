@@ -44,9 +44,9 @@ class RoomService {
         );
     }
 
-    public function findOneByName(string $name) : ?Room {
+    public function findByNameAndBuilding(string $name, string $building) : ?Room {
         error_log($name);
-        return $this->roomRepository->findByName($name);
+        return $this->roomRepository->findByNameAndBuilding($name, $building);
     }
 
     public function getOneById(int $id): Room {

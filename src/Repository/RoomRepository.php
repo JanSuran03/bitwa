@@ -23,7 +23,10 @@ class RoomRepository extends ServiceEntityRepository {
         return $this->findBy(["isPublic" => true]);
     }
 
-    public function findByName(string $name): ?Room {
-        return $this->findOneBy(["name" => $name]);
+    public function findByNameAndBuilding(string $name, string $building): ?Room {
+        return $this->findOneBy([
+            "name" => $name,
+            "building" => $building
+        ]);
     }
 }
