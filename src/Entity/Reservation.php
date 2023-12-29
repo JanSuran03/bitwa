@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ReservationRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -48,8 +49,14 @@ class Reservation
     #[Assert\NotBlank]
     private ?Room $room = null;
 
-    public function __construct()
+    public function __construct(?Room $room = null, ?User $user = null)
     {
+        $this->is_approved = false;
+        $this->room = $room;
+        $this->author = $user;
+        date_default_timezone_set('Europe/Prague');
+        $this->time_from = new DateTime('now');
+        $this->time_to = new DateTime('now');
         $this->invited_users = new ArrayCollection();
     }
 

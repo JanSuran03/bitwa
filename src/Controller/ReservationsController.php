@@ -45,14 +45,7 @@ class ReservationsController extends AbstractController
             throw $this->createAccessDeniedException('Tuto soukromou učebnu si nemůžete rezervovat, protože nejste jejím uživatelem ani správcem!');
         }
 
-        $reservation = new Reservation();
-        $reservation->setApproved(false);
-        $reservation->setRoom($room);
-        $reservation->setAuthor($user);
-        date_default_timezone_set('Europe/Prague');
-        $reservation->setTimeFrom(new DateTime('now'));
-        $reservation->setTimeTo(new DateTime('now'));
-
+        $reservation = new Reservation($room, $user);
         $form = $this->createForm(ReservationType::class, $reservation, [
             'choices' => $this->userService->getInviteChoices($user),
         ]);
