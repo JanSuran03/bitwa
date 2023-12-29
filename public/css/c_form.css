@@ -1,0 +1,18 @@
+input {
+    border-radius: 0.35em;
+    border: 0.1em groove black;
+    font-size: 0.86em;
+}
+
+input:hover, input:focus {
+    border-width: 0.15em;
+}
+
+input[type="checkbox"] {
+    width: 1.2em;
+    height: 1.2em;
+}
+
+label.required:after {
+    content: " *";
+}

@@ -1,26 +1,12 @@
+@import 'c_header.css';
+@import 'c_table.css';
+@import 'c_elements.css';
+@import 'c_form.css';
+
 body {
     background: hsl(200, 100%, 88%);
     font-family: "Source Sans Pro", sans-serif;
     font-size: 1.2em;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-}
-
-header nav span {
-    font-size: 2em;
-}
-
-header .user-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-label.required:after {
-    content: " *";
 }
 
 .flash {
@@ -36,110 +22,6 @@ label.required:after {
 
 .flash-error {
     background: hsl(0, 100%, 65%);
-}
-
-table {
-    border-collapse: collapse;
-    margin: 0.3em;
-}
-
-td, th {
-    border: 0.1em solid black;
-    padding: 0.2em;
-}
-
-thead tr {
-    background: rgba(238, 232, 118, 0.3);
-}
-
-tbody tr:nth-child(odd) {
-    background: rgba(0, 255, 243, var(--table-bg-opacity));
-}
-
-tbody tr:nth-child(even) {
-    background: rgba(26, 255, 0, var(--table-bg-opacity));
-}
-
-:root {
-    --a-color: hsl(178, 89%, 21%);
-    --table-bg-opacity: 0.13;
-    --checkbox-size: 1.2em;
-}
-
-a {
-    color: var(--a-color);
-    text-decoration: none;
-}
-
-a:visited {
-    color: var(--a-color);
-}
-
-a:hover {
-    color: hsl(182, 99%, 39%);
-    text-decoration: underline;
-}
-
-button {
-    background: #eeeeee;
-    border: 0.12em solid #666666;
-    border-radius: 0.5em;
-    font-family: inherit;
-    padding: 0.4em;
-    font-size: 0.85em;
-}
-
-button:hover {
-    background: #c9c9c9;
-    transition: 0.3s ease-in-out;
-    cursor: pointer;
-}
-
-input {
-    border-radius: 0.35em;
-    border: 0.1em groove black;
-    font-size: 0.86em;
-}
-
-input:hover, input:focus {
-    border-width: 0.15em;
-}
-
-header {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    background: white;
-    border: none;
-    border-radius: 0.4em;
-    padding: 0.5em;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 0.07em 0.25em rgba(143, 147, 162, 0.6);
-}
-
-header nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.3em;
-}
-
-header nav .nav-item {
-    font-size: 1.5em;
-}
-
-header .user-info {
-    display: flex;
-    gap: 2em;
-}
-
-header .user-info .login-info {
-    font-size: 1.2em;
-}
-
-input[type="checkbox"] {
-    width: var(--checkbox-size);
-    height: var(--checkbox-size);
 }
 
 .wide {

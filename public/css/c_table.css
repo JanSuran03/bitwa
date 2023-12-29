@@ -1,0 +1,21 @@
+table {
+    border-collapse: collapse;
+    margin: 0.3em;
+}
+
+td, th {
+    border: 0.1em solid black;
+    padding: 0.2em;
+}
+
+thead tr {
+    background: rgba(238, 232, 118, 0.3);
+}
+
+tbody tr:nth-child(odd) {
+    background: rgba(0, 255, 243, 0.13);
+}
+
+tbody tr:nth-child(even) {
+    background: rgba(26, 255, 0, 0.13);
+}

@@ -1,0 +1,28 @@
+a {
+    color: hsl(178, 89%, 21%);
+    text-decoration: none;
+}
+
+a:visited {
+    color: hsl(178, 89%, 21%);
+}
+
+a:hover {
+    color: hsl(182, 99%, 39%);
+    text-decoration: underline;
+}
+
+button {
+    background: #eeeeee;
+    border: 0.12em solid #666666;
+    border-radius: 0.5em;
+    font-family: inherit;
+    padding: 0.4em;
+    font-size: 0.85em;
+}
+
+button:hover {
+    background: #c9c9c9;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+}
