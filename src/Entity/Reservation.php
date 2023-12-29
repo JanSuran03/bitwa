@@ -106,12 +106,12 @@ class Reservation
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getInvitedUsers(): Collection
+//    /**
+//     * @return Collection<int, User>
+//     */
+    public function getInvitedUsers(): array
     {
-        return $this->invited_users;
+        return $this->invited_users->toArray();
     }
 
     public function addInvitedUser(User $invitedUser): static
