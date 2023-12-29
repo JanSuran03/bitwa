@@ -15,9 +15,16 @@ class UsersController extends AbstractController {
     public function __construct(UserRepository $userRepository) {
         $this->userRepository = $userRepository;
     }
+
     #[Route('/users', name: 'app_users')]
     public function login(): Response {
         return $this->render('users.html.twig',
             ['users' => $this->userRepository->findAll()]);
+    }
+
+    #[Route('/users/create-by-admin', name: 'app_admin_create_user', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function createUserByAdmin(): Response {
+        return $this->redirectToRoute('app_users');
     }
 }
