@@ -100,7 +100,7 @@ class RoomService {
         return $map;
     }
 
-    private function isTransitiveMemberOf(User $user, Room $room): bool {
+    public function isTransitiveMemberOf(User $user, Room $room): bool {
         if ($this->isTransitiveManagerOf($user, $room)) {
             return true;
         }
@@ -117,7 +117,7 @@ class RoomService {
         return false;
     }
 
-    private function isTransitiveManagerOf(User $user, Room $room): bool {
+    public function isTransitiveManagerOf(User $user, Room $room): bool {
         if ($room->getManagers()->contains($user)) {
             return true;
         }
@@ -145,12 +145,12 @@ class RoomService {
         );
     }
 
-    public function isManageableBy(user $user): array {
+    public function getAllManageableBy(user $user): array {
         $allRooms = $this->getAll();
         return array_values(
             array_filter(
                 $allRooms,
-                fn($room) => $this->isTransitiveMemberOf($user, $room)
+                fn($room) => $this->isTransitiveManagerOf($user, $room)
             )
         );
     }

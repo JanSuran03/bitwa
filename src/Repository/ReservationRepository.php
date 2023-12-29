@@ -30,6 +30,11 @@ class ReservationRepository extends ServiceEntityRepository
         return $reservation;
     }
 
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
 
 //    /**
 //     * @return Reservation[] Returns an array of Reservation objects

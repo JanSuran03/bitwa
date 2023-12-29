@@ -40,7 +40,7 @@ class ReservationsController extends AbstractController {
         }
 
         $reservation = new Reservation();
-        $reservation->setIsApproved(false);
+        $reservation->setApproved(false);
         $reservation->setRoom($room);
         $reservation->setAuthor($user);
         date_default_timezone_set('Europe/Prague');
@@ -69,18 +69,42 @@ class ReservationsController extends AbstractController {
         /** @var User $user */
         $user = $this->getUser();
 
-        $myReservations = $this->reservationService->getAllByAuthor($user);
         return $this->render(
             'my-reservations.html.twig',
             [
-                'myReservations' => $myReservations,
+                'myReservations' => $this->reservationService->getAllByAuthor($user),
             ]
         );
     }
 
     #[Route('/reservations/managed', name: 'app_reservations_managed')]
     public function managed(): Response {
-        return $this->render('managed-reservations.html.twig');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $managedReservations = $this->reservationService->getAllByManager($user);
+        return $this->render(
+            'managed-reservations.html.twig',
+            [
+                'managedReservations' => $managedReservations,
+            ]
+        );
+    }
+
+    #[Route('reservations/{reservationId}/approve', name: 'app_reservations_approve')]
+    public function approve(Request $request): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $reservationId = $request->attributes->get('reservationId');
+        $reservation = $this->reservationService->getOneById($reservationId);
+        $room = $reservation->getRoom();
+        if (!$this->roomService->isTransitiveManagerOf($user, $room)) {
+            throw $this->createAccessDeniedException('Tuto žádost nemůžete schválit, protože nejste správcem dotyčné místnosti!');
+        }
+
+        $this->reservationService->approveById($reservationId);
+        return $this->redirectToRoute('app_reservations_managed');
     }
 
 }

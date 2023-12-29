@@ -27,7 +27,7 @@
             <tbody>
                 {% for reservation in myReservations %}
                     <tr>
-                        <td>{{ reservation.id }}</td>
+                        <td>#{{ reservation.id }}</td>
                         <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
                         <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
                         <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>

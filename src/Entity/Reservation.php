@@ -58,12 +58,12 @@ class Reservation
         return $this->id;
     }
 
-    public function isIsApproved(): ?bool
+    public function isApproved(): ?bool
     {
         return $this->is_approved;
     }
 
-    public function setIsApproved(bool $is_approved): static
+    public function setApproved(bool $is_approved): static
     {
         $this->is_approved = $is_approved;
 

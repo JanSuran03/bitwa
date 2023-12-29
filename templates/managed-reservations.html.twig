@@ -5,5 +5,128 @@
 {% block page %}reservation{% endblock %}
 
 {% block content %}
-    <h1>Žádosti ke schválení</h1>
+
+    <h1>Žádosti a rezervace pod mojí správou</h1>
+
+    <h2>Žádosti ke schválení</h2>
+
+    {% if managedReservations.toApprove is empty %}
+        <p>Na schválení aktuálně nečekají žádné žádosti o rezervace učeben pod vaší správou.</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Číslo rezervace</th>
+                    <th>Učebna</th>
+                    <th>Žadatel</th>
+                    <th>Rezervováno od</th>
+                    <th>Rezervováno do</th>
+                    <th colspan="2">Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in managedReservations.toApprove %}
+                    <tr>
+                        <td>#{{ reservation.id }}</td>
+                        <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
+                        <td>{{ reservation.author.name }}</td>
+                        <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
+                        <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
+                        <td><a href="{{ path('app_reservations_approve', {'reservationId': reservation.id}) }}">Schválit</a></td>
+                        <td><a href="#">Zamítnout a smazat</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <h2>Schválené rezervace pod mojí správou</h2>
+
+    <h3>Právě probíhající rezervace</h3>
+
+    {% if managedReservations.approvedCurrent is empty %}
+        <p>Aktuálně neprobíhají žádné rezervace učeben pod vaší správou.</p>
+    {% else %}
+        <table>
+            <thead>
+            <tr>
+                <th>Číslo rezervace</th>
+                <th>Učebna</th>
+                <th>Žadatel</th>
+                <th>Rezervováno od</th>
+                <th>Rezervováno do</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for reservation in managedReservations.approvedCurrent %}
+                <tr>
+                    <td>#{{ reservation.id }}</td>
+                    <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
+                    <td>{{ reservation.author.name }}</td>
+                    <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
+                    <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <h3>Nadcházející rezervace</h3>
+
+    {% if managedReservations.approvedComing is empty %}
+        <p>Nejsou naplánovány žádné rezervace učeben pod vaší správou.</p>
+    {% else %}
+        <table>
+            <thead>
+            <tr>
+                <th>Číslo rezervace</th>
+                <th>Učebna</th>
+                <th>Žadatel</th>
+                <th>Rezervováno od</th>
+                <th>Rezervováno do</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for reservation in managedReservations.approvedComing %}
+                <tr>
+                    <td>#{{ reservation.id }}</td>
+                    <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
+                    <td>{{ reservation.author.name }}</td>
+                    <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
+                    <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <h3>Proběhlé rezervace</h3>
+
+    {% if managedReservations.approvedPast is empty %}
+        <p>Zatím neproběhly žádné rezervace učeben pod vaší správou.</p>
+    {% else %}
+        <table>
+            <thead>
+            <tr>
+                <th>Číslo rezervace</th>
+                <th>Učebna</th>
+                <th>Žadatel</th>
+                <th>Rezervováno od</th>
+                <th>Rezervováno do</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for reservation in managedReservations.approvedPast %}
+                <tr>
+                    <td>#{{ reservation.id }}</td>
+                    <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
+                    <td>{{ reservation.author.name }}</td>
+                    <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
+                    <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
 {% endblock %}
