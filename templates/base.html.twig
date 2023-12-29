@@ -37,15 +37,15 @@
             <!-- <a href="{{ path('app_register') }}">Vytvořit účet</a> -->
         {% endif %}
     </div>
-
-    {% for flashType, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="flash flash-{{ flashType }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endfor %}
 </header>
+
+{% for flashType, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash flash-{{ flashType }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
 
 <main>
     {% block content %}{% endblock %}
