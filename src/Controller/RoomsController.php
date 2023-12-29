@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Service\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,14 +20,19 @@ class RoomsController extends AbstractController {
 
     #[Route('/rooms', name: 'app_rooms')]
     public function rooms(Request $request): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $searchQuery = $request->query->get('search');
         $rooms = $this->roomService->getAllByName($searchQuery);
+        $bookableRooms = $user === null ? [] : $this->roomService->getAllBookableBy($user);
         $currentAvailabilityMap = $this->roomService->getCurrentAvailabilityMap($rooms);
 
         return $this->render(
             'rooms.html.twig',
             [
                 'rooms' => $rooms,
+                'bookableRooms' => $bookableRooms,
                 'currentAvailabilityMap' => $currentAvailabilityMap,
             ]
         );

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Room;
+use App\Entity\User;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use DateTime;
@@ -68,19 +69,7 @@ class RoomService {
         // TODO
     }
 
-    public function getCurrentAvailabilityMap(array $rooms): array {
-        $map = [];
-        foreach ($rooms as $room) {
-            $roomId = $room->getId();
-            if ($this->isOccupiedNow($room))
-                $map[$roomId] = false;
-            else
-                $map[$roomId] = true;
-        }
-        return $map;
-    }
-
-    public function isBookedBetween(Room $room, DateTimeInterface $from, DateTimeInterface $to, bool $onlyApproved = false): ?bool {
+    public function isBookedBetween(Room $room, DateTimeInterface $from, DateTimeInterface $to, bool $onlyApproved = false): bool {
         $conditions = ['room' => $room];
         if ($onlyApproved) {
             $conditions['is_approved'] = true;
@@ -95,7 +84,74 @@ class RoomService {
         return false;
     }
 
-    private function isOccupiedNow(Room $room): ?bool {
+    private function isOccupiedNow(Room $room): bool {
         return $this->isBookedBetween($room, now(), now(), true);
+    }
+
+    public function getCurrentAvailabilityMap(array $rooms): array {
+        $map = [];
+        foreach ($rooms as $room) {
+            $roomId = $room->getId();
+            if ($this->isOccupiedNow($room))
+                $map[$roomId] = false;
+            else
+                $map[$roomId] = true;
+        }
+        return $map;
+    }
+
+    private function isTransitiveMemberOf(User $user, Room $room): bool {
+        if ($this->isTransitiveManagerOf($user, $room)) {
+            return true;
+        }
+        if ($room->getMembers()->contains($user)) {
+            return true;
+        }
+        $group = $room->getGroup();
+        while ($group !== null) {
+            if ($group->getMembers()->contains($user)) {
+                return true;
+            }
+            $group = $group->getParent();
+        }
+        return false;
+    }
+
+    private function isTransitiveManagerOf(User $user, Room $room): bool {
+        if ($room->getManagers()->contains($user)) {
+            return true;
+        }
+        $group = $room->getGroup();
+        while ($group !== null) {
+            if ($group->getManagers()->contains($user)) {
+                return true;
+            }
+            $group = $group->getParent();
+        }
+        return false;
+    }
+
+    public function isBookableBy(Room $room, User $user): bool {
+        return $room->isPublic() || $this->isTransitiveMemberOf($user, $room);
+    }
+
+    public function getAllBookableBy(User $user): array {
+        $allRooms = $this->getAll();
+        return array_values(
+            array_filter(
+                $allRooms,
+                fn($room) => $this->isBookableBy($room, $user)
+            )
+        );
+    }
+
+    public function isManageableBy(user $user): array {
+        $allRooms = $this->getAll();
+        return array_values(
+            array_filter(
+                $allRooms,
+                fn($room) => $this->isTransitiveMemberOf($user, $room)
+            )
+        );
     }
 }

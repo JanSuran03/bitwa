@@ -29,14 +29,14 @@ class ReservationsController extends AbstractController {
 
     #[Route('/reservations/new', name: 'app_book')]
     public function new(Request $request): Response {
-        $roomId =$request->query->get('room');
-        $room = $this->roomService->getOneById($roomId);
-
         /** @var User $user */
         $user = $this->getUser();
 
-        if (! $room->isPublic() && ! $room->getMembers()->contains($user)) {
-            throw $this->createAccessDeniedException('Tuto soukromou učebnu si nemůžete rezervovat, protože nejste jejím uživatelem!');
+        $roomId =$request->query->get('room');
+        $room = $this->roomService->getOneById($roomId);
+
+        if (! $this->roomService->isBookableBy($room, $user)) {
+            throw $this->createAccessDeniedException('Tuto soukromou učebnu si nemůžete rezervovat, protože nejste jejím uživatelem ani správcem!');
         }
 
         $reservation = new Reservation();
@@ -68,6 +68,7 @@ class ReservationsController extends AbstractController {
     public function my(): Response {
         /** @var User $user */
         $user = $this->getUser();
+
         $myReservations = $this->reservationService->getAllByAuthor($user);
         return $this->render(
             'my-reservations.html.twig',

@@ -128,7 +128,7 @@ class Group
         return $this;
     }
 
-    public function getParent(): self
+    public function getParent(): ?self
     {
         return $this->parent;
     }
