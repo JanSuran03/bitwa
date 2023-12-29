@@ -17,6 +17,7 @@
             <th>Email</th>
             {% if is_granted("ROLE_ADMIN") %}
                 <th>Roles</th>
+                <th><img class="fa" src="/images/trash-solid.svg" alt="trash"></th>
             {% endif %}
         </tr>
         </thead>
@@ -30,6 +31,8 @@
                 <td>{{ user.email }}</td>
                 {% if is_granted("ROLE_ADMIN") %}
                     <td>{{ user.roles | join(", ") }}</td>
+                    <td><img class="wide a" src="/images/trash-solid.svg" alt="trash"
+                        onclick="alert('Delete user: TODO')"></td>
                 {% endif %}
             </tr>
         {% endfor %}

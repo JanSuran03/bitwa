@@ -141,3 +141,11 @@ input[type="checkbox"] {
     width: var(--checkbox-size);
     height: var(--checkbox-size);
 }
+
+.wide {
+    padding: 0 0.27em;
+}
+
+.a {
+    cursor: pointer;
+}
