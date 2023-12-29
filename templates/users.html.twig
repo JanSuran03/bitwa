@@ -9,30 +9,30 @@
 
     <table>
         <thead>
-        <tr>
-            {% if is_granted("ROLE_ADMIN") %}
-                <th>Id</th>
-            {% endif %}
-            <th>Name</th>
-            <th>Email</th>
-            {% if is_granted("ROLE_ADMIN") %}
-                <th>Roles</th>
-            {% endif %}
-        </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
             <tr>
                 {% if is_granted("ROLE_ADMIN") %}
-                    <th>{{ user.id }}</th>
+                    <th>ID</th>
                 {% endif %}
-                <td>{{ user.name }}</td>
-                <td>{{ user.email }}</td>
+                <th>Jméno</th>
+                <th>E-mail</th>
                 {% if is_granted("ROLE_ADMIN") %}
-                    <td>{{ user.roles | join(", ") }}</td>
+                    <th>Role</th>
                 {% endif %}
             </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    {% if is_granted("ROLE_ADMIN") %}
+                        <th>{{ user.id }}</th>
+                    {% endif %}
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    {% if is_granted("ROLE_ADMIN") %}
+                        <td>{{ user.roles | join(", ") }}</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 {% endblock %}
