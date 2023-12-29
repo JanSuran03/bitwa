@@ -13,6 +13,46 @@ input[type="checkbox"] {
     height: 1.2em;
 }
 
-label.required:after {
+form:not(#logout-form) {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    align-self: center;
+    justify-self: center;
+    width: fit-content;
+    margin: 1em 0.6em;
+    padding: 0.3em;
+    border-radius: 0.4em;
+    box-shadow: 0 0 0.3em 0.3em #D6D6ff66;
+}
+
+form:not(#logout-form) label.required:after {
     content: " *";
+}
+
+form:not(#logout-form) > .form-fields {
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    grid-gap: 0.7em;
+    margin: 1em;
+}
+
+form:not(#logout-form) > .form-fields > :nth-child(odd) {
+    justify-self: end;
+}
+
+form:not(#logout-form) > .form-fields > :nth-child(even) {
+    justify-self: start;
+}
+
+form:not(#logout-form) .label-input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2em;
+}
+
+form:not(#logout-form) button {
+    align-self: center;
+    margin: 0.2em 0 0.5em 0;
 }

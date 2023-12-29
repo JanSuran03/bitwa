@@ -28,7 +28,7 @@
     <div class="user-info">
         {% if is_granted('IS_AUTHENTICATED') %}
             <div class="login-info">Jste přihlášen jako <b>{{ app.user.name }}</b> ({{ app.user.email }})</div>
-            <form action="{{ path('app_logout') }}" method="get">
+            <form id="logout-form" action="{{ path('app_logout') }}" method="get">
                 <button type="submit">Odhlásit se</button>
             </form>
         {% else %}

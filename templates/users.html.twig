@@ -32,7 +32,7 @@
                 {% if is_granted("ROLE_ADMIN") %}
                     <td>{{ user.roles | join(", ") }}</td>
                     <td><img class="wide a" src="/images/trash-solid.svg" alt="trash"
-                        onclick="alert('Delete user: TODO')"></td>
+                             onclick="alert('Delete user: TODO')"></td>
                 {% endif %}
             </tr>
         {% endfor %}
@@ -41,22 +41,23 @@
 
     {% if is_granted('ROLE_ADMIN') %}
         <form id="addUser" action="{{ path('app_admin_create_user') }}" method="post">
-            <label for="username">Uživatelské jméno:</label>
-            <input type="text" id="username" name="_username"
-                   value="{{ previous_input.username | default('') }}" required>
+            <div class="form-fields">
+                <label for="username">Uživatelské jméno:</label>
+                <input type="text" id="username" name="_username"
+                       value="{{ previous_input.username | default('') }}" required>
 
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="_email"
-                   value="{{ previous_input.email | default('') }}" required>
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="_email"
+                       value="{{ previous_input.email | default('') }}" required>
 
-            <label for="password">Heslo:</label>
-            <input type="password" id="password" name="_password"
-                   value="{{ previous_input.password | default('') }}" required>
+                <label for="password">Heslo:</label>
+                <input type="password" id="password" name="_password"
+                       value="{{ previous_input.password | default('') }}" required>
 
-            <label for="confirm_password">Potvrdit heslo:</label>
-            <input type="password" id="confirm_password" name="_confirm_password"
-                   value="{{ previous_input.confirm_password | default('') }}" required>
-
+                <label for="confirm_password">Potvrdit heslo:</label>
+                <input type="password" id="confirm_password" name="_confirm_password"
+                       value="{{ previous_input.confirm_password | default('') }}" required>
+            </div>
             <button type="submit">Vytvořit uživatele</button>
         </form>
 
