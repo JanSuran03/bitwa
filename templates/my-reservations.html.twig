@@ -27,12 +27,12 @@
             <tbody>
                 {% for reservation in myReservations %}
                     <tr>
-                        <td>{{ reservation.getId() }}</td>
-                        <td>{{ reservation.getRoom().getFullName() }}</td>
-                        <td>{{ reservation.getTimeFrom() | date('d. m. Y H:i') }}</td>
-                        <td>{{ reservation.getTimeTo() | date('d. m. Y H:i') }}</td>
+                        <td>{{ reservation.id }}</td>
+                        <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
+                        <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
+                        <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
                         <td>
-                            {% if reservation.isApproved() %}
+                            {% if reservation.isApproved %}
                                 &#10003;
                             {% else %}
                                 &#10007;
