@@ -24,41 +24,40 @@
                 </tr>
             </thead>
             <tbody>
-
+                {% for room in rooms | sort((a, b) => a.fullName <=> b.fullName) %}
+                    <tr>
+                        <td>{{ room.building }}:<b>{{ room.name }}</b></td>
+                        <td>
+                            {% if currentAvailabilityMap[room.id] %}
+                                Volná
+                            {% else %}
+                                Obsazená
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if room.public %}
+                                Veřejná
+                            {% else %}
+                                Soukromá {% if room.group %} (spravuje {{ room.group.name }}){% endif %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if room in bookableRooms %}
+                                &#10003;
+                            {% else %}
+                                &#10007;
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if room in bookableRooms %}
+                                <a href="{{ path('app_book', {'room': room.id}) }}">
+                                    Rezervovat
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
             </tbody>
-            {% for room in rooms | sort((a, b) => a.fullName <=> b.fullName) %}
-                <tr>
-                    <td>{{ room.building }}:<b>{{ room.name }}</b></td>
-                    <td>
-                        {% if currentAvailabilityMap[room.id] %}
-                            Volná
-                        {% else %}
-                            Obsazená
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if room.public %}
-                            Veřejná
-                        {% else %}
-                            Soukromá {% if room.group %} (spravuje {{ room.group.name }}){% endif %}
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if room in bookableRooms %}
-                            &#10003;
-                        {% else %}
-                            &#10007;
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if room in bookableRooms %}
-                            <a href="{{ path('app_book', {'room': room.id}) }}">
-                                Rezervovat
-                            </a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
         </table>
 
     {% endif %}
