@@ -46,15 +46,15 @@ class RoomsController extends AbstractController {
         $isPublic = $request->request->has('_is_public') ? 1 : 0;
 
         if (empty($roomName) || empty($buildingName)) {
-            $this->addFlash('error', 'Vyplnte budovu a mistnost.');
+            $this->addFlash('error', 'Vyplňte budovu a místnost.');
             return $this->redirectToRoute('app_rooms');
         } else if ($this->roomService->findByNameAndBuilding($roomName, $buildingName) === null) {
             $this->roomService->createRoom($roomName, $buildingName, $isPublic === 1);
 
-            $this->addFlash('success', 'Mistnost uspesne vytvorena.');
+            $this->addFlash('success', 'Místnost úspěšně vytvořena.');
             return $this->redirectToRoute('app_rooms');
         } else {
-            $this->addFlash('error', 'Mistnost s touto budovou a jmenem jiz existuje.');
+            $this->addFlash('error', 'Místnost s touto budovou a jménem již existuje.');
 
             $rooms = $this->roomService->getAll(); // TODO: query?
             $currentAvailabilityMap = $this->roomService->getCurrentAvailabilityMap($rooms);
