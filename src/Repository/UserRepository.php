@@ -26,7 +26,8 @@ class UserRepository extends ServiceEntityRepository {
         ]);
     }
 
-    public function createUser(string $name, string $email, string $password): User {
-
+    public function addUser(User $user): void {
+        $this->_em->persist($user);
+        $this->_em->flush();
     }
 }
