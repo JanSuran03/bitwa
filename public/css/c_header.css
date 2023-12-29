@@ -34,3 +34,7 @@ header .user-info {
 header .user-info .login-info {
     font-size: 1.2em;
 }
+
+#logout-form > button{
+    margin: 0.3em;
+}
