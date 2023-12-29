@@ -30,6 +30,18 @@ class ReservationService
         return $this->reservationRepository->findBy(['author' => $user]);
     }
 
+
+    public function getAllByInvitee(User $user): array
+    {
+        $allReservations = $this->reservationRepository->findAll();
+        return array_values(
+            array_filter(
+                $allReservations,
+                fn ($reservation) => in_array($user, $reservation->getInvitedUsers())
+            )
+        );
+    }
+
     public function getAllByManager(User $user): array
     {
         $allReservations = $this->reservationRepository->findAll();
@@ -39,7 +51,7 @@ class ReservationService
             array_values(
                 array_filter(
                     $allReservations,
-                    fn($reservation) => $this->roomService->isTransitiveManagerOf($user, $reservation->getRoom())
+                    fn ($reservation) => $this->roomService->isTransitiveManagerOf($user, $reservation->getRoom())
                 )
             );
 
@@ -93,7 +105,6 @@ class ReservationService
     {
         return now() < $reservation->getTimeFrom();
     }
-
     private function isPast(Reservation $reservation): bool
     {
         return $reservation->getTimeTo() < now();

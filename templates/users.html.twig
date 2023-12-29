@@ -11,12 +11,12 @@
         <thead>
         <tr>
             {% if is_granted("ROLE_ADMIN") %}
-                <th>Id</th>
+                <th>ID</th>
             {% endif %}
-            <th>Name</th>
-            <th>Email</th>
+            <th>Jméno</th>
+            <th>E-mail</th>
             {% if is_granted("ROLE_ADMIN") %}
-                <th>Roles</th>
+                <th>Role</th>
                 <th><img class="fa" src="/images/trash-solid.svg" alt="trash"></th>
             {% endif %}
         </tr>

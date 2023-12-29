@@ -1,1 +1,6 @@
 @import url("common.css");
+
+div#reservation_invitedUsers {
+    display: grid;
+    grid-template-columns: 2rem auto;
+}

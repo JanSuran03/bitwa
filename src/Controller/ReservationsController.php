@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\Type\ReservationType;
 use App\Service\ReservationService;
 use App\Service\RoomService;
+use App\Service\UserService;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -17,37 +18,37 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('IS_AUTHENTICATED')]
-class ReservationsController extends AbstractController {
+class ReservationsController extends AbstractController
+{
 
     private ReservationService $reservationService;
     private RoomService $roomService;
+    private UserService $userService;
 
-    public function __construct(ReservationService $reservationService, RoomService $roomService) {
+    public function __construct(ReservationService $reservationService, RoomService $roomService, UserService $userService)
+    {
         $this->reservationService = $reservationService;
         $this->roomService = $roomService;
+        $this->userService = $userService;
     }
 
     #[Route('/reservations/new', name: 'app_book')]
-    public function new(Request $request): Response {
+    public function new(Request $request): Response
+    {
         /** @var User $user */
         $user = $this->getUser();
 
-        $roomId =$request->query->get('room');
+        $roomId = $request->query->get('room');
         $room = $this->roomService->getOneById($roomId);
 
-        if (! $this->roomService->isBookableBy($room, $user)) {
+        if (!$this->roomService->isBookableBy($room, $user)) {
             throw $this->createAccessDeniedException('Tuto soukromou učebnu si nemůžete rezervovat, protože nejste jejím uživatelem ani správcem!');
         }
 
-        $reservation = new Reservation();
-        $reservation->setApproved(false);
-        $reservation->setRoom($room);
-        $reservation->setAuthor($user);
-        date_default_timezone_set('Europe/Prague');
-        $reservation->setTimeFrom(new DateTime('now'));
-        $reservation->setTimeTo(new DateTime('now'));
-
-        $form = $this->createForm(ReservationType::class, $reservation);
+        $reservation = new Reservation($room, $user);
+        $form = $this->createForm(ReservationType::class, $reservation, [
+            'choices' => $this->userService->getInviteChoices($user),
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -65,7 +66,8 @@ class ReservationsController extends AbstractController {
     }
 
     #[Route('/reservations/my', name: 'app_reservations_my')]
-    public function my(): Response {
+    public function my(): Response
+    {
         /** @var User $user */
         $user = $this->getUser();
 
@@ -73,12 +75,14 @@ class ReservationsController extends AbstractController {
             'my-reservations.html.twig',
             [
                 'myReservations' => $this->reservationService->getAllByAuthor($user),
+                'invitations' => $this->reservationService->getAllByInvitee($user),
             ]
         );
     }
 
     #[Route('/reservations/managed', name: 'app_reservations_managed')]
-    public function managed(): Response {
+    public function managed(): Response
+    {
         /** @var User $user */
         $user = $this->getUser();
 
@@ -92,7 +96,8 @@ class ReservationsController extends AbstractController {
     }
 
     #[Route('reservations/{reservationId}/approve', name: 'app_reservations_approve')]
-    public function approve(Request $request): Response {
+    public function approve(Request $request): Response
+    {
         /** @var User $user */
         $user = $this->getUser();
 
