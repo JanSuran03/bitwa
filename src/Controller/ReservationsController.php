@@ -75,6 +75,7 @@ class ReservationsController extends AbstractController
             'my-reservations.html.twig',
             [
                 'myReservations' => $this->reservationService->getAllByAuthor($user),
+                'invitations' => $this->reservationService->getAllByInvitee($user),
             ]
         );
     }
