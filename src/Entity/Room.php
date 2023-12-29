@@ -28,6 +28,9 @@ class Room
     #[ORM\Column]
     private ?string $name = null;
 
+    #[ORM\ManyToOne(inversedBy: 'rooms')]
+    private ?Group $group = null;
+
     #[ORM\Column]
     private ?bool $isPublic = false;
 
@@ -155,5 +158,15 @@ class Room
         $this->isLocked = $isLocked;
 
         return $this;
+    }
+
+    public function getGroup(): ?Group
+    {
+        return $this->group;
+    }
+
+    public function setGroup(?Group $group): void
+    {
+        $this->group = $group;
     }
 }

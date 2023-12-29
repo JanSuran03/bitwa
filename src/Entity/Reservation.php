@@ -41,6 +41,7 @@ class Reservation
     private ?User $author = null;
 
     #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinTable(name: 'invitations')]
     private Collection $invited_users;
 
     #[ORM\ManyToOne]

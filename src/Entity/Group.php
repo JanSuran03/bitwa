@@ -22,13 +22,13 @@ class Group
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'managed_groups')]
     private Collection $managers;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'parent')]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'child_groups')]
     private ?self $parent;
 
-    #[ORM\OneToMany(mappedBy: 'child_groups', targetEntity: self::class)]
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private Collection $child_groups;
 
-    #[ORM\OneToMany(mappedBy: 'delete', targetEntity: Room::class)]
+    #[ORM\OneToMany(mappedBy: 'group', targetEntity: Room::class)]
     private Collection $rooms;
 
     #[ORM\Column(length: 255)]
@@ -101,46 +101,41 @@ class Group
         return $this;
     }
 
-    public function getChildGroups(): ?self
+    /**
+     * @return Collection<int, Group>
+     */
+    public function getChildGroups(): Collection
     {
         return $this->child_groups;
     }
 
-    public function setChildGroups(?self $child_groups): static
+    public function addChildGroup(Group $group): static
     {
-        $this->child_groups = $child_groups;
+        if (!$this->child_groups->contains($group)) {
+            $this->child_groups->add($group);
+            $group->setParent($this);
+        }
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, self>
-     */
-    public function getParent(): Collection
+    public function removeChildGroup(Group $group): static
+    {
+        if ($this->child_groups->removeElement($group)) {
+            $group->setParent(null);
+        }
+
+        return $this;
+    }
+
+    public function getParent(): self
     {
         return $this->parent;
     }
 
-    public function addParent(self $parent): static
+    public function setParent(?Group $parent): void
     {
-        if (!$this->parent->contains($parent)) {
-            $this->parent->add($parent);
-            $parent->setChildGroups($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParent(self $parent): static
-    {
-        if ($this->parent->removeElement($parent)) {
-            // set the owning side to null (unless already changed)
-            if ($parent->getChildGroups() === $this) {
-                $parent->setChildGroups(null);
-            }
-        }
-
-        return $this;
+        $this->parent = $parent;
     }
 
     /**
@@ -155,7 +150,7 @@ class Group
     {
         if (!$this->rooms->contains($room)) {
             $this->rooms->add($room);
-            $room->setDelete($this);
+            $room->setGroup($this);
         }
 
         return $this;
@@ -165,8 +160,8 @@ class Group
     {
         if ($this->rooms->removeElement($room)) {
             // set the owning side to null (unless already changed)
-            if ($room->getDelete() === $this) {
-                $room->setDelete(null);
+            if ($room->getGroup() === $this) {
+                $room->setGroup(null);
             }
         }
 
