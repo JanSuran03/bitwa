@@ -17,6 +17,7 @@
         <span class="nav-item"><a href="{{ path('app_rooms') }}">Učebny</a></span>
         {% if is_granted('IS_AUTHENTICATED') %}
             <span class="nav-item"><a href="{{ path('app_users') }}">Uživatelé</a></span>
+            <span class="nav-item"><a href="{{ path('app_reservations_my') }}">Moje rezervace</a></span>
             <span class="nav-item"><a href="{{ path('app_reservations_managed') }}">Žádosti ke schválení</a></span>
             {% if is_granted('ROLE_ADMIN') %}
                 <span class="nav-item"><a href="{{ path('app_groups') }}">Správa skupin místností</a></span>

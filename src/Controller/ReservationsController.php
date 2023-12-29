@@ -66,7 +66,15 @@ class ReservationsController extends AbstractController {
 
     #[Route('/reservations/my', name: 'app_reservations_my')]
     public function my(): Response {
-        return $this->render('my-reservations.html.twig');
+        /** @var User $user */
+        $user = $this->getUser();
+        $myReservations = $this->reservationService->getAllByAuthor($user);
+        return $this->render(
+            'my-reservations.html.twig',
+            [
+                'myReservations' => $myReservations,
+            ]
+        );
     }
 
     #[Route('/reservations/managed', name: 'app_reservations_managed')]

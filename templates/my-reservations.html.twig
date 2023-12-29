@@ -6,4 +6,44 @@
 
 {% block content %}
     <h1>Moje rezervace</h1>
+
+    {% if myReservations is empty %}
+
+        <p>Zatím jste nevytvořil žádnou rezervaci.</p>
+
+    {% else %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Číslo rezervace</th>
+                    <th>Učebna</th>
+                    <th>Rezervováno od</th>
+                    <th>Rezervováno do</th>
+                    <th>Schváleno</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in myReservations %}
+                    <tr>
+                        <td>{{ reservation.getId() }}</td>
+                        <td>{{ reservation.getRoom().getFullName() }}</td>
+                        <td>{{ reservation.getTimeFrom() | date('d. m. Y H:i') }}</td>
+                        <td>{{ reservation.getTimeTo() | date('d. m. Y H:i') }}</td>
+                        <td>
+                            {% if reservation.isApproved() %}
+                                &#10003;
+                            {% else %}
+                                &#10007;
+                            {% endif %}
+                        </td>
+                        <td><a href="#">Smazat</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% endif %}
+
 {% endblock %}
