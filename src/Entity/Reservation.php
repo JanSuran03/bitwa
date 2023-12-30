@@ -49,9 +49,9 @@ class Reservation
     #[Assert\NotBlank]
     private ?Room $room = null;
 
-    public function __construct(?Room $room = null, ?User $user = null)
+    public function __construct(?Room $room = null, ?User $user = null, bool $autoApprove = false)
     {
-        $this->is_approved = false;
+        $this->is_approved = $autoApprove;
         $this->room = $room;
         $this->author = $user;
         date_default_timezone_set('Europe/Prague');

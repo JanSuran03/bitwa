@@ -44,12 +44,15 @@ class ReservationsController extends AbstractController
         if (!$this->roomService->isBookableBy($room, $user)) {
             throw $this->createAccessDeniedException('Tuto soukromou učebnu si nemůžete rezervovat, protože nejste jejím uživatelem ani správcem!');
         }
+        $isManager = $this->roomService->isTransitiveManagerOf($user, $room);
 
-        $reservation = new Reservation($room, $user);
+        $reservation = new Reservation($room, $user, $isManager);
         $form = $this->createForm(ReservationType::class, $reservation, [
             'action' => $this->generateUrl('app_book') . '?room=' . $roomId,
             'actionType' => 'new',
-            'choices' => $this->userService->getInviteChoices($user),
+            'isManager' => $isManager,
+            'authorChoices' => $this->userService->getAuthorChoices(),
+            'inviteChoices' => $this->userService->getInviteChoices($user),
         ]);
 
         $form->handleRequest($request);
@@ -128,7 +131,9 @@ class ReservationsController extends AbstractController
 
         $form = $this->createForm(ReservationType::class, $reservation, [
             'actionType' => 'edit',
-            'choices' => $this->userService->getInviteChoices($user),
+            'isManager' => $this->roomService->isTransitiveManagerOf($user, $reservation->getRoom()),
+            'authorChoices' => $this->userService->getAuthorChoices(),
+            'inviteChoices' => $this->userService->getInviteChoices($user),
         ]);
 
         $form->handleRequest($request);

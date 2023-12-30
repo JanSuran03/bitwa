@@ -25,7 +25,8 @@ class RoomsController extends AbstractController {
 
         $searchQuery = $request->query->get('search');
         $rooms = $this->roomService->getAllByName($searchQuery);
-        $bookableRooms = $user === null ? [] : $this->roomService->getAllBookableBy($user);
+        $bookableRooms = ($user === null) ? [] : $this->roomService->getAllBookableBy($user);
+        $manageableRooms = ($user === null) ? [] : $this->roomService->getAllManageableBy($user);
         $currentAvailabilityMap = $this->roomService->getCurrentAvailabilityMap($rooms);
 
         return $this->render(
@@ -33,6 +34,7 @@ class RoomsController extends AbstractController {
             [
                 'rooms' => $rooms,
                 'bookableRooms' => $bookableRooms,
+                'manageableRooms' => $manageableRooms,
                 'currentAvailabilityMap' => $currentAvailabilityMap,
             ]
         );

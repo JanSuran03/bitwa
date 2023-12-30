@@ -38,7 +38,7 @@
                         {% if room.public %}
                             Veřejná
                         {% else %}
-                            Soukromá {% if room.group %} (spravuje {{ room.group.name }}){% endif %}
+                            Soukromá{% if room.group %} (spravuje {{ room.group.name }}){% endif %}
                         {% endif %}
                     </td>
                     <td>
@@ -51,7 +51,7 @@
                     <td>
                         {% if room in bookableRooms %}
                             <a href="{{ path('app_book', {'room': room.id}) }}">
-                                Rezervovat
+                                Rezervovat{% if room in manageableRooms %} jako správce{% endif %}
                             </a>
                         {% endif %}
                     </td>

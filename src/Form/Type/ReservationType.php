@@ -15,7 +15,17 @@ class ReservationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if ($options['actionType'] === 'new') {
+        if ($options['isManager']) {
+            $builder
+                ->add('author', ChoiceType::class,[
+                    'label' => 'Vytvořit pro uživatele',
+                    'choices' => $options['authorChoices'],
+                    'expanded' => false,
+                    'multiple' => false,
+                ]);
+        }
+
+        if ($options['isManager'] || $options['actionType'] === 'new') {
             $builder
                 ->add('timeFrom', DateTimeType::class, ['label' => 'Rezervovat od'])
                 ->add('timeTo', DateTimeType::class, ['label' => 'Rezervovat do']);
@@ -25,12 +35,12 @@ class ReservationType extends AbstractType
             ->add('invitedUsers', ChoiceType::class, [
                 'label' => 'Pozvaní uživatelé',
                 'required' => false,
-                'choices' => $options['choices'],
+                'choices' => $options['inviteChoices'],
                 'expanded' => true,
                 'multiple' => true,
             ])
             ->add('save', SubmitType::class, [
-                'label' => ($options['actionType'] === 'new') ? 'Vytvořit rezervaci' : 'Uložit změny',
+                'label' => $this->submitLabel($options),
             ]);
     }
 
@@ -38,8 +48,20 @@ class ReservationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Reservation::class,
-            'choices' => [],
             'actionType' => 'new',
+            'isManager' => false,
+            'authorChoices' => [],
+            'inviteChoices' => [],
         ]);
+    }
+
+    private function submitLabel($options): string {
+        if ($options['actionType'] === 'edit') {
+            return 'Uložit změny';
+        } elseif ($options['isManager']) {
+            return 'Vytvořit a schválit rezervaci';
+        } else {
+            return 'Odeslat žádost o rezervaci';
+        }
     }
 }
