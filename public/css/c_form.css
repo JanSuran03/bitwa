@@ -43,7 +43,7 @@ form > .form-fields {
     margin: 1em;
 }
 
-form> .form-fields > :nth-child(odd) {
+form > .form-fields > :nth-child(odd) {
     justify-self: end;
 }
 
@@ -62,4 +62,11 @@ form > h4 {
     font-weight: bold;
     text-decoration: underline;
     margin: 0.2em;
+}
+
+.form-block {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2em;
 }

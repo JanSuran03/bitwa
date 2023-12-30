@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>{% block title %}Rezervační systém učeben{% endblock %}</title>
 
-    <link rel="stylesheet" href="/css/{% block page %}{% endblock %}.css">
+    <link rel="stylesheet" href="/css/common.css">
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;900&amp;display=swap"
           rel="stylesheet">
 </head>
@@ -36,6 +36,9 @@
     <div class="user-info">
         {% if is_granted('IS_AUTHENTICATED') %}
             <div class="login-info">Jste přihlášen jako <b>{{ app.user.name }}</b> ({{ app.user.email }})</div>
+            <a id="profile-icon-link" href="{{ path('app_user_profile') }}">
+                <img id="profile-icon" src="/images/user-profile.svg" alt="Profil">
+            </a>
             <form id="logout-form" action="{{ path('app_logout') }}" method="get">
                 <button type="submit">Odhlásit se</button>
             </form>
