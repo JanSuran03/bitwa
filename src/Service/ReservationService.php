@@ -40,6 +40,11 @@ class ReservationService
         return $this->reservationRepository->findBy(['author' => $user]);
     }
 
+    public function getAllByAuthorOrResponsible(User $user): array
+    {
+        return $this->reservationRepository->findByAuthorOrResponsible($user);
+    }
+
 
     public function getAllByInvitee(User $user): array
     {
@@ -52,18 +57,21 @@ class ReservationService
         );
     }
 
-    public function getAllByManager(User $user): array
+    public function getAllByManager(User $user, bool $isAdmin): array
     {
         $allReservations = $this->reservationRepository->findAll();
 
         /** @var Reservation[] $manageableReservations */
-        $manageableReservations =
-            array_values(
+        if ($isAdmin) {
+            $manageableReservations = $allReservations;
+        } else {
+            $manageableReservations = array_values(
                 array_filter(
                     $allReservations,
-                    fn ($reservation) => $this->roomService->isTransitiveManagerOf($user, $reservation->getRoom())
+                    fn($reservation) => $this->roomService->isTransitiveManagerOf($user, $reservation->getRoom())
                 )
             );
+        }
 
         $toApprove = [];
         $approvedCurrent = [];

@@ -33,25 +33,13 @@ class UserService
         return $this->userRepository->find($id);
     }
 
-    public function getAuthorChoices(): array
+    public function getUserChoices(): array
     {
         $allUsers = $this->getAll();
-        $authorChoices = [];
-        foreach ($allUsers as $authorChoice) {
-            $authorChoices[$authorChoice->getName()] = $authorChoice;
+        $responsibleChoices = [];
+        foreach ($allUsers as $responsibleChoice) {
+            $responsibleChoices[$responsibleChoice->getName()] = $responsibleChoice;
         }
-        return $authorChoices;
-    }
-
-    public function getInviteChoices(User $user): array
-    {
-        $allUsers = $this->getAll();
-        $inviteChoices = [];
-        foreach ($allUsers as $potentialInviteChoice) {
-            if ($potentialInviteChoice !== $user) {
-                $inviteChoices[$potentialInviteChoice->getName()] = $potentialInviteChoice;
-            }
-        }
-        return $inviteChoices;
+        return $responsibleChoices;
     }
 }

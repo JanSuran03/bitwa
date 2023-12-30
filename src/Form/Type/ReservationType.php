@@ -17,15 +17,15 @@ class ReservationType extends AbstractType
     {
         if ($options['isManager']) {
             $builder
-                ->add('author', ChoiceType::class,[
-                    'label' => 'Vytvořit pro uživatele',
-                    'choices' => $options['authorChoices'],
+                ->add('responsibleUser', ChoiceType::class,[
+                    'label' => 'Rezervovat na jméno',
+                    'choices' => $options['responsibleChoices'],
                     'expanded' => false,
                     'multiple' => false,
                 ]);
         }
 
-        if ($options['isManager'] || $options['actionType'] === 'new') {
+        if ($options['actionType'] === 'new') {
             $builder
                 ->add('timeFrom', DateTimeType::class, ['label' => 'Rezervovat od'])
                 ->add('timeTo', DateTimeType::class, ['label' => 'Rezervovat do']);
@@ -50,7 +50,7 @@ class ReservationType extends AbstractType
             'data_class' => Reservation::class,
             'actionType' => 'new',
             'isManager' => false,
-            'authorChoices' => [],
+            'responsibleChoices' => [],
             'inviteChoices' => [],
         ]);
     }

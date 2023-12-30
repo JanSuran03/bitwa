@@ -6,7 +6,13 @@
 
 {% block content %}
 
-    <h1>Žádosti a rezervace pod mojí správou</h1>
+    <h1>
+        {% if is_granted('ROLE_ADMIN') %}
+            Všechny žádosti a rezervace
+        {% else %}
+            Žádosti a rezervace pod mojí správou
+        {% endif %}
+    </h1>
 
     <h2>Žádosti ke schválení</h2>
 
@@ -18,9 +24,11 @@
                 <tr>
                     <th>Číslo rezervace</th>
                     <th>Učebna</th>
-                    <th>Žadatel</th>
                     <th>Rezervováno od</th>
                     <th>Rezervováno do</th>
+                    <th>Vytvořil</th>
+                    <th>Na jméno</th>
+                    <th>Počet osob</th>
                     <th colspan="2">Akce</th>
                 </tr>
             </thead>
@@ -29,9 +37,11 @@
                     <tr>
                         <td>#{{ reservation.id }}</td>
                         <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
-                        <td>{{ reservation.author.name }}</td>
                         <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
                         <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
+                        <td>{{ reservation.author.name }}</td>
+                        <td>{{ reservation.responsibleUser.name }}</td>
+                        <td>{{ reservation.invitedUsers | length }}</td>
                         <td><a href="{{ path('app_reservations_approve', {'reservationId': reservation.id}) }}">Schválit</a></td>
                         <td><a href="#">Zamítnout a smazat</a></td>
                     </tr>
@@ -52,9 +62,11 @@
             <tr>
                 <th>Číslo rezervace</th>
                 <th>Učebna</th>
-                <th>Žadatel</th>
                 <th>Rezervováno od</th>
                 <th>Rezervováno do</th>
+                <th>Vytvořil</th>
+                <th>Na jméno</th>
+                <th>Počet osob</th>
             </tr>
             </thead>
             <tbody>
@@ -62,9 +74,11 @@
                 <tr>
                     <td>#{{ reservation.id }}</td>
                     <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
-                    <td>{{ reservation.author.name }}</td>
                     <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
                     <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
+                    <td>{{ reservation.author.name }}</td>
+                    <td>{{ reservation.responsibleUser.name }}</td>
+                    <td>{{ reservation.invitedUsers | length }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -81,9 +95,11 @@
             <tr>
                 <th>Číslo rezervace</th>
                 <th>Učebna</th>
-                <th>Žadatel</th>
                 <th>Rezervováno od</th>
                 <th>Rezervováno do</th>
+                <th>Vytvořil</th>
+                <th>Na jméno</th>
+                <th>Počet osob</th>
             </tr>
             </thead>
             <tbody>
@@ -91,9 +107,11 @@
                 <tr>
                     <td>#{{ reservation.id }}</td>
                     <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
-                    <td>{{ reservation.author.name }}</td>
                     <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
                     <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
+                    <td>{{ reservation.author.name }}</td>
+                    <td>{{ reservation.responsibleUser.name }}</td>
+                    <td>{{ reservation.invitedUsers | length }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -110,9 +128,11 @@
             <tr>
                 <th>Číslo rezervace</th>
                 <th>Učebna</th>
-                <th>Žadatel</th>
                 <th>Rezervováno od</th>
                 <th>Rezervováno do</th>
+                <th>Vytvořil</th>
+                <th>Na jméno</th>
+                <th>Počet osob</th>
             </tr>
             </thead>
             <tbody>
@@ -120,9 +140,11 @@
                 <tr>
                     <td>#{{ reservation.id }}</td>
                     <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
-                    <td>{{ reservation.author.name }}</td>
                     <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
                     <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
+                    <td>{{ reservation.author.name }}</td>
+                    <td>{{ reservation.responsibleUser.name }}</td>
+                    <td>{{ reservation.invitedUsers | length }}</td>
                 </tr>
             {% endfor %}
             </tbody>

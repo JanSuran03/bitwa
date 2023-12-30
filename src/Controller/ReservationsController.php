@@ -41,18 +41,18 @@ class ReservationsController extends AbstractController
         $roomId = $request->query->get('room');
         $room = $this->roomService->getOneById($roomId);
 
-        if (!$this->roomService->isBookableBy($room, $user)) {
+        if (!$this->roomService->isBookableBy($room, $user) && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('Tuto soukromou učebnu si nemůžete rezervovat, protože nejste jejím uživatelem ani správcem!');
         }
-        $isManager = $this->roomService->isTransitiveManagerOf($user, $room);
+        $isManager = $this->isGranted('ROLE_ADMIN') || $this->roomService->isTransitiveManagerOf($user, $room);
 
         $reservation = new Reservation($room, $user, $isManager);
         $form = $this->createForm(ReservationType::class, $reservation, [
             'action' => $this->generateUrl('app_book') . '?room=' . $roomId,
             'actionType' => 'new',
             'isManager' => $isManager,
-            'authorChoices' => $this->userService->getAuthorChoices(),
-            'inviteChoices' => $this->userService->getInviteChoices($user),
+            'responsibleChoices' => $this->userService->getUserChoices(),
+            'inviteChoices' => $this->userService->getUserChoices(),
         ]);
 
         $form->handleRequest($request);
@@ -79,7 +79,7 @@ class ReservationsController extends AbstractController
         return $this->render(
             'my-reservations.html.twig',
             [
-                'myReservations' => $this->reservationService->getAllByAuthor($user),
+                'myReservations' => $this->reservationService->getAllByAuthorOrResponsible($user),
                 'invitations' => $this->reservationService->getAllByInvitee($user),
             ]
         );
@@ -91,7 +91,7 @@ class ReservationsController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $managedReservations = $this->reservationService->getAllByManager($user);
+        $managedReservations = $this->reservationService->getAllByManager($user, $this->isGranted('ROLE_ADMIN'));
         return $this->render(
             'managed-reservations.html.twig',
             [
@@ -109,7 +109,7 @@ class ReservationsController extends AbstractController
         $reservationId = $request->attributes->get('reservationId');
         $reservation = $this->reservationService->getOneById($reservationId);
         $room = $reservation->getRoom();
-        if (!$this->roomService->isTransitiveManagerOf($user, $room)) {
+        if (!$this->roomService->isTransitiveManagerOf($user, $room) && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('Tuto žádost nemůžete schválit, protože nejste správcem dotyčné místnosti!');
         }
 
@@ -125,15 +125,15 @@ class ReservationsController extends AbstractController
 
         $reservationId = $request->attributes->get('reservationId');
         $reservation = $this->reservationService->getOneById($reservationId);
-        if ($reservation->getAuthor() !== $user) {
-            throw $this->createAccessDeniedException('Tuto rezervaci nemůžete editovat, protože nejste jejím autorem!');
+        if ($reservation->getAuthor() !== $user && $reservation->getResponsibleUser() !== $user && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Tuto rezervaci nemůžete editovat, protože nejste jejím autorem, ani není vedená na vaše jméno!');
         }
 
         $form = $this->createForm(ReservationType::class, $reservation, [
             'actionType' => 'edit',
-            'isManager' => $this->roomService->isTransitiveManagerOf($user, $reservation->getRoom()),
-            'authorChoices' => $this->userService->getAuthorChoices(),
-            'inviteChoices' => $this->userService->getInviteChoices($user),
+            'isManager' => $this->roomService->isTransitiveManagerOf($user, $reservation->getRoom()) || $this->isGranted('ROLE_ADMIN'),
+            'responsibleChoices' => $this->userService->getUserChoices(),
+            'inviteChoices' => $this->userService->getUserChoices(),
         ]);
 
         $form->handleRequest($request);

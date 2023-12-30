@@ -41,6 +41,10 @@ class Reservation
     #[Assert\NotBlank]
     private ?User $author = null;
 
+    #[ORM\ManyToOne]
+    #[Assert\NotBlank]
+    private ?User $responsible_user = null;
+
     #[ORM\ManyToMany(targetEntity: User::class)]
     #[ORM\JoinTable(name: 'invitations')]
     private Collection $invited_users;
@@ -54,10 +58,11 @@ class Reservation
         $this->is_approved = $autoApprove;
         $this->room = $room;
         $this->author = $user;
+        $this->responsible_user = $user;
         date_default_timezone_set('Europe/Prague');
         $this->time_from = new DateTime('now');
         $this->time_to = new DateTime('now');
-        $this->invited_users = new ArrayCollection();
+        $this->invited_users = new ArrayCollection([$user]);
     }
 
     public function getId(): ?int
@@ -113,6 +118,17 @@ class Reservation
         return $this;
     }
 
+    public function getResponsibleUser(): ?User
+    {
+        return $this->responsible_user;
+    }
+
+    public function setResponsibleUser(?User $responsible_user): void
+    {
+        $this->responsible_user = $responsible_user;
+        $this->addInvitedUser($responsible_user);
+    }
+
 //    /**
 //     * @return Collection<int, User>
 //     */
@@ -132,7 +148,8 @@ class Reservation
 
     public function removeInvitedUser(User $invitedUser): static
     {
-        $this->invited_users->removeElement($invitedUser);
+        if ($invitedUser !== $this->responsible_user)
+            $this->invited_users->removeElement($invitedUser);
 
         return $this;
     }

@@ -19,11 +19,13 @@
             <thead>
                 <tr>
                     <th>Číslo rezervace</th>
+                    <th>Schváleno</th>
                     <th>Učebna</th>
                     <th>Rezervováno od</th>
                     <th>Rezervováno do</th>
-                    <th>Schváleno</th>
-                    <th>Počet pozvaných</th>
+                    <th>Vytvořil</th>
+                    <th>Na jméno</th>
+                    <th>Počet osob</th>
                     <th colspan="2">Akce</th>
                 </tr>
             </thead>
@@ -31,9 +33,6 @@
                 {% for reservation in myReservations %}
                     <tr>
                         <td>#{{ reservation.id }}</td>
-                        <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
-                        <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
-                        <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
                         <td>
                             {% if reservation.isApproved %}
                                 &#10003;
@@ -41,8 +40,13 @@
                                 &#10007;
                             {% endif %}
                         </td>
+                        <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
+                        <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
+                        <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
+                        <td>{{ reservation.author.name }}</td>
+                        <td>{{ reservation.responsibleUser.name }}</td>
                         <td>{{ reservation.invitedUsers | length }}</td>
-                        <td><a href="{{ path('app_reservation_edit', {'reservationId': reservation.id}) }}">Upravit pozvané</a></td>
+                        <td><a href="{{ path('app_reservation_edit', {'reservationId': reservation.id}) }}">Upravit osoby</a></td>
                         <td><a href="#">Smazat</a></td>
                     </tr>
                 {% endfor %}
@@ -51,7 +55,7 @@
 
     {% endif %}
 
-    <h2>Pozvánky</h2>
+    <h2>Všechny rezervace, kam jsem pozvaný</h2>
 
     {% if invitations is empty %}
 
@@ -63,21 +67,18 @@
             <thead>
             <tr>
                 <th>Číslo rezervace</th>
+                <th>Schváleno</th>
                 <th>Učebna</th>
-                <th>Autor rezervace</th>
                 <th>Rezervováno od</th>
                 <th>Rezervováno do</th>
-                <th>Schváleno</th>
+                <th>Vytvořil</th>
+                <th>Na jméno</th>
             </tr>
             </thead>
             <tbody>
             {% for reservation in invitations %}
                 <tr>
                     <td>#{{ reservation.id }}</td>
-                    <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
-                    <td>{{ reservation.author.name }}</b></td>
-                    <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
-                    <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
                     <td>
                         {% if reservation.isApproved %}
                             &#10003;
@@ -85,6 +86,11 @@
                             &#10007;
                         {% endif %}
                     </td>
+                    <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
+                    <td>{{ reservation.timeFrom | date('d. m. Y H:i') }}</td>
+                    <td>{{ reservation.timeTo | date('d. m. Y H:i') }}</td>
+                    <td>{{ reservation.author.name }}</b></td>
+                    <td>{{ reservation.responsibleUser.name }}</b></td>
                 </tr>
             {% endfor %}
             </tbody>
