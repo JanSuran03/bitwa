@@ -93,8 +93,19 @@ class UserController extends AbstractController {
         if ($requestUser instanceof User) {
             $dbUser = $this->userService->findOneByEmail($requestUser->getEmail());
             if (!$passwordHasher->isPasswordValid($dbUser, $oldPassword)) {
-                $this->addFlash('error', 'Staré heslo se neshoduje.'); // TODO: keep old form data
-                return $this->redirectToRoute('app_user_profile');
+                $this->addFlash('error', 'Staré heslo se neshoduje.');
+                return $this->render('profile.html.twig',
+                    [
+                        'user' => [
+                            'name' => $dbUser->getName(),
+                            'email' => $dbUser->getEmail()],
+                        'previous_input' => [
+                            'old_password' => $oldPassword,
+                            'new_password' => $newPassword,
+                            'confirm_password' => $confirmPassword
+                        ]
+                    ]);
+
             }
 
             $hashed = $passwordHasher->hashPassword($dbUser, $newPassword);
