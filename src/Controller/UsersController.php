@@ -37,7 +37,7 @@ class UsersController extends AbstractController {
         $fail = false;
         if ($password != $confirmPassword && $fail = true) {
             $this->addFlash('error', 'Hesla se neshodují.');
-        } else if ($this->userRepository->findByEmail($email) != null && $fail = true) {
+        } else if ($this->userService->findOneByEmail($email) != null && $fail = true) {
             $this->addFlash('error', 'Zadaný email již používá jiný uživatel.');
         }
 
@@ -50,7 +50,7 @@ class UsersController extends AbstractController {
                         'password' => $password,
                         'confirm_password' => $confirmPassword
                     ],
-                    'users' => $this->userRepository->findAll()
+                    'users' => $this->userService->getAll()
                 ]);
         } else {
             $user = new User();
@@ -60,7 +60,7 @@ class UsersController extends AbstractController {
             $hashed = $passwordHasher->hashPassword($user, $password);
             $user->setPassword($hashed);
 
-            $this->userRepository->addUser($user);
+            $this->userService->setUser($user);
 
             $this->addFlash('success', 'Uživatel ' . $username . ' úspěšně vytvořen.');
             return $this->redirectToRoute('app_users');
