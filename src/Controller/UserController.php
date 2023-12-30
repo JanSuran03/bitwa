@@ -39,7 +39,11 @@ class UserController extends AbstractController {
 
     #[Route('/profile/change-name', name: 'app_change_user_name', methods: ['POST'])]
     public function changeName(Request $request): Response {
-        $newName = $request->request->get('_name');
+        $newName = $request->request->getString('_name');
+        if (empty($newName)) {
+            $this->addFlash('error', 'Jméno nemůže být prázdné.');
+            return $this->redirectToRoute('app_user_profile');
+        }
         $requestUser = $this->getUser();
 
         if ($requestUser instanceof User) {
@@ -54,7 +58,21 @@ class UserController extends AbstractController {
 
     #[Route('/profile/change-email', name: 'app_change_user_email', methods: ['POST'])]
     public function changeEmail(Request $request): Response {
-        return $this->classError();
+        $newEmail = $request->request->getString('_email');
+        if (empty($newEmail)) {
+            $this->addFlash('error', 'Email nemůže být prázdný.');
+            return $this->redirectToRoute('app_user_profile');
+        }
+        $requestUser = $this->getUser();
+
+        if ($requestUser instanceof User) {
+            $dbUser = $this->userService->findOneByEmail($requestUser->getEmail());
+            $this->userService->setEmail($dbUser, $newEmail);
+            $this->addFlash('success', 'Email byl úspěšně změněn.');
+            return $this->redirectToRoute('app_user_profile');
+        } else {
+            return $this->classError();
+        }
     }
 
     #[Route('/profile/change-password', name: 'app_change_user_password', methods: ['POST'])]

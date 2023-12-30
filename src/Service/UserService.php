@@ -46,4 +46,9 @@ class UserService {
         $user->setName($newName);
         $this->userRepository->setUser($user);
     }
+
+    public function setEmail(User $user, string $newEmail): void {
+        $user->setEmail($newEmail);
+        $this->userRepository->setUser($user);
+    }
 }
