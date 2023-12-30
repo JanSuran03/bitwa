@@ -47,6 +47,8 @@ class ReservationsController extends AbstractController
 
         $reservation = new Reservation($room, $user);
         $form = $this->createForm(ReservationType::class, $reservation, [
+            'action' => $this->generateUrl('app_book') . '?room=' . $roomId,
+            'actionType' => 'new',
             'choices' => $this->userService->getInviteChoices($user),
         ]);
 
@@ -110,6 +112,38 @@ class ReservationsController extends AbstractController
 
         $this->reservationService->approveById($reservationId);
         return $this->redirectToRoute('app_reservations_managed');
+    }
+
+    #[Route('reservations/{reservationId}/edit', name: 'app_reservation_edit')]
+    public function edit(Request $request): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $reservationId = $request->attributes->get('reservationId');
+        $reservation = $this->reservationService->getOneById($reservationId);
+        if ($reservation->getAuthor() !== $user) {
+            throw $this->createAccessDeniedException('Tuto rezervaci nemůžete editovat, protože nejste jejím autorem!');
+        }
+
+        $form = $this->createForm(ReservationType::class, $reservation, [
+            'actionType' => 'edit',
+            'choices' => $this->userService->getInviteChoices($user),
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->reservationService->flush();
+            return $this->redirectToRoute('app_reservations_my');
+        }
+
+        return $this->render(
+            'reservation.html.twig',
+            [
+                'room' => $reservation->getRoom(),
+                'form' => $form,
+            ]
+        );
     }
 
 }

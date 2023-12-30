@@ -3,6 +3,7 @@
 namespace App\Validator;
 
 use App\Entity\Reservation;
+use App\Service\ReservationService;
 use App\Service\RoomService;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -12,10 +13,12 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 class RoomAvailabilityValidator extends ConstraintValidator
 {
     private RoomService $roomService;
+    private ReservationService $reservationService;
 
-    public function __construct(RoomService $roomService)
+    public function __construct(RoomService $roomService, ReservationService  $reservationService)
     {
         $this->roomService = $roomService;
+        $this->reservationService = $reservationService;
     }
 
     public function validate($reservation, Constraint $constraint): void
@@ -26,6 +29,11 @@ class RoomAvailabilityValidator extends ConstraintValidator
 
         if (!$constraint instanceof RoomAvailability) {
             throw new UnexpectedTypeException($constraint, RoomAvailability::class);
+        }
+
+        // If this reservation already exists in the database, don't re-validate
+        if ($reservation->getId()) {
+            return;
         }
 
         if ($this->roomService->isBookedBetween($reservation->getRoom(), $reservation->getTimeFrom(), $reservation->getTimeTo())) {

@@ -20,6 +20,16 @@ class ReservationService
         $this->roomService = $roomService;
     }
 
+    public function flush()
+    {
+        $this->reservationRepository->flush();
+    }
+
+    public function existsById(int $id): bool
+    {
+        return $this->reservationRepository->find($id) !== null;
+    }
+
     public function getAll(): array
     {
         return $this->reservationRepository->findAll();

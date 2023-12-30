@@ -23,7 +23,8 @@
                     <th>Rezervováno od</th>
                     <th>Rezervováno do</th>
                     <th>Schváleno</th>
-                    <th>Akce</th>
+                    <th>Počet pozvaných</th>
+                    <th colspan="2">Akce</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,6 +41,8 @@
                                 &#10007;
                             {% endif %}
                         </td>
+                        <td>{{ reservation.invitedUsers | length }}</td>
+                        <td><a href="{{ path('app_reservation_edit', {'reservationId': reservation.id}) }}">Upravit pozvané</a></td>
                         <td><a href="#">Smazat</a></td>
                     </tr>
                 {% endfor %}

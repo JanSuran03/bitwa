@@ -3,7 +3,7 @@
 namespace App\Validator;
 
 use App\Entity\Reservation;
-use App\Service\RoomService;
+use App\Service\ReservationService;
 use DateTime;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -12,6 +12,13 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 class FutureTimespanValidator extends ConstraintValidator
 {
+    private ReservationService $reservationService;
+
+    public function __construct(ReservationService  $reservationService)
+    {
+        $this->reservationService = $reservationService;
+    }
+
     public function validate($reservation, Constraint $constraint): void
     {
         if (!$reservation instanceof Reservation) {
@@ -20,6 +27,11 @@ class FutureTimespanValidator extends ConstraintValidator
 
         if (!$constraint instanceof FutureTimespan) {
             throw new UnexpectedTypeException($constraint, FutureTimespan::class);
+        }
+
+        // If this reservation already exists in the database, don't re-validate
+        if ($reservation->getId()) {
+            return;
         }
 
         if ($reservation->getTimeFrom() < new DateTime('now')) {
