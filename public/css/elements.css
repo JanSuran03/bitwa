@@ -26,3 +26,12 @@ button:hover {
     transition: 0.3s ease-in-out;
     cursor: pointer;
 }
+
+ul {
+    margin: 0.2em 0;
+}
+
+h3 {
+    margin: 0.2em 0;
+}
+
