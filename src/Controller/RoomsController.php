@@ -96,8 +96,8 @@ class RoomsController extends AbstractController {
         return $this->render('room.html.twig',
             [
                 'room' => $room,
-                'is_manageable' => $this->roomService->isTransitiveManagerOf($user, $room),
-                'is_bookable' => $this->roomService->isBookableBy($room, $user),
+                'is_manageable' => $user !== null && $this->roomService->isTransitiveManagerOf($user, $room),
+                'is_bookable' => $user !== null && $this->roomService->isBookableBy($room, $user),
                 'is_occupied' => $this->roomService->isOccupiedNow($room)]);
     }
 
