@@ -6,27 +6,41 @@
 
 {% block content %}
     <h1>Učebna {{ room.getFullName() }}</h1>
-    <section class="info">
-        <span>Budova:</span>
-        <span>{{ room.building }}</span>
+    <div class="form-block">
+        <section class="info">
+            <span>Budova:</span>
+            <span>{{ room.building }}</span>
 
-        <span>Místnost:</span>
-        <span>{{ room.name }}</span>
+            <span>Místnost:</span>
+            <span>{{ room.name }}</span>
 
-        <span>Stav:</span>
-        <span>{% if is_occupied %}Obsazená{% else %}Volná{% endif %}</span>
+            <span>Stav:</span>
+            <span>{% if is_occupied %}Obsazená{% else %}Volná{% endif %}</span>
 
-        <span>Dostupnost</span>
-        <span>{% if room.group %}Spravuje {{ room.group.name }}{% else %}Veřejná{% endif %}</span>
+            <span>Dostupnost</span>
+            <span>{% if room.group %}Spravuje {{ room.group.name }}{% else %}Veřejná{% endif %}</span>
 
-        <span>Mám přístup?</span>
-        <span>{% if is_bookable %}Ano{% else %}Ne{% endif %}</span>
+            <span>Mám přístup?</span>
+            <span>{% if is_bookable %}Ano{% else %}Ne{% endif %}</span>
 
-        {% if is_bookable or is_granted('ROLE_ADMIN') %}
-            <span>Rezervace</span>
-            <a href="{{ path('app_book', {'room': room.id}) }}">
-                Rezervovat{% if is_manageable or is_granted('ROLE_ADMIN') %} jako správce{% endif %}
-            </a>
+            {% if is_bookable or is_granted('ROLE_ADMIN') %}
+                <span>Rezervace</span>
+                <a href="{{ path('app_book', {'room': room.id}) }}">
+                    Rezervovat{% if is_manageable or is_granted('ROLE_ADMIN') %} jako správce{% endif %}
+                </a>
+            {% endif %}
+        </section>
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <form action="{{ path('app_room_change_name', {'id': room.id}) }}" method="post">
+                <h4>Změnit jméno</h4>
+                <div class="form-fields">
+                    <label for="name">Nové jméno:</label>
+                    <input type="text" id="name" name="_name" required>
+                </div>
+
+                <button type="submit">Změnit jméno</button>
+            </form>
         {% endif %}
-    </section>
+    </div>
 {% endblock %}

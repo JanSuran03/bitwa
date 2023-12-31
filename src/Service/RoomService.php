@@ -30,6 +30,10 @@ class RoomService {
         return $this->roomRepository->createRoom($name, $building, $isPublic);
     }
 
+    public function setRoom(Room $room): void {
+        $this->roomRepository->setRoom($room);
+    }
+
     public function getAll(): array {
         if ($this->security->getUser() != null) {
             return $this->roomRepository->findAll();

@@ -40,6 +40,46 @@ class RoomsController extends AbstractController {
         );
     }
 
+    #[Route('/rooms/new', name: 'app_create_room', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function createRoom(Request $request): ?Response {
+        $roomName = $request->request->get('_room_name');
+        $buildingName = $request->request->get('_building_name');
+        $isPublic = $request->request->has('_is_public') ? 1 : 0;
+
+        if (empty($roomName) || empty($buildingName)) {
+            $this->addFlash('error', 'Vyplňte budovu a místnost.');
+            return $this->redirectToRoute('app_rooms');
+        } else if ($this->roomService->findByNameAndBuilding($roomName, $buildingName) === null) {
+            $this->roomService->createRoom($roomName, $buildingName, $isPublic === 1);
+
+            $this->addFlash('success', 'Místnost úspěšně vytvořena.');
+            return $this->redirectToRoute('app_rooms');
+        } else {
+            $this->addFlash('error', 'Místnost s touto budovou a jménem již existuje.');
+
+            $rooms = $this->roomService->getAll(); // TODO: query?
+            $currentAvailabilityMap = $this->roomService->getCurrentAvailabilityMap($rooms);
+            /** @var User $user */
+            $user = $this->getUser();
+            $bookableRooms = $this->roomService->getAllBookableBy($user);
+            $manageableRooms = $this->roomService->getAllManageableBy($user);
+
+            return $this->render('rooms.html.twig',
+                [
+                    'previous_input' => [
+                        'room_name' => $roomName,
+                        'building_name' => $buildingName,
+                        'is_public' => $isPublic
+                    ],
+                    'rooms' => $rooms,
+                    'currentAvailabilityMap' => $currentAvailabilityMap,
+                    'bookableRooms' => $bookableRooms,
+                    'manageableRooms' => $manageableRooms,
+                ]);
+        }
+    }
+
     #[Route('/rooms/{id}', name: 'app_room')]
     public function room(Request $request, int $id): Response {
         $room = $this->roomService->getOneById($id);
@@ -61,36 +101,29 @@ class RoomsController extends AbstractController {
                 'is_occupied' => $this->roomService->isOccupiedNow($room)]);
     }
 
-    #[Route('/rooms/new', name: 'app_create_room', methods: ['POST'])]
+    #[Route('/rooms/{id}/change-name', name: 'app_room_change_name', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function createRoom(Request $request): ?Response {
-        $roomName = $request->request->get('_room_name');
-        $buildingName = $request->request->get('_building_name');
-        $isPublic = $request->request->has('_is_public') ? 1 : 0;
-
-        if (empty($roomName) || empty($buildingName)) {
-            $this->addFlash('error', 'Vyplňte budovu a místnost.');
-            return $this->redirectToRoute('app_rooms');
-        } else if ($this->roomService->findByNameAndBuilding($roomName, $buildingName) === null) {
-            $this->roomService->createRoom($roomName, $buildingName, $isPublic === 1);
-
-            $this->addFlash('success', 'Místnost úspěšně vytvořena.');
-            return $this->redirectToRoute('app_rooms');
-        } else {
-            $this->addFlash('error', 'Místnost s touto budovou a jménem již existuje.');
-
-            $rooms = $this->roomService->getAll(); // TODO: query?
-            $currentAvailabilityMap = $this->roomService->getCurrentAvailabilityMap($rooms);
-            return $this->render('rooms.html.twig',
-                [
-                    'previous_input' => [
-                        'room_name' => $roomName,
-                        'building_name' => $buildingName,
-                        'is_public' => $isPublic
-                    ],
-                    'rooms' => $rooms,
-                    'currentAvailabilityMap' => $currentAvailabilityMap,
-                ]);
+    public function changeRoomName(Request $request, int $id): Response {
+        $newName = $request->request->get('_name');
+        if (empty($newName)) {
+            $this->addFlash('error', 'Jméno místnosti nemůže být prázdné.');
+            return $this->redirectToRoute('app_room', ['id' => $id]);
         }
+
+        $room = $this->roomService->getOneById($id);
+        if ($room == null) {
+            $this->addFlash('error', 'Špatný požadavek, místnost s identifikátorem ' . $id . ' neexistuje.');
+            return $this->redirectToRoute('app_rooms');
+        }
+
+        if ($this->roomService->findByNameAndBuilding($newName, $room->getBuilding()) != null) {
+            $this->addFlash('error', 'Místnost s touto budovou a jménem již existuje.');
+            return $this->redirectToRoute('app_room', ['id' => $id]);
+        }
+
+        $room->setName($newName);
+        $this->roomService->setRoom($room);
+        $this->addFlash('success', 'Název místnosti změněn.');
+        return $this->redirectToRoute('app_room', ['id' => $id]);
     }
 }
