@@ -65,7 +65,7 @@
                 <h4>Změnit přístupnost pro veřejnost</h4>
                 <div class="form-fields">
                     <label for="is_public">Veřejná?</label>
-                    <input type="checkbox" id="is_public" name="_is_public">
+                    <input type="checkbox" id="is_public" name="_is_public" {% if room.isPublic %}checked{% endif %}>
                 </div>
 
                 <button type="submit">Změnit přístupnost pro veřejnost</button>
