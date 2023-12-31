@@ -8,14 +8,14 @@ use App\Entity\User;
 class ReservationResponse
 {
     public function __construct(
-        public int                $id,
-        public bool               $is_approved,
-        public \DateTimeInterface $time_from,
-        public \DateTimeInterface $time_to,
-        public UserResponse       $author,
-        public UserResponse       $responsible_user,
-        public array              $invited_users,
-        public RoomResponse       $room,
+        public int                    $id,
+        public bool                   $is_approved,
+        public \DateTimeInterface     $time_from,
+        public \DateTimeInterface     $time_to,
+        public SimplifiedUserResponse $author,
+        public SimplifiedUserResponse $responsible_user,
+        public array                  $invited_users,
+        public RoomResponse           $room,
     )
     {
     }
@@ -27,10 +27,10 @@ class ReservationResponse
             $entity->isApproved(),
             $entity->getTimeFrom(),
             $entity->getTimeTo(),
-            UserResponse::fromEntity($entity->getAuthor()),
-            UserResponse::fromEntity($entity->getResponsibleUser()),
+            SimplifiedUserResponse::fromEntity($entity->getAuthor()),
+            SimplifiedUserResponse::fromEntity($entity->getResponsibleUser()),
             array_map(
-                fn(User $user) => UserResponse::fromEntity($user),
+                fn(User $user) => SimplifiedUserResponse::fromEntity($user),
                 $entity->getInvitedUsers()
             ),
             RoomResponse::fromEntity($entity->getRoom()),

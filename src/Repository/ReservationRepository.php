@@ -36,6 +36,50 @@ class ReservationRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function findByFilters(array $filters): array
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+
+        foreach ($filters as $key => $value) {
+            switch ($key) {
+                case 'approved':
+                    if ($value === 'true') {
+                        $boolValue = true;
+                    } elseif ($value === 'false') {
+                        $boolValue = false;
+                    } else {
+                        break;
+                    }
+                    $queryBuilder
+                        ->andWhere('r.is_approved = :approved')
+                        ->setParameter('approved', $boolValue);
+                    break;
+                case 'author':
+                    $queryBuilder
+                        ->andWhere('r.author = :authorId')
+                        ->setParameter('authorId', $value);
+                    break;
+                case 'responsible':
+                    $queryBuilder
+                        ->andWhere('r.responsible_user = :responsibleUserId')
+                        ->setParameter('responsibleUserId', $value);
+                    break;
+                case 'invited':
+                    $queryBuilder
+                        ->andWhere(':invitedUserId MEMBER OF r.invited_users')
+                        ->setParameter('invitedUserId', $value);
+                    break;
+                case 'room':
+                    $queryBuilder
+                        ->andWhere('r.room = :roomId')
+                        ->setParameter('roomId', $value);
+                    break;
+            }
+        };
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
     public function findByAuthorOrResponsible(User $user): array
     {
         return $this->createQueryBuilder('r')
@@ -45,14 +89,4 @@ class ReservationRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-
-//    public function findOneBySomeField($value): ?Reservation
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

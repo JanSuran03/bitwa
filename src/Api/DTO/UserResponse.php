@@ -16,7 +16,6 @@ class UserResponse
         public array  $managed_groups_ids,
         public string $name,
         public string $email,
-        public string $password,
         public array  $roles,
     )
     {
@@ -44,7 +43,6 @@ class UserResponse
             ),
             $entity->getName(),
             $entity->getEmail(),
-            $entity->getPassword(),
             $entity->getRoles(),
         );
     }

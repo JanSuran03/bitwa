@@ -12,7 +12,7 @@ class GroupResponse
         public int    $id,
         public array  $members_ids,
         public array  $managers_ids,
-        public int    $parent_id,
+        public ?int    $parent_id,
         public array  $child_groups_ids,
         public array  $rooms,
         public string $name,
@@ -31,7 +31,7 @@ class GroupResponse
                 fn(User $user) => $user->getId(),
                 $entity->getManagers()->toArray()
             ),
-            $entity->getParent()->getId(),
+            $entity->getParent()?->getId(),
             array_map(
                 fn(Group $group) => $group->getId(),
                 $entity->getChildGroups()->toArray()

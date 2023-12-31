@@ -7,6 +7,7 @@ use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpFoundation\InputBag;
 use function Symfony\Component\Clock\now;
 
 class ReservationService
@@ -95,6 +96,11 @@ class ReservationService
             'approvedComing' => $approvedComing,
             'approvedPast' => $approvedPast,
         ];
+    }
+
+    public function getAllByFilters(array $filters)
+    {
+        return $this->reservationRepository->findByFilters($filters);
     }
 
     public function getOneById(int $id): Reservation
