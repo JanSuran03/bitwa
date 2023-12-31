@@ -152,4 +152,22 @@ class RoomsController extends AbstractController {
         $this->addFlash('success', 'Název budovy změněn.');
         return $this->redirectToRoute('app_room', ['id' => $id]);
     }
+
+    #[Route('/rooms/{id}/change-availability-for-the-public', name: 'app_room_change_availability_for_the_public', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function changeAvailabilityForThePublic(Request $request, int $id): Response {
+        $newIsPublic = $request->request->has('_is_public') ? 1 : 0;
+        $room = $this->roomService->getOneById($id);
+
+        if ($room == null) {
+            $this->addFlash('error', 'Špatný požadavek, místnost s identifikátorem ' . $id . ' neexistuje.');
+            return $this->redirectToRoute('app_rooms');
+        }
+
+        $room->setPublic($newIsPublic);
+        $this->roomService->setRoom($room);
+        $this->addFlash('success', ' Přístupnost pro veřejnost změněna.');
+        return $this->redirectToRoute('app_room', ['id' => $id]);
+    }
+
 }

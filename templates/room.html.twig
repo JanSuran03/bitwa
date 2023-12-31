@@ -18,7 +18,16 @@
             <span>{% if is_occupied %}Obsazená{% else %}Volná{% endif %}</span>
 
             <span>Dostupnost</span>
-            <span>{% if room.group %}Spravuje {{ room.group.name }}{% else %}Veřejná{% endif %}</span>
+            <span>
+                {% if room.isPublic %}
+                    Veřejná
+                {% else %}
+                    Soukromá
+                    {% if room.group %}
+                        (spravuje {{ room.group.name }})
+                    {% endif %}
+                {% endif %}
+            </span>
 
             <span>Mám přístup?</span>
             <span>{% if is_bookable %}Ano{% else %}Ne{% endif %}</span>
@@ -50,6 +59,16 @@
                 </div>
 
                 <button type="submit">Změnit budovu</button>
+            </form>
+
+            <form action="{{ path('app_room_change_availability_for_the_public', {'id': room.id}) }}" method="post">
+                <h4>Změnit přístupnost pro veřejnost</h4>
+                <div class="form-fields">
+                    <label for="is_public">Veřejná?</label>
+                    <input type="checkbox" id="is_public" name="_is_public">
+                </div>
+
+                <button type="submit">Změnit přístupnost pro veřejnost</button>
             </form>
         {% endif %}
     </div>
