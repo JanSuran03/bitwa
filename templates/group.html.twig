@@ -6,4 +6,40 @@
 
 {% block content %}
     <h1>Skupina {{ group.name }}</h1>
+    <u><b>Nadřazená skupina:</b></u>
+    <span>
+        {% if group.parent %}
+            <a href="{{ path('app_group', {'id': group.parent.id}) }}">{{ group.parent.name }}</a>
+        {% else %}
+            ---
+        {% endif %}
+    </span>
+
+    <h3><u>Správci:</u></h3>
+    <ul>
+        {% for manager in group.managers %}
+            <li><a href="/users/{{ manager.id }}">TODO: {{ manager.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h3><u>Členové:</u></h3>
+    <ul>
+        {% for member in group.members %}
+            <li><a href="/users/{{ member.id }}">TODO: {{ member.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h3><u>Místnosti:</u></h3>
+    <ul>
+        {% for room in group.rooms %}
+            <li><a href="{{ path('app_room', {'id': room.id}) }}">{{ room.getFullName() }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h3><u>Podskupiny:</u></h3>
+    <ul>
+        {% for subgroup in group.childGroups %}
+            <li><a href="{{ path('app_group', {'id': subgroup.id}) }}">{{ subgroup.name }}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock %}
