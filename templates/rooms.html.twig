@@ -26,7 +26,9 @@
             <tbody>
             {% for room in rooms | sort((a, b) => a.fullName <=> b.fullName) %}
                 <tr>
-                    <td>{{ room.building }}:<b>{{ room.name }}</b></td>
+                    <td>
+                        <a href="{{ path('app_room', {'id': room.id}) }}">{{ room.building }}:<b>{{ room.name }}</b></a>
+                    </td>
                     <td>
                         {% if currentAvailabilityMap[room.id] %}
                             Volná

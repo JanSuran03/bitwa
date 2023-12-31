@@ -40,6 +40,11 @@ class RoomsController extends AbstractController {
         );
     }
 
+    #[Route('/rooms/{id}', name: 'app_room')]
+    public function room(Request $request, int $id): Response {
+        return $this->render('room.html.twig');
+    }
+
     #[Route('/rooms/new', name: 'app_create_room', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function createRoom(Request $request): ?Response {
