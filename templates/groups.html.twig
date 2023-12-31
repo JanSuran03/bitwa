@@ -6,4 +6,30 @@
 
 {% block content %}
     <h1>Správa skupin místností</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Skupina</th>
+            <th>Nadřazená skupina</th>
+        </tr>
+        </thead>
+        {% for group in groups
+            | sort((a, b) => a.name <=> b.name)
+            | sort((a, b) => (a.parent ? 1 : 0) <=> (b.parent ? 1 : 0)) %}
+            <tr>
+                <td>
+                    <a>{{ group.name }}</a>
+                </td>
+                <td>
+                    {% if group.parent %}
+                        <a>{{ group.parent.name }}</a>
+                    {% else %}
+                        ---
+                    {% endif %}
+                </td>
+
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
