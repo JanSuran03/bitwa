@@ -1,7 +1,8 @@
-@import 'c_header.css';
-@import 'c_table.css';
-@import 'c_elements.css';
-@import 'c_form.css';
+@import 'header.css';
+@import 'table.css';
+@import 'elements.css';
+@import 'form.css';
+@import 'other.css';
 
 body {
     background: hsl(200, 100%, 88%);

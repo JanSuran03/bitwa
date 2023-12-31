@@ -42,7 +42,23 @@ class RoomsController extends AbstractController {
 
     #[Route('/rooms/{id}', name: 'app_room')]
     public function room(Request $request, int $id): Response {
-        return $this->render('room.html.twig');
+        $room = $this->roomService->getOneById($id);
+        /** @var User $user */
+        $user = $this->getUser();
+        if ($room == null) {
+            $this->addFlash('error', 'Místnost s identifikátorem ' . $id . ' nebyla nalezena.');
+            return $this->redirectToRoute('app_rooms');
+        } else if ($user == null && !$room->isPublic()) {
+            $this->addFlash('error', 'Neoprávněný přístup k místnosti s identifikátorem ' . $id . ' - prosíme, přihlaste se.');
+            return $this->redirectToRoute('app_rooms');
+        }
+
+        return $this->render('room.html.twig',
+            [
+                'room' => $room,
+                'is_manageable' => $this->roomService->isTransitiveManagerOf($user, $room),
+                'is_bookable' => $this->roomService->isBookableBy($room, $user),
+                'is_occupied' => $this->roomService->isOccupiedNow($room)]);
     }
 
     #[Route('/rooms/new', name: 'app_create_room', methods: ['POST'])]

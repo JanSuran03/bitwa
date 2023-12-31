@@ -1,9 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Učebna TODO{% endblock %}
+{% block title %}Učebna {{ room.getFullName() }}{% endblock %}
 
 {% block page %}room{% endblock %}
 
 {% block content %}
-    <h1>Učebna TODO</h1>
+    <h1>Učebna {{ room.getFullName() }}</h1>
+    <section class="info">
+        <span>Budova:</span>
+        <span>{{ room.building }}</span>
+
+        <span>Místnost:</span>
+        <span>{{ room.name }}</span>
+
+        <span>Stav:</span>
+        <span>{% if is_occupied %}Obsazená{% else %}Volná{% endif %}</span>
+
+        <span>Dostupnost</span>
+        <span>{% if room.group %}Spravuje {{ room.group.name }}{% else %}Veřejná{% endif %}</span>
+
+        <span>Mám přístup?</span>
+        <span>{% if is_bookable %}Ano{% else %}Ne{% endif %}</span>
+
+        {% if is_bookable or is_granted('ROLE_ADMIN') %}
+            <span>Rezervace</span>
+            <a href="{{ path('app_book', {'room': room.id}) }}">
+                Rezervovat{% if is_manageable or is_granted('ROLE_ADMIN') %} jako správce{% endif %}
+            </a>
+        {% endif %}
+    </section>
 {% endblock %}

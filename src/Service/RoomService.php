@@ -57,7 +57,7 @@ class RoomService {
         return $this->roomRepository->findByNameAndBuilding($name, $building);
     }
 
-    public function getOneById(int $id): Room {
+    public function getOneById(int $id): ?Room {
         return $this->roomRepository->find($id);
     }
 
@@ -84,7 +84,7 @@ class RoomService {
         return false;
     }
 
-    private function isOccupiedNow(Room $room): bool {
+    public function isOccupiedNow(Room $room): bool {
         return $this->isBookedBetween($room, now(), now(), true);
     }
 
@@ -145,7 +145,7 @@ class RoomService {
         );
     }
 
-    public function getAllManageableBy(user $user): array {
+    public function getAllManageableBy(User $user): array {
         $allRooms = $this->getAll();
         return array_values(
             array_filter(
