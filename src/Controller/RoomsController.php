@@ -81,6 +81,7 @@ class RoomsController extends AbstractController {
     }
 
     #[Route('/rooms/{id}', name: 'app_room')]
+    #[IsGranted('ROLE_USER')]
     public function room(Request $request, int $id): Response {
         $room = $this->roomService->getOneById($id);
         /** @var User $user */

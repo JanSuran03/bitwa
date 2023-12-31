@@ -16,14 +16,14 @@
         </thead>
         {% for group in groups
             | sort((a, b) => a.name <=> b.name)
-            | sort((a, b) => (a.parent ? 1 : 0) <=> (b.parent ? 1 : 0)) %}
+            | sort((a, b) => (a.parent ? 1 : 0) <=> (b.parent ? 1 : 0)) %} <!-- groups without parent come first-->
             <tr>
                 <td>
-                    <a>{{ group.name }}</a>
+                    <a href="{{ path('app_group', {'id': group.id }) }}">{{ group.name }}</a>
                 </td>
                 <td>
                     {% if group.parent %}
-                        <a>{{ group.parent.name }}</a>
+                        <a href="{{ path('app_group', {'id': group.parent.id}) }}">{{ group.parent.name }}</a>
                     {% else %}
                         ---
                     {% endif %}
