@@ -32,14 +32,24 @@
         </section>
 
         {% if is_granted('ROLE_ADMIN') %}
-            <form action="{{ path('app_room_change_name', {'id': room.id}) }}" method="post">
-                <h4>Změnit jméno</h4>
+            <form action="{{ path('app_room_change_room', {'id': room.id}) }}" method="post">
+                <h4>Změnit místnost</h4>
                 <div class="form-fields">
-                    <label for="name">Nové jméno:</label>
-                    <input type="text" id="name" name="_name" required>
+                    <label for="room">Nová místnost:</label>
+                    <input type="text" id="room" name="_room" required>
                 </div>
 
-                <button type="submit">Změnit jméno</button>
+                <button type="submit">Změnit místnost</button>
+            </form>
+
+            <form action="{{ path('app_room_change_building', {'id': room.id}) }}" method="post">
+                <h4>Změnit budovu</h4>
+                <div class="form-fields">
+                    <label for="building">Nová budova</label>
+                    <input type="text" id="building" name="_building" required>
+                </div>
+
+                <button type="submit">Změnit budovu</button>
             </form>
         {% endif %}
     </div>

@@ -101,12 +101,12 @@ class RoomsController extends AbstractController {
                 'is_occupied' => $this->roomService->isOccupiedNow($room)]);
     }
 
-    #[Route('/rooms/{id}/change-name', name: 'app_room_change_name', methods: ['POST'])]
+    #[Route('/rooms/{id}/change-room', name: 'app_room_change_room', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function changeRoomName(Request $request, int $id): Response {
-        $newName = $request->request->get('_name');
+        $newName = $request->request->get('_room');
         if (empty($newName)) {
-            $this->addFlash('error', 'Jméno místnosti nemůže být prázdné.');
+            $this->addFlash('error', 'Název místnosti nemůže být prázdné.');
             return $this->redirectToRoute('app_room', ['id' => $id]);
         }
 
@@ -124,6 +124,32 @@ class RoomsController extends AbstractController {
         $room->setName($newName);
         $this->roomService->setRoom($room);
         $this->addFlash('success', 'Název místnosti změněn.');
+        return $this->redirectToRoute('app_room', ['id' => $id]);
+    }
+
+    #[Route('/rooms/{id}/change-building', name: 'app_room_change_building', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function changeRoomBuilding(Request $request, int $id): Response {
+        $newBuilding = $request->request->get('_building');
+        if (empty($newBuilding)) {
+            $this->addFlash('error', 'Název budovy nemůže být prázdné.');
+            return $this->redirectToRoute('app_room', ['id' => $id]);
+        }
+
+        $room = $this->roomService->getOneById($id);
+        if ($room == null) {
+            $this->addFlash('error', 'Špatný požadavek, místnost s identifikátorem ' . $id . ' neexistuje.');
+            return $this->redirectToRoute('app_rooms');
+        }
+
+        if ($this->roomService->findByNameAndBuilding($room->getName(), $newBuilding) != null) {
+            $this->addFlash('error', 'Místnost s touto budovou a jménem již existuje.');
+            return $this->redirectToRoute('app_room', ['id' => $id]);
+        }
+
+        $room->setBuilding($newBuilding);
+        $this->roomService->setRoom($room);
+        $this->addFlash('success', 'Název budovy změněn.');
         return $this->redirectToRoute('app_room', ['id' => $id]);
     }
 }
