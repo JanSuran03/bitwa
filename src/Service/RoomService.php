@@ -8,10 +8,7 @@ use App\Entity\User;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
-use DateTime;
-use DateTimeImmutable;
 use DateTimeInterface;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use function Symfony\Component\Clock\now;
@@ -32,6 +29,27 @@ class RoomService {
         $this->security = $security;
     }
 
+    public function createRoom(string $name, string $building, bool $isPublic): Room {
+        return $this->roomRepository->createRoom($name, $building, $isPublic);
+    }
+
+    public function setRoom(Room $room): void {
+        $this->roomRepository->setRoom($room);
+    }
+
+    public function getAll(): array {
+        if ($this->security->getUser() != null) {
+            return $this->roomRepository->findAll();
+        } else {
+            return $this->roomRepository->findPublicRooms();
+        }
+    }
+
+    public function findByNameAndBuilding(string $name, string $building): ?Room {
+        error_log($name);
+        return $this->roomRepository->findByNameAndBuilding($name, $building);
+    }
+
     public function isBookedBetween(Room $room, DateTimeInterface $from, DateTimeInterface $to, bool $onlyApproved = false): bool {
         $conditions = ['room' => $room];
         if ($onlyApproved) {
@@ -47,8 +65,7 @@ class RoomService {
         return false;
     }
 
-    private function isOccupiedNow(Room $room): bool
-    {
+    public function isOccupiedNow(Room $room): bool {
         return $this->isBookedBetween($room, now(), now(), true);
     }
 
@@ -128,18 +145,6 @@ class RoomService {
         return null;
     }
 
-    public function createRoom(string $name, string $building, bool $isPublic): Room {
-        return $this->roomRepository->createRoom($name, $building, $isPublic);
-    }
-
-    public function getAll(): array {
-        if ($this->security->getUser() != null) {
-            return $this->roomRepository->findAll();
-        } else {
-            return $this->roomRepository->findPublicRooms();
-        }
-    }
-
     public function getAllByFullNameSubstring(?string $query): array {
         $allRooms = $this->getAll();
 
@@ -188,7 +193,7 @@ class RoomService {
         );
     }
 
-    public function getAllManageableBy(user $user): array {
+    public function getAllManageableBy(User $user): array {
         $allRooms = $this->getAll();
         return array_values(
             array_filter(
@@ -200,6 +205,7 @@ class RoomService {
 
     public function getAllByApiQueries(array $all)
     {
+        // TODO
     }
 
     public function unlockById(int $id) {

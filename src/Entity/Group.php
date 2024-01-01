@@ -38,7 +38,6 @@ class Group
     {
         $this->members = new ArrayCollection();
         $this->managers = new ArrayCollection();
-        $this->parent = new ArrayCollection();
         $this->rooms = new ArrayCollection();
     }
 

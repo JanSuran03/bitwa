@@ -42,4 +42,9 @@ class RoomRepository extends ServiceEntityRepository {
 
         return $room;
     }
+
+    public function setRoom(Room $room): void {
+        $this->_em->persist($room);
+        $this->_em->flush();
+    }
 }

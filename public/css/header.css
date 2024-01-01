@@ -13,7 +13,8 @@ header {
 header nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.3em;
+    column-gap: 1.3em;
+    row-gap: 0.6em;
 }
 
 header nav span {

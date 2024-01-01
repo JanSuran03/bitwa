@@ -1,0 +1,21 @@
+.info {
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    grid-gap: 0.7em;
+    margin: 1em;
+    background: white;
+    box-shadow: 0 0 0.3em 0.3em #D6D6ff66;
+    width: fit-content;
+    padding: 1em;
+    border-radius: 0.4em;
+}
+
+.info > :nth-child(odd) {
+    justify-self: end;
+    font-weight: bold;
+}
+
+.info > :nth-child(even) {
+    justify-self: start;
+}
