@@ -19,11 +19,12 @@
                 <th>Přístupnost</th>
                 <th>Mám přístup</th>
                 <th>Akce</th>
+                <th><img class="fa" src="/images/trash-red.svg" alt="trash"></th>
             </tr>
             </thead>
             <tbody>
             {% for room in rooms | sort((a, b) => a.fullName <=> b.fullName) %}
-                <tr>
+                <tr id="room-{{ room.id }}">
                     <td>
                         <a href="{{ path('app_room', {'id': room.id}) }}">{{ room.building }}:<b>{{ room.name }}</b></a>
                     </td>
@@ -55,8 +56,42 @@
                             </a>
                         {% endif %}
                     </td>
+                    <td>
+                        <img class="wide a" src="/images/trash-red.svg" alt="trash"
+                             onclick="deleteRoom({{ room.id }}, '{{ room.name }}')">
+
+                    </td>
                 </tr>
             {% endfor %}
+            <script>
+                function deleteRoom(roomId, roomName) {
+                    if (confirm(`Skutečně chcete smazar místnost ${roomName}?`)) {
+                        fetch(`/api/rooms/${roomId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: {}
+                        }).then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Nepodařilo se smazat místnost ${roomName}: ${response.statusText}`);
+                            }
+
+                            if (response.status === 204) {
+                                return null;
+                            }
+
+                            console.warn(`Špatný návratový kód: ${response.status}`);
+                            return null;
+                        }).then(_ => {
+                            console.log(`Místnost ${roomName} byla úspěšně smazána.`);
+                            document.getElementById(`room-${roomId}`).remove();
+                        }).catch(error => {
+                            console.error(`Chyba při mazání místnosti ${roomName}: ${error.message}`)
+                        })
+                    }
+                }
+            </script>
             </tbody>
         </table>
 

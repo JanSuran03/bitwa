@@ -15,7 +15,7 @@
             <th>E-mail</th>
             {% if is_granted("ROLE_ADMIN") %}
                 <th>Role</th>
-                <th><img class="fa" src="/images/trash-solid.svg" alt="trash"></th>
+                <th><img class="fa" src="/images/trash-red.svg" alt="trash"></th>
             {% endif %}
         </tr>
         </thead>
@@ -30,7 +30,7 @@
                 {% if is_granted("ROLE_ADMIN") %}
                     <td>{{ user.roles | join(", ") }}</td>
                     <td>
-                        <img class="wide a" src="/images/trash-solid.svg" alt="trash"
+                        <img class="wide a" src="/images/trash-red.svg" alt="trash"
                              onclick="deleteUser({{ user.id }}, '{{ user.name }}')">
                     </td>
                 {% endif %}
