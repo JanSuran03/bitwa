@@ -121,7 +121,7 @@ class ReservationService
         ];
     }
 
-    public function getAllByApiQueries(array $queries)
+    public function getAllByApiQueries(array $queries): array
     {
         return $this->reservationRepository->findByApiQueries($queries);
     }

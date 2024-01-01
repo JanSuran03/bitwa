@@ -26,6 +26,12 @@ class UserService {
         return $this->userRepository->findAll();
     }
 
+
+    public function getAllByApiQueries(array $queries): array
+    {
+        return $this->userRepository->findByApiQueries($queries);
+    }
+
     public function getOneById(int $id): User {
         $user = $this->userRepository->find($id);
         if (!$user) {

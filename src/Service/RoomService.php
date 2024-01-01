@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Api\DTO\LockResponse;
 use App\Entity\Reservation;
 use App\Entity\Room;
 use App\Entity\User;
@@ -10,6 +11,7 @@ use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
 use DateTimeInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use function Symfony\Component\Clock\now;
 
@@ -208,12 +210,37 @@ class RoomService {
         return $this->roomRepository->findByApiQueries($queries);
     }
 
-    public function unlockById(int $id) {
-        // TODO
+    private function switchLock(Room $room): LockResponse
+    {
+        $room->setLocked(! $room->isLocked());
+        $this->roomRepository->flush();
+        return new LockResponse(true, $room->isLocked());
     }
 
-    public function lockById(int $id) {
-        // TODO
+    public function doubleTapById(int $roomId, int $userId): LockResponse
+    {
+        $room =  $this->roomRepository->find($roomId);
+        $user =  $this->userRepository->find($userId);
+
+        $currentReservation = $this->getCurrentReservationByRoom($room, true);
+        if ($currentReservation) {
+
+            // If currently booked, only the responsible user can lock/unlock for free access
+            if ($user === $currentReservation->getResponsibleUser()) {
+                return $this->switchLock($room);
+            } else {
+                return new LockResponse(false, $room->isLocked());
+            }
+
+        } else {
+
+            // If currently not booked, all members (and managers) can lock/unlock for free access
+            if ($this->isTransitiveMemberOf($user, $room)) {
+                return $this->switchLock($room);
+            } else {
+                return new LockResponse(false, $room->isLocked());
+            }
+        }
     }
 
     public function deleteById(int $id): void

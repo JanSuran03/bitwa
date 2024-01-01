@@ -19,10 +19,37 @@ class UserRepository extends ServiceEntityRepository {
         parent::__construct($registry, User::class);
     }
 
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
     public function findByEmail(string $email): ?User {
         return $this->findOneBy([
             "email" => $email
         ]);
+    }
+
+    public function findByApiQueries(array $queries): array
+    {
+        $queryBuilder = $this->createQueryBuilder('u');
+
+        foreach ($queries as $key => $value) {
+            switch ($key) {
+                case 'name':
+                    $queryBuilder
+                        ->andWhere('u.name LIKE :name')
+                        ->setParameter('name', '%' . $value . '%');
+                    break;
+                case 'email':
+                    $queryBuilder
+                        ->andWhere('u.email LIKE :email')
+                        ->setParameter('email', '%' . $value . '%');
+                    break;
+            }
+        }
+
+        return $queryBuilder->getQuery()->getResult();
     }
 
     public function setUser(User $user): void {

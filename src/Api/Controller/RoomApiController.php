@@ -2,14 +2,18 @@
 
 namespace App\Api\Controller;
 
+use App\Api\DTO\LockResponse;
 use App\Api\DTO\RoomResponse;
 use App\Entity\Room;
 use App\Service\RoomService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class RoomApiController extends AbstractFOSRestController
 {
@@ -32,10 +36,29 @@ class RoomApiController extends AbstractFOSRestController
     }
 
     #[View]
+    #[ParamConverter('room', class: 'App\Entity\Room')]
+    #[Get("/rooms/{id}")]
+    public function detail(Room $room): RoomResponse
+    {
+        return RoomResponse::fromEntity($room);
+    }
+
+    #[View]
     #[Get("/rooms/{roomId}/allowed-users/{userId}")]
     public function checkIfAllowed(int $roomId, int $userId): bool
     {
         return $this->roomService->isAllowed($roomId, $userId);
+    }
+
+    #[View]
+    #[Put("/rooms/{roomId}/double-tap")]
+    public function doubleTap(int $roomId, Request $request): LockResponse
+    {
+        $userId = $request->query->get('user');
+        if (!$userId) {
+            throw new BadRequestHttpException('Missing mandatory query parameter user');
+        }
+        return $this->roomService->doubleTapById($roomId, $userId);
     }
 
     #[View]

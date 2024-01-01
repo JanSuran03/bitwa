@@ -19,6 +19,11 @@ class RoomRepository extends ServiceEntityRepository {
         parent::__construct($registry, Room::class);
     }
 
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
     public function findByApiQueries(array $queries): array
     {
         $queryBuilder = $this->createQueryBuilder('r');
