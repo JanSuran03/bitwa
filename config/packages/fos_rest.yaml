@@ -8,12 +8,15 @@ fos_rest:
     body_converter:
         enabled: true
         validate: true
-        validation_errors_argument: errors
-#    exception:
-#        codes:
-#            App\Exception\MyException: 403
-#        messages:
-#            App\Exception\MyException: Forbidden area.
+        validation_errors_argument: validationErrors
+    exception:
+        codes:
+            'Symfony\Component\HttpKernel\Exception\BadRequestHttpException': 400
+            'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': 404
+        messages:
+            'Symfony\Component\HttpKernel\Exception\BadRequestHttpException': false
+            'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': false
+        map_exception_codes: true
     format_listener:
         enabled: true
         rules:

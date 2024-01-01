@@ -25,25 +25,25 @@ class Reservation
 
     #[ORM\Column]
     #[Assert\NotNull]
-    private ?bool $is_approved = null;
+    private ?bool $is_approved;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotBlank]
     #[Assert\Type(\DateTimeInterface::class)]
-    private ?\DateTimeInterface $time_from = null;
+    private ?\DateTimeInterface $time_from;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotBlank]
     #[Assert\Type(\DateTimeInterface::class)]
-    private ?\DateTimeInterface $time_to = null;
+    private ?\DateTimeInterface $time_to;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[Assert\NotBlank]
-    private ?User $author = null;
+    private ?User $author;
 
     #[ORM\ManyToOne]
     #[Assert\NotBlank]
-    private ?User $responsible_user = null;
+    private ?User $responsible_user;
 
     #[ORM\ManyToMany(targetEntity: User::class)]
     #[ORM\JoinTable(name: 'invitations')]
@@ -51,7 +51,7 @@ class Reservation
 
     #[ORM\ManyToOne]
     #[Assert\NotBlank]
-    private ?Room $room = null;
+    private ?Room $room;
 
     public function __construct(?Room $room = null, ?User $user = null, bool $autoApprove = false)
     {
@@ -62,7 +62,7 @@ class Reservation
         date_default_timezone_set('Europe/Prague');
         $this->time_from = new DateTime('now');
         $this->time_to = new DateTime('now');
-        $this->invited_users = new ArrayCollection([$user]);
+        $this->invited_users = ($user) ? new ArrayCollection([$user]) : new ArrayCollection(([]));
     }
 
     public function getId(): ?int

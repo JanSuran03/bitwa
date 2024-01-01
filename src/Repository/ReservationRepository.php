@@ -36,7 +36,7 @@ class ReservationRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function findByFilters(array $filters): array
+    public function findByApiQueries(array $filters): array
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
