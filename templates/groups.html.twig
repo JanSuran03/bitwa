@@ -30,4 +30,23 @@
             </tr>
         {% endfor %}
     </table>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <form action="{{ path('app_groups_new') }}" method="post">
+            <h4>Nová skupina</h4>
+            <div class="form-fields">
+                <label for="group_name">Název skupiny:</label>
+                <input type="text" id="group_name" name="_group_name" required>
+
+                <label for="parent_group">Nadřazená skupina</label>
+                <select name="_parent_group" id="parent_group">
+                    <option value="-1">Žádná</option>
+                    {% for existingGroup in groups | sort((a, b) => a.name <=> b.name) %}
+                        <option value="{{ existingGroup.id }}">{{ existingGroup.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit">Vytvořit skupinu</button>
+        </form>
+    {% endif %}
 {% endblock %}
