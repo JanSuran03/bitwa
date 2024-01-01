@@ -39,9 +39,7 @@ class UserApiController extends AbstractFOSRestController {
 
     #[View]
     #[Delete("/users/{id}")]
-    public function delete(int $id): Response {
+    public function delete(int $id): void {
         $this->userService->deleteById($id);
-
-        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 }

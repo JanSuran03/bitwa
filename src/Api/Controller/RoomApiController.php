@@ -58,9 +58,7 @@ class RoomApiController extends AbstractFOSRestController {
 
     #[View]
     #[Delete("/rooms/{id}")]
-    public function delete(int $id): Response {
+    public function delete(int $id): void {
         $this->roomService->deleteById($id);
-
-        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 }
