@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Group;
-use App\Repository\GroupRepository;
+use App\Service\GroupService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,9 +12,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_ADMIN')]
 class GroupsController extends AbstractController {
-    private GroupRepository $groupRepository;
+    private GroupService $groupRepository;
 
-    public function __construct(GroupRepository $groupRepository) {
+    public function __construct(GroupService $groupRepository) {
         $this->groupRepository = $groupRepository;
     }
 
@@ -39,13 +39,13 @@ class GroupsController extends AbstractController {
             return $this->redirectToRoute('app_groups');
         }
 
-        $parentGroup = $this->groupRepository->find($parentId);
+        $parentGroup = $this->groupRepository->findById($parentId);
         if ($parentId != self::NO_GROUP && $parentGroup == null) {
             $this->addFlash('error', 'Nadřazená skupina s identifikátorem ' . $parentId . ' nebyla nalezena.');
             return $this->redirectToRoute('app_groups');
         }
 
-        if ($this->groupRepository->findOneBy(['name' => $groupName]) !== null) {
+        if ($this->groupRepository->findByName($groupName) !== null) {
             $this->addFlash('error', 'Skupina s názvem ' . $groupName . ' již existuje.');
             return $this->redirectToRoute('app_groups');
         }
@@ -61,8 +61,8 @@ class GroupsController extends AbstractController {
 
     #[Route('/groups/{id}', name: 'app_group')]
     #[IsGranted('ROLE_USER')]
-    public function group(Request $request, int $id): Response {
-        $group = $this->groupRepository->find($id);
+    public function group(int $id): Response {
+        $group = $this->groupRepository->findById($id);
 
         if ($group == null) {
             $this->addFlash('error', 'Skupina s identifikátorem ' . $id . ' nebyla nalezena.');
