@@ -60,4 +60,13 @@ class UserService {
     public function setUser(User $user) : void {
         $this->userRepository->setUser($user);
     }
+
+    public function deleteById(int $id): void
+    {
+        $user = $this->userRepository->find($id);
+        if (!$user) {
+            throw new NotFoundHttpException('User with ID ' . $id . ' not found');
+        }
+        $this->userRepository->delete($user);
+    }
 }

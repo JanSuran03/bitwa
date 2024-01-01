@@ -215,4 +215,13 @@ class RoomService {
     public function lockById(int $id) {
         // TODO
     }
+
+    public function deleteById(int $id): void
+    {
+        $room = $this->roomRepository->find($id);
+        if (!$room) {
+            throw new NotFoundHttpException('Room with ID ' . $id . ' not found');
+        }
+        $this->roomRepository->delete($room);
+    }
 }

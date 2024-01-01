@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use phpDocumentor\Reflection\Types\This;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -29,5 +28,12 @@ class UserRepository extends ServiceEntityRepository {
     public function setUser(User $user): void {
         $this->_em->persist($user);
         $this->_em->flush();
+    }
+
+    public function delete(User $user): void
+    {
+        $em = $this->getEntityManager();
+        $em->remove($user);
+        $em->flush();
     }
 }

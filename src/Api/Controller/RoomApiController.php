@@ -6,6 +6,7 @@ use App\Api\DTO\RoomResponse;
 use App\Entity\Room;
 use App\Service\RoomService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,5 +36,12 @@ class RoomApiController extends AbstractFOSRestController
     public function checkIfAllowed(int $roomId, int $userId): bool
     {
         return $this->roomService->isAllowed($roomId, $userId);
+    }
+
+    #[View]
+    #[Delete("/rooms/{id}")]
+    public function delete(int $id): void
+    {
+        $this->roomService->deleteById($id);
     }
 }
