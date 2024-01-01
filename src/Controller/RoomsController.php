@@ -25,7 +25,7 @@ class RoomsController extends AbstractController {
 
         $searchQuery = $request->query->get('search');
         $rooms = $this->roomService->getAllByName($searchQuery);
-        $bookableRooms =groups ($user === null) ? [] : $this->roomService->getAllBookableBy($user);
+        $bookableRooms = ($user === null) ? [] : $this->roomService->getAllBookableBy($user);
         $manageableRooms = ($user === null) ? [] : $this->roomService->getAllManageableBy($user);
         $currentAvailabilityMap = $this->roomService->getCurrentAvailabilityMap($rooms);
 
