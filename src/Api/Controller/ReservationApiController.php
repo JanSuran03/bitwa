@@ -7,13 +7,13 @@ use App\Api\DTO\ReservationResponse;
 use App\Entity\Reservation;
 use App\Service\ReservationService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class ReservationApiController extends AbstractFOSRestController
 {
@@ -50,5 +50,35 @@ class ReservationApiController extends AbstractFOSRestController
     public function detail(Reservation $reservation): ReservationResponse
     {
         return ReservationResponse::fromEntity($reservation);
+    }
+
+    #[View]
+    #[Put("/reservations/{id}/approve")]
+    public function approve(int $id): ReservationResponse
+    {
+        $reservation = $this->reservationService->approveById($id);
+        return ReservationResponse::fromEntity($reservation);
+    }
+
+    #[View]
+    #[Put("/reservations/{reservationId}/invited-users/{invitedUserId}")]
+    public function addInvitedUser(int $reservationId, int $invitedUserId): ReservationResponse
+    {
+        $reservation = $this->reservationService->addInvitedUserById($reservationId, $invitedUserId);
+        return ReservationResponse::fromEntity($reservation);
+    }
+
+    #[View]
+    #[Delete("/reservations/{reservationId}/invited-users/{invitedUserId}")]
+    public function removeInvitedUser(int $reservationId, int $invitedUserId): void
+    {
+        $this->reservationService->removeInvitedUserById($reservationId, $invitedUserId);
+    }
+
+    #[View]
+    #[Delete("/reservations/{id}")]
+    public function delete(int $id): void
+    {
+        $this->reservationService->deleteById($id);
     }
 }

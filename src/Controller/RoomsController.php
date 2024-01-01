@@ -24,7 +24,7 @@ class RoomsController extends AbstractController {
         $user = $this->getUser();
 
         $searchQuery = $request->query->get('search');
-        $rooms = $this->roomService->getAllByName($searchQuery);
+        $rooms = $this->roomService->getAllByFullNameSubstring($searchQuery);
         $bookableRooms = ($user === null) ? [] : $this->roomService->getAllBookableBy($user);
         $manageableRooms = ($user === null) ? [] : $this->roomService->getAllManageableBy($user);
         $currentAvailabilityMap = $this->roomService->getCurrentAvailabilityMap($rooms);
@@ -50,7 +50,7 @@ class RoomsController extends AbstractController {
         if (empty($roomName) || empty($buildingName)) {
             $this->addFlash('error', 'Vyplňte budovu a místnost.');
             return $this->redirectToRoute('app_rooms');
-        } else if ($this->roomService->findByNameAndBuilding($roomName, $buildingName) === null) {
+        } else if ($this->roomService->getAllByNameAndBuilding($roomName, $buildingName) === null) {
             $this->roomService->createRoom($roomName, $buildingName, $isPublic === 1);
 
             $this->addFlash('success', 'Místnost úspěšně vytvořena.');

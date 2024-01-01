@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Api\DTO\ReservationRequest;
 use App\Entity\Reservation;
+use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -38,6 +39,21 @@ class ReservationService
         return $this->reservationRepository->find($id) !== null;
     }
 
+    private function isCurrent(Reservation $reservation): bool
+    {
+        return $reservation->getTimeFrom() < now() && now() < $reservation->getTimeTo();
+    }
+
+    private function isComing(Reservation $reservation): bool
+    {
+        return now() < $reservation->getTimeFrom();
+    }
+
+    private function isPast(Reservation $reservation): bool
+    {
+        return $reservation->getTimeTo() < now();
+    }
+
     public function getAll(): array
     {
         return $this->reservationRepository->findAll();
@@ -60,7 +76,7 @@ class ReservationService
         return array_values(
             array_filter(
                 $allReservations,
-                fn ($reservation) => in_array($user, $reservation->getInvitedUsers())
+                fn($reservation) => in_array($user, $reservation->getInvitedUsers())
             )
         );
     }
@@ -112,14 +128,11 @@ class ReservationService
 
     public function getOneById(int $id): Reservation
     {
-        return $this->reservationRepository->find($id);
-    }
-
-    public function approveById(int $id): void
-    {
         $reservation = $this->reservationRepository->find($id);
-        $reservation->setApproved(true);
-        $this->reservationRepository->flush();
+        if (!$reservation) {
+            throw new NotFoundHttpException('Reservation with ID ' . $id . ' not found');
+        }
+        return $reservation;
     }
 
     public function create(Reservation $reservation): Reservation
@@ -188,17 +201,44 @@ class ReservationService
         return $this->create($reservation);
     }
 
-    private function isCurrent(Reservation $reservation): bool
+    public function approveById(int $id): Reservation
     {
-        return $reservation->getTimeFrom() < now() && now() < $reservation->getTimeTo();
+        $reservation = $this->getOneById($id);
+        $reservation->setApproved(true);
+        $this->reservationRepository->flush();
+        return $reservation;
     }
 
-    private function isComing(Reservation $reservation): bool
+    public function addInvitedUserById(int $reservationId, int $invitedUserId): Reservation
     {
-        return now() < $reservation->getTimeFrom();
+        $reservation = $this->getOneById($reservationId);
+        $invitedUser = $this->userService->getOneById($invitedUserId);
+        $reservation->addInvitedUser($invitedUser);
+        $this->reservationRepository->flush();
+        return $reservation;
     }
-    private function isPast(Reservation $reservation): bool
+
+    public function removeInvitedUserById(int $reservationId, int $invitedUserId): Reservation
     {
-        return $reservation->getTimeTo() < now();
+        $reservation = $this->getOneById($reservationId);
+        if ($reservation->getResponsibleUser()->getId() === $invitedUserId) {
+            throw new BadRequestHttpException('Cannot remove the responsible user from the list of invited users');
+        }
+        $invitedUser = $this->userService->getOneById($invitedUserId);
+        if (!in_array($invitedUser, $reservation->getInvitedUsers())) {
+            throw new NotFoundHttpException('User with ID ' . $invitedUserId . ' not found in the list of invited users');
+        }
+        $reservation->removeInvitedUser($invitedUser);
+        $this->reservationRepository->flush();
+        return $reservation;
+    }
+
+    public function deleteById(int $id): void
+    {
+        $reservation = $this->reservationRepository->find($id);
+        if (!$reservation) {
+            throw new NotFoundHttpException('Reservation with ID ' . $id . ' not found');
+        }
+        $this->reservationRepository->delete($reservation);
     }
 }

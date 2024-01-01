@@ -22,6 +22,11 @@ class ReservationRepository extends ServiceEntityRepository
         parent::__construct($registry, Reservation::class);
     }
 
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
     public function create(Reservation $reservation): Reservation
     {
         $em = $this->getEntityManager();
@@ -29,11 +34,6 @@ class ReservationRepository extends ServiceEntityRepository
         $em->flush();
 
         return $reservation;
-    }
-
-    public function flush(): void
-    {
-        $this->getEntityManager()->flush();
     }
 
     public function findByApiQueries(array $filters): array
@@ -86,7 +86,13 @@ class ReservationRepository extends ServiceEntityRepository
             ->andWhere('r.author = :user OR r.responsible_user = :user')
             ->setParameter('user', $user)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
+    }
+
+    public function delete(Reservation $reservation): void
+    {
+        $em = $this->getEntityManager();
+        $em->remove($reservation);
+        $em->flush();
     }
 }

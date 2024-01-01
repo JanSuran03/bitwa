@@ -12,6 +12,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use function Symfony\Component\Clock\now;
 
 class UserService {
@@ -26,7 +27,11 @@ class UserService {
     }
 
     public function getOneById(int $id): User {
-        return $this->userRepository->find($id);
+        $user = $this->userRepository->find($id);
+        if (!$user) {
+            throw new NotFoundHttpException('User with ID ' . $id . ' not found');
+        }
+        return $user;
     }
 
     public function findOneByEmail(string $email): ?User {
