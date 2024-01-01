@@ -21,7 +21,7 @@
         </thead>
         <tbody>
         {% for user in users %}
-            <tr>
+            <tr id="user-{{ user.id }}">
                 {% if is_granted("ROLE_ADMIN") %}
                     <th>{{ user.id }}</th>
                 {% endif %}
@@ -29,11 +29,42 @@
                 <td>{{ user.email }}</td>
                 {% if is_granted("ROLE_ADMIN") %}
                     <td>{{ user.roles | join(", ") }}</td>
-                    <td><img class="wide a" src="/images/trash-solid.svg" alt="trash"
-                             onclick="alert('Delete user: TODO')"></td>
+                    <td>
+                        <img class="wide a" src="/images/trash-solid.svg" alt="trash"
+                             onclick="deleteUser({{ user.id }}, '{{ user.name }}')">
+                    </td>
                 {% endif %}
             </tr>
         {% endfor %}
+        <script>
+            function deleteUser(userId, userName) {
+                if (confirm(`Skutečně chcete smazar uživatele ${userName}?`)) {
+                    fetch(`/api/users/${userId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: {}
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Nepodařilo se smazat uživatele ${userName}: ${response.statusText}`);
+                        }
+
+                        if (response.status === 204) {
+                            return null;
+                        }
+
+                        console.warn(`Špatný návratový kód: ${response.status}`);
+                        return null;
+                    }).then(_ => {
+                        console.log(`Uživatel ${userName} byl úspěšně smazán.`);
+                        document.getElementById(`user-${userId}`).remove();
+                    }).catch(error => {
+                        console.error(`Chyba při mazání uživatele ${userName}: ${error.message}`)
+                    })
+                }
+            }
+        </script>
         </tbody>
     </table>
 

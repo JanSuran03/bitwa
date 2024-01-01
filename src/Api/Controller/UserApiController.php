@@ -11,20 +11,18 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class UserApiController extends AbstractFOSRestController
-{
+class UserApiController extends AbstractFOSRestController {
     private UserService $userService;
 
-    public function __construct(UserService $userService)
-    {
+    public function __construct(UserService $userService) {
         $this->userService = $userService;
     }
 
     #[View]
     #[Get("/users")]
-    public function list(Request $request): array
-    {
+    public function list(Request $request): array {
         $users = $this->userService->getAllByApiQueries($request->query->all());
         return array_map(
             fn(User $user) => UserResponse::fromEntity($user),
@@ -35,15 +33,15 @@ class UserApiController extends AbstractFOSRestController
     #[View]
     #[ParamConverter('user', class: 'App\Entity\User')]
     #[Get("/users/{id}")]
-    public function detail(User $user): UserResponse
-    {
+    public function detail(User $user): UserResponse {
         return UserResponse::fromEntity($user);
     }
 
     #[View]
     #[Delete("/users/{id}")]
-    public function delete(int $id): void
-    {
+    public function delete(int $id): Response {
         $this->userService->deleteById($id);
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 }
