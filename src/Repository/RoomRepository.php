@@ -19,6 +19,45 @@ class RoomRepository extends ServiceEntityRepository {
         parent::__construct($registry, Room::class);
     }
 
+    public function findByApiQueries(array $queries): array
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+
+        foreach ($queries as $key => $value) {
+            switch ($key) {
+                case 'building':
+                    $queryBuilder
+                        ->andWhere('r.building LIKE :building')
+                        ->setParameter('building', '%' . $value . '%');
+                    break;
+                case 'name':
+                    $queryBuilder
+                        ->andWhere('r.name LIKE :name')
+                        ->setParameter('name', '%' . $value . '%');
+                    break;
+                case 'group':
+                    $queryBuilder
+                        ->andWhere('r.group = :groupId')
+                        ->setParameter('groupId', $value);
+                    break;
+                case 'public':
+                    if ($value === 'true') {
+                        $boolValue = true;
+                    } elseif ($value === 'false') {
+                        $boolValue = false;
+                    } else {
+                        break;
+                    }
+                    $queryBuilder
+                        ->andWhere('r.isPublic = :public')
+                        ->setParameter('public', $boolValue);
+                    break;
+            }
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
     public function findPublicRooms(): array {
         return $this->findBy(["isPublic" => true]);
     }

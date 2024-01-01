@@ -20,6 +20,17 @@ class RoomApiController extends AbstractFOSRestController
     }
 
     #[View]
+    #[Get("/rooms")]
+    public function list(Request $request): array
+    {
+        $rooms = $this->roomService->getAllByApiQueries($request->query->all());
+        return array_map(
+            fn(Room $room) => RoomResponse::fromEntity($room),
+            $rooms
+        );
+    }
+
+    #[View]
     #[Get("/rooms/{roomId}/allowed-users/{userId}")]
     public function checkIfAllowed(int $roomId, int $userId): bool
     {

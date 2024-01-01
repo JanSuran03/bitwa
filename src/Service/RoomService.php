@@ -203,9 +203,9 @@ class RoomService {
         );
     }
 
-    public function getAllByApiQueries(array $all)
+    public function getAllByApiQueries(array $queries)
     {
-        // TODO
+        return $this->roomRepository->findByApiQueries($queries);
     }
 
     public function unlockById(int $id) {

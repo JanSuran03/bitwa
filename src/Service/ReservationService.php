@@ -121,9 +121,9 @@ class ReservationService
         ];
     }
 
-    public function getAllByApiQueries(array $filters)
+    public function getAllByApiQueries(array $queries)
     {
-        return $this->reservationRepository->findByApiQueries($filters);
+        return $this->reservationRepository->findByApiQueries($queries);
     }
 
     public function getOneById(int $id): Reservation

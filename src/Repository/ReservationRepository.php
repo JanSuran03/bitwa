@@ -36,11 +36,11 @@ class ReservationRepository extends ServiceEntityRepository
         return $reservation;
     }
 
-    public function findByApiQueries(array $filters): array
+    public function findByApiQueries(array $queries): array
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
-        foreach ($filters as $key => $value) {
+        foreach ($queries as $key => $value) {
             switch ($key) {
                 case 'approved':
                     if ($value === 'true') {
@@ -75,7 +75,7 @@ class ReservationRepository extends ServiceEntityRepository
                         ->setParameter('roomId', $value);
                     break;
             }
-        };
+        }
 
         return $queryBuilder->getQuery()->getResult();
     }
