@@ -65,7 +65,7 @@
             {% endfor %}
             <script>
                 function deleteRoom(roomId, roomName) {
-                    if (confirm(`Skutečně chcete smazar místnost ${roomName}?`)) {
+                    if (confirm(`Skutečně chcete smazat místnost ${roomName}?`)) {
                         fetch(`/api/rooms/${roomId}`, {
                             method: 'DELETE',
                             headers: {

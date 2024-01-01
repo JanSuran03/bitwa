@@ -3,6 +3,10 @@ a, .a {
     text-decoration: none;
 }
 
+.a {
+    cursor: pointer;
+}
+
 a:visited {
     color: hsl(178, 89%, 21%);
 }

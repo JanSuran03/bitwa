@@ -46,7 +46,7 @@
                     <td>{{ reservation.invitedUsers | length }}</td>
                     <td><a href="{{ path('app_reservation_edit', {'reservationId': reservation.id}) }}">Upravit
                             osoby</a></td>
-                    <td><span class="a" style="cursor:pointer"
+                    <td><span class="a"
                               onclick="deleteReservation({{ reservation.id }}, '{{ reservation.room.getFullName() }}',
                               '{{ reservation.timeFrom | date('d. m. Y H:i') }}')">
                             Smazat</span></td>
@@ -54,7 +54,7 @@
             {% endfor %}
             <script>
                 function deleteReservation(reservationId, reservationRoom, reservationStart) {
-                    if (confirm(`Skutečně chcete smazar rezervaci do učebny ${reservationRoom} na čas ${reservationStart}?`)) {
+                    if (confirm(`Skutečně chcete smazat rezervaci do učebny ${reservationRoom} na čas ${reservationStart}?`)) {
                         fetch(`/api/reservations/${reservationId}`, {
                             method: 'DELETE',
                             headers: {

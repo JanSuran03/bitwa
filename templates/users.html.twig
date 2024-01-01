@@ -38,7 +38,7 @@
         {% endfor %}
         <script>
             function deleteUser(userId, userName) {
-                if (confirm(`Skutečně chcete smazar uživatele ${userName}?`)) {
+                if (confirm(`Skutečně chcete smazat uživatele ${userName}?`)) {
                     fetch(`/api/users/${userId}`, {
                         method: 'DELETE',
                         headers: {
