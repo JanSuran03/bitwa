@@ -12,7 +12,9 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\EntityRepository;
+use phpDocumentor\Reflection\Types\Void_;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use function Symfony\Component\Clock\now;
 
 class GroupService {
@@ -26,6 +28,10 @@ class GroupService {
         return $this->groupRepository->findAll();
     }
 
+    public function getAllByApiQueries(array $queries): array {
+        return $this->groupRepository->findAllByApiQueries($queries);
+    }
+
     public function findById(int $id): ?Group {
         return $this->groupRepository->find($id);
     }
@@ -36,5 +42,65 @@ class GroupService {
 
     public function addGroup(Group $group): void {
         $this->groupRepository->addGroup($group);
+    }
+
+    public function addMember(Group $group, User $member): Group
+    {
+        $group->addMember($member);
+        $this->groupRepository->flush();
+        return $group;
+    }
+
+    public function removeMember(Group $group, User $member): Group
+    {
+        if (!in_array($member, $group->getMembers()->toArray())) {
+            throw new NotFoundHttpException('User with ID ' . $member->getId() . ' not found in the list of members');
+        }
+        $group->removeMember($member);
+        $this->groupRepository->flush();
+        return $group;
+    }
+
+    public function addManager(Group $group, User $manager): Group
+    {
+        $group->addManager($manager);
+        $this->groupRepository->flush();
+        return $group;
+    }
+
+    public function removeManager(Group $group, User $manager): Group
+    {
+        if (!in_array($manager, $group->getManagers()->toArray())) {
+            throw new NotFoundHttpException('User with ID ' . $manager->getId() . ' not found in the list of managers');
+        }
+        $group->removeManager($manager);
+        $this->groupRepository->flush();
+        return $group;
+    }
+
+    public function addRoom(Group $group, Room $room): Group
+    {
+        $group->addRoom($room);
+        $this->groupRepository->flush();
+        return $group;
+    }
+
+    public function removeRoom(Group $group, Room $room): Group
+    {
+        if (!in_array($room, $group->getRooms()->toArray())) {
+            throw new NotFoundHttpException('Room with ID ' . $room->getId() . ' not found in the list of this group\'s rooms');
+        }
+        $group->removeRoom($room);
+        $this->groupRepository->flush();
+        return $group;
+    }
+
+    public function deleteById(int $id): void
+    {
+        $group = $this->groupRepository->find($id);
+        if (!$group) {
+            throw new NotFoundHttpException('Group with ID ' . $id . ' not found');
+        }
+        $this->groupRepository->delete($group);
     }
 }

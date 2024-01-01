@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Group;
+use App\Entity\Reservation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -27,5 +28,34 @@ class GroupRepository extends ServiceEntityRepository {
     public function addGroup(Group $group): void {
         $this->_em->persist($group);
         $this->_em->flush();
+    }
+
+    public function findAllByApiQueries(array $queries): array
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+
+        foreach ($queries as $key => $value) {
+            switch ($key) {
+                case 'name':
+                    $queryBuilder
+                        ->andWhere('r.name LIKE :name')
+                        ->setParameter('name', '%' . $value . '%');
+                    break;
+                case 'parent':
+                    $queryBuilder
+                        ->andWhere('r.parent = :parentId')
+                        ->setParameter('parentId', $value);
+                    break;
+            }
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function delete(Group $group): void
+    {
+        $em = $this->getEntityManager();
+        $em->remove($group);
+        $em->flush();
     }
 }
