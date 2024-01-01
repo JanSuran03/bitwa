@@ -1,4 +1,4 @@
-a {
+a, .a {
     color: hsl(178, 89%, 21%);
     text-decoration: none;
 }
@@ -7,7 +7,7 @@ a:visited {
     color: hsl(178, 89%, 21%);
 }
 
-a:hover {
+a:hover, .a:hover {
     color: hsl(182, 99%, 39%);
     text-decoration: underline;
 }
