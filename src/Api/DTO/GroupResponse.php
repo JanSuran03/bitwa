@@ -12,7 +12,7 @@ class GroupResponse
         public int    $id,
         public array  $members_ids,
         public array  $managers_ids,
-        public ?int    $parent_id,
+        public ?int   $parent_id,
         public array  $child_groups_ids,
         public array  $rooms,
         public string $name,
@@ -20,12 +20,13 @@ class GroupResponse
     {
     }
 
-    public static function fromEntity(Group $entity): self {
+    public static function fromEntity(Group $entity): self
+    {
         return new self(
             $entity->getId(),
             array_map(
                 fn(User $user) => $user->getId(),
-                 $entity->getMembers()->toArray()
+                $entity->getMembers()->toArray()
             ),
             array_map(
                 fn(User $user) => $user->getId(),

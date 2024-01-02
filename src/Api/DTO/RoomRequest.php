@@ -7,7 +7,9 @@ class RoomRequest
     public function __construct(
         public ?string $building,
         public ?string $name,
-        public ?int $group_id,
-        public ?bool $is_public,
-    ) {}
+        public ?int    $group_id,
+        public ?bool   $is_public,
+    )
+    {
+    }
 }

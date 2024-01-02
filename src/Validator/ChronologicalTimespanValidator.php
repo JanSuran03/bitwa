@@ -3,7 +3,6 @@
 namespace App\Validator;
 
 use App\Entity\Reservation;
-use App\Service\RoomService;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;

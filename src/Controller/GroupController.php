@@ -11,16 +11,19 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_ADMIN')]
-class GroupsController extends AbstractController {
+class GroupController extends AbstractController
+{
     private GroupService $groupRepository;
 
-    public function __construct(GroupService $groupRepository) {
+    public function __construct(GroupService $groupRepository)
+    {
         $this->groupRepository = $groupRepository;
     }
 
     #[Route('/groups', name: 'app_groups')]
     #[IsGranted('ROLE_USER')]
-    public function groups(): Response {
+    public function groups(): Response
+    {
         return $this->render('groups.html.twig',
             ['groups' => $this->groupRepository->findAll()]
         );
@@ -30,7 +33,8 @@ class GroupsController extends AbstractController {
 
     #[Route('/groups/new', name: 'app_groups_new')]
     #[IsGranted('ROLE_ADMIN')]
-    public function newGroup(Request $request): Response {
+    public function newGroup(Request $request): Response
+    {
         $groupName = $request->request->getString('_group_name');
         $parentId = $request->request->getInt('_parent_group');
 
@@ -61,7 +65,8 @@ class GroupsController extends AbstractController {
 
     #[Route('/groups/{id}', name: 'app_group')]
     #[IsGranted('ROLE_USER')]
-    public function group(int $id): Response {
+    public function group(int $id): Response
+    {
         $group = $this->groupRepository->findById($id);
 
         if ($group == null) {

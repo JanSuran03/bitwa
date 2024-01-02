@@ -3,7 +3,6 @@
 namespace App\Form\Type;
 
 use App\Entity\Reservation;
-use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -17,7 +16,7 @@ class ReservationType extends AbstractType
     {
         if ($options['isManager']) {
             $builder
-                ->add('responsibleUser', ChoiceType::class,[
+                ->add('responsibleUser', ChoiceType::class, [
                     'label' => 'Rezervovat na jméno',
                     'choices' => $options['responsibleChoices'],
                     'expanded' => false,
@@ -55,7 +54,8 @@ class ReservationType extends AbstractType
         ]);
     }
 
-    private function submitLabel($options): string {
+    private function submitLabel($options): string
+    {
         if ($options['actionType'] === 'edit') {
             return 'Uložit změny';
         } elseif ($options['isManager']) {

@@ -14,8 +14,10 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method User[]    findAll()
  * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserRepository extends ServiceEntityRepository {
-    public function __construct(ManagerRegistry $registry) {
+class UserRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
         parent::__construct($registry, User::class);
     }
 
@@ -24,7 +26,8 @@ class UserRepository extends ServiceEntityRepository {
         $this->getEntityManager()->flush();
     }
 
-    public function findByEmail(string $email): ?User {
+    public function findByEmail(string $email): ?User
+    {
         return $this->findOneBy([
             "email" => $email
         ]);
@@ -52,7 +55,8 @@ class UserRepository extends ServiceEntityRepository {
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function setUser(User $user): void {
+    public function setUser(User $user): void
+    {
         $this->_em->persist($user);
         $this->_em->flush();
     }

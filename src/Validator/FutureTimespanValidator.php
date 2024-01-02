@@ -14,7 +14,7 @@ class FutureTimespanValidator extends ConstraintValidator
 {
     private ReservationService $reservationService;
 
-    public function __construct(ReservationService  $reservationService)
+    public function __construct(ReservationService $reservationService)
     {
         $this->reservationService = $reservationService;
     }

@@ -10,16 +10,19 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-class RoomsController extends AbstractController {
+class RoomController extends AbstractController
+{
 
     private RoomService $roomService;
 
-    public function __construct(RoomService $roomService) {
+    public function __construct(RoomService $roomService)
+    {
         $this->roomService = $roomService;
     }
 
     #[Route('/rooms', name: 'app_rooms')]
-    public function rooms(Request $request): Response {
+    public function rooms(Request $request): Response
+    {
         /** @var User $user */
         $user = $this->getUser();
 
@@ -42,7 +45,8 @@ class RoomsController extends AbstractController {
 
     #[Route('/rooms/new', name: 'app_create_room', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function createRoom(Request $request): ?Response {
+    public function createRoom(Request $request): ?Response
+    {
         $roomName = $request->request->get('_room_name');
         $buildingName = $request->request->get('_building_name');
         $isPublic = $request->request->has('_is_public') ? 1 : 0;
@@ -82,7 +86,8 @@ class RoomsController extends AbstractController {
 
     #[Route('/rooms/{id}', name: 'app_room')]
     #[IsGranted('ROLE_USER')]
-    public function room(Request $request, int $id): Response {
+    public function room(Request $request, int $id): Response
+    {
         $room = $this->roomService->getOneById($id);
         /** @var User $user */
         $user = $this->getUser();
@@ -104,7 +109,8 @@ class RoomsController extends AbstractController {
 
     #[Route('/rooms/{id}/change-room', name: 'app_room_change_room', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function changeRoomName(Request $request, int $id): Response {
+    public function changeRoomName(Request $request, int $id): Response
+    {
         $newName = $request->request->get('_room');
         if (empty($newName)) {
             $this->addFlash('error', 'Název místnosti nemůže být prázdné.');
@@ -130,7 +136,8 @@ class RoomsController extends AbstractController {
 
     #[Route('/rooms/{id}/change-building', name: 'app_room_change_building', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function changeRoomBuilding(Request $request, int $id): Response {
+    public function changeRoomBuilding(Request $request, int $id): Response
+    {
         $newBuilding = $request->request->get('_building');
         if (empty($newBuilding)) {
             $this->addFlash('error', 'Název budovy nemůže být prázdné.');
@@ -156,7 +163,8 @@ class RoomsController extends AbstractController {
 
     #[Route('/rooms/{id}/change-availability-for-the-public', name: 'app_room_change_availability_for_the_public', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function changeAvailabilityForThePublic(Request $request, int $id): Response {
+    public function changeAvailabilityForThePublic(Request $request, int $id): Response
+    {
         $newIsPublic = $request->request->has('_is_public') ? 1 : 0;
         $room = $this->roomService->getOneById($id);
 

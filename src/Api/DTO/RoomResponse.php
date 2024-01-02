@@ -13,7 +13,7 @@ class RoomResponse
         public array  $managers_ids,
         public string $building,
         public string $name,
-        public ?int    $group_id,
+        public ?int   $group_id,
         public bool   $is_public,
         public bool   $is_locked,
     )

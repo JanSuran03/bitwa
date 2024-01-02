@@ -15,7 +15,7 @@ class RoomAvailabilityValidator extends ConstraintValidator
     private RoomService $roomService;
     private ReservationService $reservationService;
 
-    public function __construct(RoomService $roomService, ReservationService  $reservationService)
+    public function __construct(RoomService $roomService, ReservationService $reservationService)
     {
         $this->roomService = $roomService;
         $this->reservationService = $reservationService;

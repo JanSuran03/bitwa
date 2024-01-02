@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Group;
-use App\Entity\Reservation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,8 +14,10 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Group[]    findAll()
  * @method Group[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class GroupRepository extends ServiceEntityRepository {
-    public function __construct(ManagerRegistry $registry) {
+class GroupRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
         parent::__construct($registry, Group::class);
     }
 
@@ -25,7 +26,8 @@ class GroupRepository extends ServiceEntityRepository {
         $this->getEntityManager()->flush();
     }
 
-    public function addGroup(Group $group): void {
+    public function addGroup(Group $group): void
+    {
         $this->_em->persist($group);
         $this->_em->flush();
     }

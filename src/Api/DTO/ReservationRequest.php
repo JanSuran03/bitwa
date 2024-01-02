@@ -2,8 +2,8 @@
 
 namespace App\Api\DTO;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use App\Validator as CustomAssert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[CustomAssert\FutureTimespan]
 #[CustomAssert\ChronologicalTimespan]

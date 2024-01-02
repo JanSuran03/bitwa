@@ -4,7 +4,6 @@ namespace App\Service;
 
 use App\Api\DTO\ReservationRequest;
 use App\Entity\Reservation;
-use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;

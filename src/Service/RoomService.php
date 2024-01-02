@@ -11,11 +11,11 @@ use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
 use DateTimeInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use function Symfony\Component\Clock\now;
 
-class RoomService {
+class RoomService
+{
     private RoomRepository $roomRepository;
     private ReservationRepository $reservationRepository;
     private UserRepository $userRepository;
@@ -24,22 +24,26 @@ class RoomService {
     public function __construct(RoomRepository        $roomRepository,
                                 ReservationRepository $reservationRepository,
                                 UserRepository        $userRepository,
-                                Security              $security) {
+                                Security              $security)
+    {
         $this->roomRepository = $roomRepository;
         $this->reservationRepository = $reservationRepository;
         $this->userRepository = $userRepository;
         $this->security = $security;
     }
 
-    public function createRoom(string $name, string $building, bool $isPublic): Room {
+    public function createRoom(string $name, string $building, bool $isPublic): Room
+    {
         return $this->roomRepository->createRoom($name, $building, $isPublic);
     }
 
-    public function setRoom(Room $room): void {
+    public function setRoom(Room $room): void
+    {
         $this->roomRepository->setRoom($room);
     }
 
-    public function getAll(): array {
+    public function getAll(): array
+    {
         if ($this->security->getUser() != null) {
             return $this->roomRepository->findAll();
         } else {
@@ -47,12 +51,14 @@ class RoomService {
         }
     }
 
-    public function findByNameAndBuilding(string $name, string $building): ?Room {
+    public function findByNameAndBuilding(string $name, string $building): ?Room
+    {
         error_log($name);
         return $this->roomRepository->findByNameAndBuilding($name, $building);
     }
 
-    public function isBookedBetween(Room $room, DateTimeInterface $from, DateTimeInterface $to, bool $onlyApproved = false): bool {
+    public function isBookedBetween(Room $room, DateTimeInterface $from, DateTimeInterface $to, bool $onlyApproved = false): bool
+    {
         $conditions = ['room' => $room];
         if ($onlyApproved) {
             $conditions['is_approved'] = true;
@@ -67,7 +73,8 @@ class RoomService {
         return false;
     }
 
-    public function isOccupiedNow(Room $room): bool {
+    public function isOccupiedNow(Room $room): bool
+    {
         return $this->isBookedBetween($room, now(), now(), true);
     }
 
@@ -96,7 +103,8 @@ class RoomService {
         return $this->isTransitiveMemberOf($user, $room);
     }
 
-    public function isTransitiveMemberOf(User $user, Room $room): bool {
+    public function isTransitiveMemberOf(User $user, Room $room): bool
+    {
         if ($this->isTransitiveManagerOf($user, $room)) {
             return true;
         }
@@ -113,7 +121,8 @@ class RoomService {
         return false;
     }
 
-    public function isTransitiveManagerOf(User $user, Room $room): bool {
+    public function isTransitiveManagerOf(User $user, Room $room): bool
+    {
         if ($room->getManagers()->contains($user)) {
             return true;
         }
@@ -127,7 +136,8 @@ class RoomService {
         return false;
     }
 
-    public function isBookableBy(Room $room, User $user): bool {
+    public function isBookableBy(Room $room, User $user): bool
+    {
         return $room->isPublic() || $this->isTransitiveMemberOf($user, $room);
     }
 
@@ -147,7 +157,8 @@ class RoomService {
         return null;
     }
 
-    public function getAllByFullNameSubstring(?string $query): array {
+    public function getAllByFullNameSubstring(?string $query): array
+    {
         $allRooms = $this->getAll();
 
         if ($query === null || $query === '')
@@ -161,11 +172,13 @@ class RoomService {
         );
     }
 
-    public function getAllByNameAndBuilding(string $name, string $building): ?Room {
+    public function getAllByNameAndBuilding(string $name, string $building): ?Room
+    {
         return $this->roomRepository->findByNameAndBuilding($name, $building);
     }
 
-    public function getOneById(int $id): Room {
+    public function getOneById(int $id): Room
+    {
         $room = $this->roomRepository->find($id);
         if (!$room) {
             throw new NotFoundHttpException('Room with ID ' . $id . ' not found');
@@ -173,7 +186,8 @@ class RoomService {
         return $room;
     }
 
-    public function getCurrentAvailabilityMap(array $rooms): array {
+    public function getCurrentAvailabilityMap(array $rooms): array
+    {
         $map = [];
         foreach ($rooms as $room) {
             $roomId = $room->getId();
@@ -185,7 +199,8 @@ class RoomService {
         return $map;
     }
 
-    public function getAllBookableBy(User $user): array {
+    public function getAllBookableBy(User $user): array
+    {
         $allRooms = $this->getAll();
         return array_values(
             array_filter(
@@ -195,7 +210,8 @@ class RoomService {
         );
     }
 
-    public function getAllManageableBy(User $user): array {
+    public function getAllManageableBy(User $user): array
+    {
         $allRooms = $this->getAll();
         return array_values(
             array_filter(
@@ -212,15 +228,15 @@ class RoomService {
 
     private function switchLock(Room $room): LockResponse
     {
-        $room->setLocked(! $room->isLocked());
+        $room->setLocked(!$room->isLocked());
         $this->roomRepository->flush();
         return new LockResponse(true, $room->isLocked());
     }
 
     public function doubleTapById(int $roomId, int $userId): LockResponse
     {
-        $room =  $this->roomRepository->find($roomId);
-        $user =  $this->userRepository->find($userId);
+        $room = $this->roomRepository->find($roomId);
+        $user = $this->userRepository->find($userId);
 
         $currentReservation = $this->getCurrentReservationByRoom($room, true);
         if ($currentReservation) {

@@ -6,41 +6,39 @@ use App\Entity\Group;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Repository\GroupRepository;
-use App\Repository\ReservationRepository;
-use App\Repository\RoomRepository;
-use DateTime;
-use DateTimeImmutable;
-use DateTimeInterface;
-use Doctrine\ORM\EntityRepository;
-use phpDocumentor\Reflection\Types\Void_;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use function Symfony\Component\Clock\now;
 
-class GroupService {
+class GroupService
+{
     private GroupRepository $groupRepository;
 
-    public function __construct(GroupRepository $groupRepository) {
+    public function __construct(GroupRepository $groupRepository)
+    {
         $this->groupRepository = $groupRepository;
     }
 
-    public function findAll(): array {
+    public function findAll(): array
+    {
         return $this->groupRepository->findAll();
     }
 
-    public function getAllByApiQueries(array $queries): array {
+    public function getAllByApiQueries(array $queries): array
+    {
         return $this->groupRepository->findAllByApiQueries($queries);
     }
 
-    public function findById(int $id): ?Group {
+    public function findById(int $id): ?Group
+    {
         return $this->groupRepository->find($id);
     }
 
-    public function findByName(string $name): ?Group {
+    public function findByName(string $name): ?Group
+    {
         return $this->groupRepository->findOneBy(['name' => $name]);
     }
 
-    public function addGroup(Group $group): void {
+    public function addGroup(Group $group): void
+    {
         $this->groupRepository->addGroup($group);
     }
 

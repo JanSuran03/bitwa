@@ -14,8 +14,10 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Room[]    findAll()
  * @method Room[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class RoomRepository extends ServiceEntityRepository {
-    public function __construct(ManagerRegistry $registry) {
+class RoomRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
         parent::__construct($registry, Room::class);
     }
 
@@ -63,18 +65,21 @@ class RoomRepository extends ServiceEntityRepository {
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function findPublicRooms(): array {
+    public function findPublicRooms(): array
+    {
         return $this->findBy(["isPublic" => true]);
     }
 
-    public function findByNameAndBuilding(string $name, string $building): ?Room {
+    public function findByNameAndBuilding(string $name, string $building): ?Room
+    {
         return $this->findOneBy([
             "name" => $name,
             "building" => $building
         ]);
     }
 
-    public function createRoom(string $name, string $building, bool $isPublic): Room {
+    public function createRoom(string $name, string $building, bool $isPublic): Room
+    {
         $room = new Room();
         $room->setName($name);
         $room->setBuilding($building);
@@ -87,7 +92,8 @@ class RoomRepository extends ServiceEntityRepository {
         return $room;
     }
 
-    public function setRoom(Room $room): void {
+    public function setRoom(Room $room): void
+    {
         $this->_em->persist($room);
         $this->_em->flush();
     }

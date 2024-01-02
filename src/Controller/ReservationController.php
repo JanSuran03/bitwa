@@ -8,17 +8,14 @@ use App\Form\Type\ReservationType;
 use App\Service\ReservationService;
 use App\Service\RoomService;
 use App\Service\UserService;
-use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('IS_AUTHENTICATED')]
-class ReservationsController extends AbstractController
+class ReservationController extends AbstractController
 {
 
     private ReservationService $reservationService;
