@@ -28,7 +28,7 @@ class ReservationService
         $this->userService = $userService;
     }
 
-    public function flush()
+    public function flush(): void
     {
         $this->reservationRepository->flush();
     }

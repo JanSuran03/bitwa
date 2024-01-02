@@ -21,7 +21,7 @@ class UserController extends AbstractController
         $this->userService = $userService;
     }
 
-    private function classError()
+    private function classError(): Response
     {
         $this->addFlash('error', 'Neplatný požadavek, uživatel má špatný formát.');
         return $this->redirect('/index');
@@ -36,7 +36,7 @@ class UserController extends AbstractController
 
     #[Route('/profile', name: 'app_user_profile')]
     #[IsGranted('ROLE_USER')]
-    public function profile(Request $request): Response
+    public function profile(): Response
     {
         $user = $this->getUser();
         if ($user instanceof User) {

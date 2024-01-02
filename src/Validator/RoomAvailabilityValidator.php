@@ -3,7 +3,6 @@
 namespace App\Validator;
 
 use App\Entity\Reservation;
-use App\Service\ReservationService;
 use App\Service\RoomService;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -13,12 +12,10 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 class RoomAvailabilityValidator extends ConstraintValidator
 {
     private RoomService $roomService;
-    private ReservationService $reservationService;
 
-    public function __construct(RoomService $roomService, ReservationService $reservationService)
+    public function __construct(RoomService $roomService)
     {
         $this->roomService = $roomService;
-        $this->reservationService = $reservationService;
     }
 
     public function validate($reservation, Constraint $constraint): void

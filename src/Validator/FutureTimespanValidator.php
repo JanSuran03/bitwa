@@ -3,7 +3,6 @@
 namespace App\Validator;
 
 use App\Entity\Reservation;
-use App\Service\ReservationService;
 use DateTime;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -12,12 +11,6 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 class FutureTimespanValidator extends ConstraintValidator
 {
-    private ReservationService $reservationService;
-
-    public function __construct(ReservationService $reservationService)
-    {
-        $this->reservationService = $reservationService;
-    }
 
     public function validate($reservation, Constraint $constraint): void
     {

@@ -134,7 +134,15 @@ class Group
 
     public function setParent(?Group $parent): void
     {
+        // To avoid infinite recursion, because addChildGroup()
+        // and removeChildGroup() also call this method
+        if ($this->parent === $parent) {
+            return;
+        }
+
+        $this->parent?->removeChildGroup($this);
         $this->parent = $parent;
+        $this->parent->addChildGroup($this);
     }
 
     /**
