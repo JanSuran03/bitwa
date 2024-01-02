@@ -129,9 +129,6 @@ class Reservation
         $this->addInvitedUser($responsibleUser);
     }
 
-//    /**
-//     * @return Collection<int, User>
-//     */
     public function getInvitedUsers(): array
     {
         return $this->invitedUsers->toArray();

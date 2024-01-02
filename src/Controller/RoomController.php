@@ -62,7 +62,7 @@ class RoomController extends AbstractController
         } else {
             $this->addFlash('error', 'Místnost s touto budovou a jménem již existuje.');
 
-            $rooms = $this->roomService->getAll(); // TODO: query?
+            $rooms = $this->roomService->getAll();
             $currentAvailabilityMap = $this->roomService->getCurrentAvailabilityMap($rooms);
             /** @var User $user */
             $user = $this->getUser();
