@@ -98,12 +98,11 @@ class ReservationController extends AbstractController
     }
 
     #[Route('reservations/{reservationId}/approve', name: 'app_reservations_approve')]
-    public function approve(Request $request): Response
+    public function approve(int $reservationId): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        $reservationId = $request->attributes->get('reservationId');
         $reservation = $this->reservationService->getOneById($reservationId);
         $room = $reservation->getRoom();
         if (!$this->roomService->isTransitiveManagerOf($user, $room) && !$this->isGranted('ROLE_ADMIN')) {
@@ -115,12 +114,11 @@ class ReservationController extends AbstractController
     }
 
     #[Route('reservations/{reservationId}/edit', name: 'app_reservation_edit')]
-    public function edit(Request $request): Response
+    public function edit(int $reservationId, Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        $reservationId = $request->attributes->get('reservationId');
         $reservation = $this->reservationService->getOneById($reservationId);
         if ($reservation->getAuthor() !== $user && $reservation->getResponsibleUser() !== $user && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('Tuto rezervaci nemůžete editovat, protože nejste jejím autorem, ani není vedená na vaše jméno!');
