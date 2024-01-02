@@ -59,7 +59,6 @@ class RoomService
 
     public function getOneByNameAndBuilding(string $name, string $building): ?Room
     {
-        error_log($name);
         return $this->roomRepository->findOneBy([
             "name" => $name,
             "building" => $building
