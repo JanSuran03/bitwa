@@ -21,11 +21,6 @@ class RoomRepository extends ServiceEntityRepository
         parent::__construct($registry, Room::class);
     }
 
-    public function flush(): void
-    {
-        $this->getEntityManager()->flush();
-    }
-
     public function createOrUpdate(Room $room): Room
     {
         $this->getEntityManager()->persist($room);

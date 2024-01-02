@@ -21,11 +21,6 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function flush(): void
-    {
-        $this->getEntityManager()->flush();
-    }
-
     public function createOrUpdate(User $user): User
     {
         $this->getEntityManager()->persist($user);

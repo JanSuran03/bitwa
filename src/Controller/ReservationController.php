@@ -135,7 +135,7 @@ class ReservationController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->reservationService->flush();
+            $this->reservationService->updateReservation($reservation);
             return $this->redirectToRoute('app_reservations_my');
         }
 

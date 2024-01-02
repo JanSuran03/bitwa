@@ -39,14 +39,13 @@ class GroupService
 
     public function addGroup(Group $group): void
     {
-        $this->groupRepository->create($group);
+        $this->groupRepository->createOrUpdate($group);
     }
 
     public function addMember(Group $group, User $member): Group
     {
         $group->addMember($member);
-        $this->groupRepository->flush();
-        return $group;
+        return $this->groupRepository->createOrUpdate($group);
     }
 
     public function removeMember(Group $group, User $member): Group
@@ -55,15 +54,13 @@ class GroupService
             throw new NotFoundHttpException('User with ID ' . $member->getId() . ' not found in the list of members');
         }
         $group->removeMember($member);
-        $this->groupRepository->flush();
-        return $group;
+        return $this->groupRepository->createOrUpdate($group);
     }
 
     public function addManager(Group $group, User $manager): Group
     {
         $group->addManager($manager);
-        $this->groupRepository->flush();
-        return $group;
+        return $this->groupRepository->createOrUpdate($group);
     }
 
     public function removeManager(Group $group, User $manager): Group
@@ -72,15 +69,13 @@ class GroupService
             throw new NotFoundHttpException('User with ID ' . $manager->getId() . ' not found in the list of managers');
         }
         $group->removeManager($manager);
-        $this->groupRepository->flush();
-        return $group;
+        return $this->groupRepository->createOrUpdate($group);
     }
 
     public function addRoom(Group $group, Room $room): Group
     {
         $group->addRoom($room);
-        $this->groupRepository->flush();
-        return $group;
+        return $this->groupRepository->createOrUpdate($group);
     }
 
     public function removeRoom(Group $group, Room $room): Group
@@ -89,8 +84,7 @@ class GroupService
             throw new NotFoundHttpException('Room with ID ' . $room->getId() . ' not found in the list of this group\'s rooms');
         }
         $group->removeRoom($room);
-        $this->groupRepository->flush();
-        return $group;
+        return $this->groupRepository->createOrUpdate($group);
     }
 
     public function deleteById(int $id): void

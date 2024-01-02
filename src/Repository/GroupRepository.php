@@ -21,12 +21,7 @@ class GroupRepository extends ServiceEntityRepository
         parent::__construct($registry, Group::class);
     }
 
-    public function flush(): void
-    {
-        $this->getEntityManager()->flush();
-    }
-
-    public function create(Group $group): Group
+    public function createOrUpdate(Group $group): Group
     {
         $this->getEntityManager()->persist($group);
         $this->getEntityManager()->flush();

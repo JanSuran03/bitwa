@@ -28,11 +28,6 @@ class ReservationService
         $this->userService = $userService;
     }
 
-    public function flush(): void
-    {
-        $this->reservationRepository->flush();
-    }
-
     public function existsById(int $id): bool
     {
         return $this->reservationRepository->find($id) !== null;
@@ -200,12 +195,16 @@ class ReservationService
         return $this->create($reservation);
     }
 
+    public function updateReservation(Reservation $reservation): Reservation
+    {
+        return $this->reservationRepository->createOrUpdate($reservation);
+    }
+
     public function approveById(int $id): Reservation
     {
         $reservation = $this->getOneById($id);
         $reservation->setApproved(true);
-        $this->reservationRepository->flush();
-        return $reservation;
+        return $this->reservationRepository->createOrUpdate($reservation);
     }
 
     public function addInvitedUserById(int $reservationId, int $invitedUserId): Reservation
@@ -213,8 +212,7 @@ class ReservationService
         $reservation = $this->getOneById($reservationId);
         $invitedUser = $this->userService->getOneById($invitedUserId);
         $reservation->addInvitedUser($invitedUser);
-        $this->reservationRepository->flush();
-        return $reservation;
+        return $this->reservationRepository->createOrUpdate($reservation);
     }
 
     public function removeInvitedUserById(int $reservationId, int $invitedUserId): Reservation
@@ -228,8 +226,7 @@ class ReservationService
             throw new NotFoundHttpException('User with ID ' . $invitedUserId . ' not found in the list of invited users');
         }
         $reservation->removeInvitedUser($invitedUser);
-        $this->reservationRepository->flush();
-        return $reservation;
+        return $this->reservationRepository->createOrUpdate($reservation);
     }
 
     public function deleteById(int $id): void

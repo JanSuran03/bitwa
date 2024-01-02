@@ -241,7 +241,7 @@ class RoomService
     private function switchLock(Room $room): LockResponse
     {
         $room->setLocked(!$room->isLocked());
-        $this->roomRepository->flush();
+        $this->roomRepository->createOrUpdate($room);
         return new LockResponse(true, $room->isLocked());
     }
 
