@@ -51,7 +51,7 @@ class ReservationRepository extends ServiceEntityRepository
                         break;
                     }
                     $queryBuilder
-                        ->andWhere('r.is_approved = :approved')
+                        ->andWhere('r.isApproved = :approved')
                         ->setParameter('approved', $boolValue);
                     break;
                 case 'author':
@@ -61,12 +61,12 @@ class ReservationRepository extends ServiceEntityRepository
                     break;
                 case 'responsible':
                     $queryBuilder
-                        ->andWhere('r.responsible_user = :responsibleUserId')
+                        ->andWhere('r.responsibleUser = :responsibleUserId')
                         ->setParameter('responsibleUserId', $value);
                     break;
                 case 'invited':
                     $queryBuilder
-                        ->andWhere(':invitedUserId MEMBER OF r.invited_users')
+                        ->andWhere(':invitedUserId MEMBER OF r.invitedUsers')
                         ->setParameter('invitedUserId', $value);
                     break;
                 case 'room':

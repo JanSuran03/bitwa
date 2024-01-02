@@ -61,7 +61,7 @@ class RoomService
     {
         $conditions = ['room' => $room];
         if ($onlyApproved) {
-            $conditions['is_approved'] = true;
+            $conditions['isApproved'] = true;
         }
         $reservations = $this->reservationRepository->findBy($conditions);
 
@@ -145,7 +145,7 @@ class RoomService
     {
         $conditions = ['room' => $room];
         if ($onlyApproved) {
-            $conditions['is_approved'] = true;
+            $conditions['isApproved'] = true;
         }
         $reservations = $this->reservationRepository->findBy($conditions);
 
