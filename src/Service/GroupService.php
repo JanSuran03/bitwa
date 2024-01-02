@@ -39,7 +39,7 @@ class GroupService
 
     public function addGroup(Group $group): void
     {
-        $this->groupRepository->addGroup($group);
+        $this->groupRepository->create($group);
     }
 
     public function addMember(Group $group, User $member): Group

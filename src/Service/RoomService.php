@@ -34,12 +34,18 @@ class RoomService
 
     public function createRoom(string $name, string $building, bool $isPublic): Room
     {
-        return $this->roomRepository->createRoom($name, $building, $isPublic);
+        $room = new Room();
+        $room->setName($name);
+        $room->setBuilding($building);
+        $room->setPublic($isPublic);
+        $room->setLocked(true);
+
+        return $this->roomRepository->createOrUpdate($room);
     }
 
-    public function setRoom(Room $room): void
+    public function updateRoom(Room $room): void
     {
-        $this->roomRepository->setRoom($room);
+        $this->roomRepository->createOrUpdate($room);
     }
 
     public function getAll(): array
@@ -47,14 +53,17 @@ class RoomService
         if ($this->security->getUser() != null) {
             return $this->roomRepository->findAll();
         } else {
-            return $this->roomRepository->findPublicRooms();
+            return $this->roomRepository->findAllByApiQueries(['public' => 'true']);
         }
     }
 
-    public function findByNameAndBuilding(string $name, string $building): ?Room
+    public function getOneByNameAndBuilding(string $name, string $building): ?Room
     {
         error_log($name);
-        return $this->roomRepository->findByNameAndBuilding($name, $building);
+        return $this->roomRepository->findOneBy([
+            "name" => $name,
+            "building" => $building
+        ]);
     }
 
     public function isBookedBetween(Room $room, DateTimeInterface $from, DateTimeInterface $to, bool $onlyApproved = false): bool
@@ -174,7 +183,10 @@ class RoomService
 
     public function getAllByNameAndBuilding(string $name, string $building): ?Room
     {
-        return $this->roomRepository->findByNameAndBuilding($name, $building);
+        return $this->roomRepository->findOneBy([
+            "name" => $name,
+            "building" => $building
+        ]);
     }
 
     public function getOneById(int $id): Room
@@ -223,7 +235,7 @@ class RoomService
 
     public function getAllByApiQueries(array $queries): array
     {
-        return $this->roomRepository->findByApiQueries($queries);
+        return $this->roomRepository->findAllByApiQueries($queries);
     }
 
     private function switchLock(Room $room): LockResponse

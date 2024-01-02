@@ -29,14 +29,13 @@ class ReservationRepository extends ServiceEntityRepository
 
     public function create(Reservation $reservation): Reservation
     {
-        $em = $this->getEntityManager();
-        $em->persist($reservation);
-        $em->flush();
+        $this->getEntityManager()->persist($reservation);
+        $this->getEntityManager()->flush();
 
         return $reservation;
     }
 
-    public function findByApiQueries(array $queries): array
+    public function findAllByApiQueries(array $queries): array
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -80,10 +79,10 @@ class ReservationRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function findByAuthorOrResponsible(User $user): array
+    public function findAllByAuthorOrResponsible(User $user): array
     {
         return $this->createQueryBuilder('r')
-            ->andWhere('r.author = :user OR r.responsible_user = :user')
+            ->andWhere('r.author = :user OR r.responsibleUser = :user')
             ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
@@ -91,8 +90,7 @@ class ReservationRepository extends ServiceEntityRepository
 
     public function delete(Reservation $reservation): void
     {
-        $em = $this->getEntityManager();
-        $em->remove($reservation);
-        $em->flush();
+        $this->getEntityManager()->remove($reservation);
+        $this->getEntityManager()->flush();
     }
 }

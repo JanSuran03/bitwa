@@ -26,11 +26,12 @@ class UserRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function findByEmail(string $email): ?User
+    public function createOrUpdate(User $user): User
     {
-        return $this->findOneBy([
-            "email" => $email
-        ]);
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+
+        return $user;
     }
 
     public function findByApiQueries(array $queries): array
@@ -55,16 +56,9 @@ class UserRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function setUser(User $user): void
-    {
-        $this->_em->persist($user);
-        $this->_em->flush();
-    }
-
     public function delete(User $user): void
     {
-        $em = $this->getEntityManager();
-        $em->remove($user);
-        $em->flush();
+        $this->getEntityManager()->remove($user);
+        $this->getEntityManager()->flush();
     }
 }

@@ -65,7 +65,7 @@ class ReservationService
 
     public function getAllByAuthorOrResponsible(User $user): array
     {
-        return $this->reservationRepository->findByAuthorOrResponsible($user);
+        return $this->reservationRepository->findAllByAuthorOrResponsible($user);
     }
 
 
@@ -122,7 +122,7 @@ class ReservationService
 
     public function getAllByApiQueries(array $queries): array
     {
-        return $this->reservationRepository->findByApiQueries($queries);
+        return $this->reservationRepository->findAllByApiQueries($queries);
     }
 
     public function getOneById(int $id): Reservation
@@ -136,7 +136,7 @@ class ReservationService
 
     public function create(Reservation $reservation): Reservation
     {
-        return $this->reservationRepository->create($reservation);
+        return $this->reservationRepository->createOrUpdate($reservation);
     }
 
     public function createFromRequestDto(ReservationRequest $reservationRequest): Reservation

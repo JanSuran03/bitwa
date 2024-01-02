@@ -38,6 +38,8 @@ class Group
     {
         $this->members = new ArrayCollection();
         $this->managers = new ArrayCollection();
+        $this->parent = null;
+        $this->childGroups = new ArrayCollection();
         $this->rooms = new ArrayCollection();
     }
 
@@ -136,13 +138,13 @@ class Group
     {
         // To avoid infinite recursion, because addChildGroup()
         // and removeChildGroup() also call this method
-        if ($this->parent === $parent) {
+        if ($this->parent && $this->parent === $parent) {
             return;
         }
 
         $this->parent?->removeChildGroup($this);
         $this->parent = $parent;
-        $this->parent->addChildGroup($this);
+        $this->parent?->addChildGroup($this);
     }
 
     /**

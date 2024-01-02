@@ -123,13 +123,13 @@ class RoomController extends AbstractController
             return $this->redirectToRoute('app_rooms');
         }
 
-        if ($this->roomService->findByNameAndBuilding($newName, $room->getBuilding()) != null) {
+        if ($this->roomService->getOneByNameAndBuilding($newName, $room->getBuilding()) != null) {
             $this->addFlash('error', 'Místnost s touto budovou a jménem již existuje.');
             return $this->redirectToRoute('app_room', ['id' => $id]);
         }
 
         $room->setName($newName);
-        $this->roomService->setRoom($room);
+        $this->roomService->updateRoom($room);
         $this->addFlash('success', 'Název místnosti změněn.');
         return $this->redirectToRoute('app_room', ['id' => $id]);
     }
@@ -150,13 +150,13 @@ class RoomController extends AbstractController
             return $this->redirectToRoute('app_rooms');
         }
 
-        if ($this->roomService->findByNameAndBuilding($room->getName(), $newBuilding) != null) {
+        if ($this->roomService->getOneByNameAndBuilding($room->getName(), $newBuilding) != null) {
             $this->addFlash('error', 'Místnost s touto budovou a jménem již existuje.');
             return $this->redirectToRoute('app_room', ['id' => $id]);
         }
 
         $room->setBuilding($newBuilding);
-        $this->roomService->setRoom($room);
+        $this->roomService->updateRoom($room);
         $this->addFlash('success', 'Název budovy změněn.');
         return $this->redirectToRoute('app_room', ['id' => $id]);
     }
@@ -174,7 +174,7 @@ class RoomController extends AbstractController
         }
 
         $room->setPublic($newIsPublic);
-        $this->roomService->setRoom($room);
+        $this->roomService->updateRoom($room);
         $this->addFlash('success', ' Přístupnost pro veřejnost změněna.');
         return $this->redirectToRoute('app_room', ['id' => $id]);
     }

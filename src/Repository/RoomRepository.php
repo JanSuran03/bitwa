@@ -26,7 +26,15 @@ class RoomRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function findByApiQueries(array $queries): array
+    public function createOrUpdate(Room $room): Room
+    {
+        $this->getEntityManager()->persist($room);
+        $this->getEntityManager()->flush();
+
+        return $room;
+    }
+
+    public function findAllByApiQueries(array $queries): array
     {
         $queryBuilder = $this->createQueryBuilder('r');
 
@@ -65,43 +73,9 @@ class RoomRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function findPublicRooms(): array
-    {
-        return $this->findBy(["isPublic" => true]);
-    }
-
-    public function findByNameAndBuilding(string $name, string $building): ?Room
-    {
-        return $this->findOneBy([
-            "name" => $name,
-            "building" => $building
-        ]);
-    }
-
-    public function createRoom(string $name, string $building, bool $isPublic): Room
-    {
-        $room = new Room();
-        $room->setName($name);
-        $room->setBuilding($building);
-        $room->setPublic($isPublic);
-        $room->setLocked(true);
-
-        $this->_em->persist($room);
-        $this->_em->flush();
-
-        return $room;
-    }
-
-    public function setRoom(Room $room): void
-    {
-        $this->_em->persist($room);
-        $this->_em->flush();
-    }
-
     public function delete(Room $room): void
     {
-        $em = $this->getEntityManager();
-        $em->remove($room);
-        $em->flush();
+        $this->getEntityManager()->remove($room);
+        $this->getEntityManager()->flush();
     }
 }

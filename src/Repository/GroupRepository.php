@@ -26,10 +26,12 @@ class GroupRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function addGroup(Group $group): void
+    public function create(Group $group): Group
     {
-        $this->_em->persist($group);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($group);
+        $this->getEntityManager()->flush();
+
+        return $group;
     }
 
     public function findAllByApiQueries(array $queries): array
@@ -56,8 +58,7 @@ class GroupRepository extends ServiceEntityRepository
 
     public function delete(Group $group): void
     {
-        $em = $this->getEntityManager();
-        $em->remove($group);
-        $em->flush();
+        $this->getEntityManager()->remove($group);
+        $this->getEntityManager()->flush();
     }
 }

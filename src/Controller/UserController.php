@@ -125,7 +125,7 @@ class UserController extends AbstractController
             $hashed = $passwordHasher->hashPassword($dbUser, $newPassword);
             $dbUser->setPassword($hashed);
 
-            $this->userService->setUser($dbUser);
+            $this->userService->updateUser($dbUser);
             $this->addFlash('success', 'Heslo bylo úspěšně změněno.');
             return $this->redirectToRoute('app_user_profile');
         } else {
@@ -168,7 +168,7 @@ class UserController extends AbstractController
             $hashed = $passwordHasher->hashPassword($user, $password);
             $user->setPassword($hashed);
 
-            $this->userService->setUser($user);
+            $this->userService->createUser($user);
 
             $this->addFlash('success', 'Uživatel ' . $username . ' úspěšně vytvořen.');
             return $this->redirectToRoute('app_users');
