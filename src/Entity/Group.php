@@ -16,17 +16,17 @@ class Group
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'group_memberships')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'groupMemberships')]
     private Collection $members;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'managed_groups')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'managedGroups')]
     private Collection $managers;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'child_groups')]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'childGroups')]
     private ?self $parent;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
-    private Collection $child_groups;
+    private Collection $childGroups;
 
     #[ORM\OneToMany(mappedBy: 'group', targetEntity: Room::class)]
     private Collection $rooms;
@@ -105,13 +105,13 @@ class Group
      */
     public function getChildGroups(): Collection
     {
-        return $this->child_groups;
+        return $this->childGroups;
     }
 
     public function addChildGroup(Group $group): static
     {
-        if (!$this->child_groups->contains($group)) {
-            $this->child_groups->add($group);
+        if (!$this->childGroups->contains($group)) {
+            $this->childGroups->add($group);
             $group->setParent($this);
         }
 
@@ -120,7 +120,7 @@ class Group
 
     public function removeChildGroup(Group $group): static
     {
-        if ($this->child_groups->removeElement($group)) {
+        if ($this->childGroups->removeElement($group)) {
             $group->setParent(null);
         }
 

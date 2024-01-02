@@ -16,10 +16,10 @@ class Room
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'room_memberships')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'roomMemberships')]
     private Collection $members;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'managed_rooms')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'managedRooms')]
     private Collection $managers;
 
     #[ORM\Column]

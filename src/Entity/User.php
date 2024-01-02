@@ -23,19 +23,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'members')]
     #[ORM\JoinTable(name: 'group_members')]
-    private Collection $group_memberships;
+    private Collection $groupMemberships;
 
     #[ORM\ManyToMany(targetEntity: Room::class, inversedBy: 'members')]
     #[ORM\JoinTable(name: 'room_members')]
-    private Collection $room_memberships;
+    private Collection $roomMemberships;
 
     #[ORM\ManyToMany(targetEntity: Room::class, inversedBy: 'managers')]
     #[ORM\JoinTable(name: 'room_managers')]
-    private Collection $managed_rooms;
+    private Collection $managedRooms;
 
     #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'managers')]
     #[ORM\JoinTable(name: 'group_managers')]
-    private Collection $managed_groups;
+    private Collection $managedGroups;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -52,10 +52,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
-        $this->group_memberships = new ArrayCollection();
-        $this->room_memberships = new ArrayCollection();
-        $this->managed_rooms = new ArrayCollection();
-        $this->managed_groups = new ArrayCollection();
+        $this->groupMemberships = new ArrayCollection();
+        $this->roomMemberships = new ArrayCollection();
+        $this->managedRooms = new ArrayCollection();
+        $this->managedGroups = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -98,13 +98,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getGroupMemberships(): Collection
     {
-        return $this->group_memberships;
+        return $this->groupMemberships;
     }
 
     public function addGroupMembership(Group $groupMembership): static
     {
-        if (!$this->group_memberships->contains($groupMembership)) {
-            $this->group_memberships->add($groupMembership);
+        if (!$this->groupMemberships->contains($groupMembership)) {
+            $this->groupMemberships->add($groupMembership);
         }
 
         return $this;
@@ -112,7 +112,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeGroupMembership(Group $groupMembership): static
     {
-        $this->group_memberships->removeElement($groupMembership);
+        $this->groupMemberships->removeElement($groupMembership);
 
         return $this;
     }
@@ -122,13 +122,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoomMemberships(): Collection
     {
-        return $this->room_memberships;
+        return $this->roomMemberships;
     }
 
     public function addRoomMembership(Room $roomMembership): static
     {
-        if (!$this->room_memberships->contains($roomMembership)) {
-            $this->room_memberships->add($roomMembership);
+        if (!$this->roomMemberships->contains($roomMembership)) {
+            $this->roomMemberships->add($roomMembership);
         }
 
         return $this;
@@ -136,7 +136,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeRoomMembership(Room $roomMembership): static
     {
-        $this->room_memberships->removeElement($roomMembership);
+        $this->roomMemberships->removeElement($roomMembership);
 
         return $this;
     }
@@ -146,13 +146,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getManagedRooms(): Collection
     {
-        return $this->managed_rooms;
+        return $this->managedRooms;
     }
 
     public function addManagedRoom(Room $managedRoom): static
     {
-        if (!$this->managed_rooms->contains($managedRoom)) {
-            $this->managed_rooms->add($managedRoom);
+        if (!$this->managedRooms->contains($managedRoom)) {
+            $this->managedRooms->add($managedRoom);
         }
 
         return $this;
@@ -160,7 +160,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeManagedRoom(Room $managedRoom): static
     {
-        $this->managed_rooms->removeElement($managedRoom);
+        $this->managedRooms->removeElement($managedRoom);
 
         return $this;
     }
@@ -170,13 +170,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getManagedGroups(): Collection
     {
-        return $this->managed_groups;
+        return $this->managedGroups;
     }
 
     public function addManagedGroup(Group $managedGroup): static
     {
-        if (!$this->managed_groups->contains($managedGroup)) {
-            $this->managed_groups->add($managedGroup);
+        if (!$this->managedGroups->contains($managedGroup)) {
+            $this->managedGroups->add($managedGroup);
         }
 
         return $this;
@@ -184,7 +184,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeManagedGroup(Group $managedGroup): static
     {
-        $this->managed_groups->removeElement($managedGroup);
+        $this->managedGroups->removeElement($managedGroup);
 
         return $this;
     }

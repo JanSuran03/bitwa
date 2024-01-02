@@ -25,17 +25,17 @@ class Reservation
 
     #[ORM\Column]
     #[Assert\NotNull]
-    private ?bool $is_approved;
+    private ?bool $isApproved;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotBlank]
     #[Assert\Type(\DateTimeInterface::class)]
-    private ?\DateTimeInterface $time_from;
+    private ?\DateTimeInterface $timeFrom;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotBlank]
     #[Assert\Type(\DateTimeInterface::class)]
-    private ?\DateTimeInterface $time_to;
+    private ?\DateTimeInterface $timeTo;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[Assert\NotBlank]
@@ -43,11 +43,11 @@ class Reservation
 
     #[ORM\ManyToOne]
     #[Assert\NotBlank]
-    private ?User $responsible_user;
+    private ?User $responsibleUser;
 
     #[ORM\ManyToMany(targetEntity: User::class)]
     #[ORM\JoinTable(name: 'invitations')]
-    private Collection $invited_users;
+    private Collection $invitedUsers;
 
     #[ORM\ManyToOne]
     #[Assert\NotBlank]
@@ -55,14 +55,14 @@ class Reservation
 
     public function __construct(?Room $room = null, ?User $user = null, bool $autoApprove = false)
     {
-        $this->is_approved = $autoApprove;
+        $this->isApproved = $autoApprove;
         $this->room = $room;
         $this->author = $user;
-        $this->responsible_user = $user;
+        $this->responsibleUser = $user;
         date_default_timezone_set('Europe/Prague');
-        $this->time_from = new DateTime('now');
-        $this->time_to = new DateTime('now');
-        $this->invited_users = ($user) ? new ArrayCollection([$user]) : new ArrayCollection(([]));
+        $this->timeFrom = new DateTime('now');
+        $this->timeTo = new DateTime('now');
+        $this->invitedUsers = ($user) ? new ArrayCollection([$user]) : new ArrayCollection(([]));
     }
 
     public function getId(): ?int
@@ -72,36 +72,36 @@ class Reservation
 
     public function isApproved(): ?bool
     {
-        return $this->is_approved;
+        return $this->isApproved;
     }
 
-    public function setApproved(bool $is_approved): static
+    public function setApproved(bool $isApproved): static
     {
-        $this->is_approved = $is_approved;
+        $this->isApproved = $isApproved;
 
         return $this;
     }
 
     public function getTimeFrom(): ?\DateTimeInterface
     {
-        return $this->time_from;
+        return $this->timeFrom;
     }
 
-    public function setTimeFrom(\DateTimeInterface $time_from): static
+    public function setTimeFrom(\DateTimeInterface $timeFrom): static
     {
-        $this->time_from = $time_from;
+        $this->timeFrom = $timeFrom;
 
         return $this;
     }
 
     public function getTimeTo(): ?\DateTimeInterface
     {
-        return $this->time_to;
+        return $this->timeTo;
     }
 
-    public function setTimeTo(\DateTimeInterface $time_to): static
+    public function setTimeTo(\DateTimeInterface $timeTo): static
     {
-        $this->time_to = $time_to;
+        $this->timeTo = $timeTo;
 
         return $this;
     }
@@ -120,13 +120,13 @@ class Reservation
 
     public function getResponsibleUser(): ?User
     {
-        return $this->responsible_user;
+        return $this->responsibleUser;
     }
 
-    public function setResponsibleUser(?User $responsible_user): void
+    public function setResponsibleUser(?User $responsibleUser): void
     {
-        $this->responsible_user = $responsible_user;
-        $this->addInvitedUser($responsible_user);
+        $this->responsibleUser = $responsibleUser;
+        $this->addInvitedUser($responsibleUser);
     }
 
 //    /**
@@ -134,13 +134,13 @@ class Reservation
 //     */
     public function getInvitedUsers(): array
     {
-        return $this->invited_users->toArray();
+        return $this->invitedUsers->toArray();
     }
 
     public function addInvitedUser(User $invitedUser): static
     {
-        if (!$this->invited_users->contains($invitedUser)) {
-            $this->invited_users->add($invitedUser);
+        if (!$this->invitedUsers->contains($invitedUser)) {
+            $this->invitedUsers->add($invitedUser);
         }
 
         return $this;
@@ -148,8 +148,8 @@ class Reservation
 
     public function removeInvitedUser(User $invitedUser): static
     {
-        if ($invitedUser !== $this->responsible_user)
-            $this->invited_users->removeElement($invitedUser);
+        if ($invitedUser !== $this->responsibleUser)
+            $this->invitedUsers->removeElement($invitedUser);
 
         return $this;
     }
