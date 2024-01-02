@@ -15,19 +15,19 @@ class UserService
         $this->userRepository = $userRepository;
     }
 
-    public function createUser(User $user): User
+    public function create(User $user): User
     {
         return $this->userRepository->createOrUpdate($user);
-    }
-
-    public function getAll(): array
-    {
-        return $this->userRepository->findAll();
     }
 
     public function getAllByApiQueries(array $queries): array
     {
         return $this->userRepository->findByApiQueries($queries);
+    }
+
+    public function getAll(): array
+    {
+        return $this->userRepository->findByApiQueries([]);
     }
 
     public function getOneById(int $id): User
@@ -39,7 +39,7 @@ class UserService
         return $user;
     }
 
-    public function findOneByEmail(string $email): ?User
+    public function getOneByEmail(string $email): ?User
     {
         return $this->userRepository->findOneBy([
             "email" => $email
@@ -56,19 +56,7 @@ class UserService
         return $responsibleChoices;
     }
 
-    public function setUserName(User $user, string $newName): void
-    {
-        $user->setName($newName);
-        $this->userRepository->createOrUpdate($user);
-    }
-
-    public function setEmail(User $user, string $newEmail): void
-    {
-        $user->setEmail($newEmail);
-        $this->userRepository->createOrUpdate($user);
-    }
-
-    public function updateUser(User $user): void
+    public function update(User $user): void
     {
         $this->userRepository->createOrUpdate($user);
     }

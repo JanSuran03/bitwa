@@ -60,8 +60,9 @@ class UserController extends AbstractController
         $requestUser = $this->getUser();
 
         if ($requestUser instanceof User) {
-            $dbUser = $this->userService->findOneByEmail($requestUser->getEmail());
-            $this->userService->setUserName($dbUser, $newName);
+            $dbUser = $this->userService->getOneByEmail($requestUser->getEmail());
+            $dbUser->setName($newName);
+            $this->userService->update($dbUser);
             $this->addFlash('success', 'Jméno bylo úspěšně změněno.');
             return $this->redirectToRoute('app_user_profile');
         } else {
@@ -80,8 +81,9 @@ class UserController extends AbstractController
         $requestUser = $this->getUser();
 
         if ($requestUser instanceof User) {
-            $dbUser = $this->userService->findOneByEmail($requestUser->getEmail());
-            $this->userService->setEmail($dbUser, $newEmail);
+            $dbUser = $this->userService->getOneByEmail($requestUser->getEmail());
+            $dbUser->setEmail($newEmail);
+            $this->userService->update($dbUser);
             $this->addFlash('success', 'Email byl úspěšně změněn.');
             return $this->redirectToRoute('app_user_profile');
         } else {
@@ -105,7 +107,7 @@ class UserController extends AbstractController
 
         $requestUser = $this->getUser();
         if ($requestUser instanceof User) {
-            $dbUser = $this->userService->findOneByEmail($requestUser->getEmail());
+            $dbUser = $this->userService->getOneByEmail($requestUser->getEmail());
             if (!$passwordHasher->isPasswordValid($dbUser, $oldPassword)) {
                 $this->addFlash('error', 'Staré heslo se neshoduje.');
                 return $this->render('profile.html.twig',
@@ -125,7 +127,7 @@ class UserController extends AbstractController
             $hashed = $passwordHasher->hashPassword($dbUser, $newPassword);
             $dbUser->setPassword($hashed);
 
-            $this->userService->updateUser($dbUser);
+            $this->userService->update($dbUser);
             $this->addFlash('success', 'Heslo bylo úspěšně změněno.');
             return $this->redirectToRoute('app_user_profile');
         } else {
@@ -145,7 +147,7 @@ class UserController extends AbstractController
         $fail = false;
         if ($password != $confirmPassword && $fail = true) {
             $this->addFlash('error', 'Hesla se neshodují.');
-        } else if ($this->userService->findOneByEmail($email) != null && $fail = true) {
+        } else if ($this->userService->getOneByEmail($email) != null && $fail = true) {
             $this->addFlash('error', 'Zadaný email již používá jiný uživatel.');
         }
 
@@ -168,7 +170,7 @@ class UserController extends AbstractController
             $hashed = $passwordHasher->hashPassword($user, $password);
             $user->setPassword($hashed);
 
-            $this->userService->createUser($user);
+            $this->userService->create($user);
 
             $this->addFlash('success', 'Uživatel ' . $username . ' úspěšně vytvořen.');
             return $this->redirectToRoute('app_users');

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Room;
 use App\Entity\User;
 use App\Service\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,8 +55,9 @@ class RoomController extends AbstractController
         if (empty($roomName) || empty($buildingName)) {
             $this->addFlash('error', 'Vyplňte budovu a místnost.');
             return $this->redirectToRoute('app_rooms');
-        } else if ($this->roomService->getAllByNameAndBuilding($roomName, $buildingName) === null) {
-            $this->roomService->createRoom($roomName, $buildingName, $isPublic === 1);
+        } else if ($this->roomService->getOneByNameAndBuilding($roomName, $buildingName) === null) {
+            $room = new Room($buildingName, $roomName, $isPublic === 1);
+            $this->roomService->create($room);
 
             $this->addFlash('success', 'Místnost úspěšně vytvořena.');
             return $this->redirectToRoute('app_rooms');
@@ -129,7 +131,7 @@ class RoomController extends AbstractController
         }
 
         $room->setName($newName);
-        $this->roomService->updateRoom($room);
+        $this->roomService->update($room);
         $this->addFlash('success', 'Název místnosti změněn.');
         return $this->redirectToRoute('app_room', ['id' => $id]);
     }
@@ -156,7 +158,7 @@ class RoomController extends AbstractController
         }
 
         $room->setBuilding($newBuilding);
-        $this->roomService->updateRoom($room);
+        $this->roomService->update($room);
         $this->addFlash('success', 'Název budovy změněn.');
         return $this->redirectToRoute('app_room', ['id' => $id]);
     }
@@ -174,7 +176,7 @@ class RoomController extends AbstractController
         }
 
         $room->setPublic($newIsPublic);
-        $this->roomService->updateRoom($room);
+        $this->roomService->update($room);
         $this->addFlash('success', ' Přístupnost pro veřejnost změněna.');
         return $this->redirectToRoute('app_room', ['id' => $id]);
     }

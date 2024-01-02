@@ -57,7 +57,7 @@ class GroupController extends AbstractController
         $group = new Group();
         $group->setName($groupName);
         $group->setParent($parentGroup);
-        $this->groupRepository->addGroup($group);
+        $this->groupRepository->create($group);
 
         $this->addFlash('success', 'Skupina ' . $groupName . ' byla vytvořena.');
         return $this->redirectToRoute('app_groups');

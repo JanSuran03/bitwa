@@ -37,10 +37,14 @@ class Room
     #[ORM\Column]
     private ?bool $isLocked = true;
 
-    public function __construct()
+    public function __construct(?string $building = null, ?string $name = null, ?bool $isPublic = null)
     {
         $this->members = new ArrayCollection();
         $this->managers = new ArrayCollection();
+        $this->building = $building;
+        $this->name = $name;
+        $this->isPublic = $isPublic;
+        $this->isLocked = true;
     }
 
     public function getId(): ?int

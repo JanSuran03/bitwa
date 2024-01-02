@@ -88,7 +88,7 @@ class ReservationController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $managedReservations = $this->reservationService->getAllByManager($user, $this->isGranted('ROLE_ADMIN'));
+        $managedReservations = $this->reservationService->getAllGroupedForManager($user, $this->isGranted('ROLE_ADMIN'));
         return $this->render(
             'managed-reservations.html.twig',
             [
@@ -135,7 +135,7 @@ class ReservationController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->reservationService->updateReservation($reservation);
+            $this->reservationService->update($reservation);
             return $this->redirectToRoute('app_reservations_my');
         }
 

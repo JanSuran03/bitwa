@@ -28,11 +28,6 @@ class ReservationService
         $this->userService = $userService;
     }
 
-    public function existsById(int $id): bool
-    {
-        return $this->reservationRepository->find($id) !== null;
-    }
-
     private function isCurrent(Reservation $reservation): bool
     {
         return $reservation->getTimeFrom() < now() && now() < $reservation->getTimeTo();
@@ -46,87 +41,6 @@ class ReservationService
     private function isPast(Reservation $reservation): bool
     {
         return $reservation->getTimeTo() < now();
-    }
-
-    public function getAll(): array
-    {
-        return $this->reservationRepository->findAll();
-    }
-
-    public function getAllByAuthor(User $user): array
-    {
-        return $this->reservationRepository->findBy(['author' => $user]);
-    }
-
-    public function getAllByAuthorOrResponsible(User $user): array
-    {
-        return $this->reservationRepository->findAllByAuthorOrResponsible($user);
-    }
-
-
-    public function getAllByInvitee(User $user): array
-    {
-        $allReservations = $this->reservationRepository->findAll();
-        return array_values(
-            array_filter(
-                $allReservations,
-                fn($reservation) => in_array($user, $reservation->getInvitedUsers())
-            )
-        );
-    }
-
-    public function getAllByManager(User $user, bool $isAdmin): array
-    {
-        $allReservations = $this->reservationRepository->findAll();
-
-        /** @var Reservation[] $manageableReservations */
-        if ($isAdmin) {
-            $manageableReservations = $allReservations;
-        } else {
-            $manageableReservations = array_values(
-                array_filter(
-                    $allReservations,
-                    fn($reservation) => $this->roomService->isTransitiveManagerOf($user, $reservation->getRoom())
-                )
-            );
-        }
-
-        $toApprove = [];
-        $approvedCurrent = [];
-        $approvedComing = [];
-        $approvedPast = [];
-        foreach ($manageableReservations as $reservation) {
-            if (!$reservation->isApproved()) {
-                $toApprove[] = $reservation;
-            } elseif ($this->isCurrent($reservation)) {
-                $approvedCurrent[] = $reservation;
-            } elseif ($this->isComing($reservation)) {
-                $approvedComing[] = $reservation;
-            } elseif ($this->isPast($reservation)) {
-                $approvedPast[] = $reservation;
-            }
-        }
-
-        return [
-            'toApprove' => $toApprove,
-            'approvedCurrent' => $approvedCurrent,
-            'approvedComing' => $approvedComing,
-            'approvedPast' => $approvedPast,
-        ];
-    }
-
-    public function getAllByApiQueries(array $queries): array
-    {
-        return $this->reservationRepository->findAllByApiQueries($queries);
-    }
-
-    public function getOneById(int $id): Reservation
-    {
-        $reservation = $this->reservationRepository->find($id);
-        if (!$reservation) {
-            throw new NotFoundHttpException('Reservation with ID ' . $id . ' not found');
-        }
-        return $reservation;
     }
 
     public function create(Reservation $reservation): Reservation
@@ -195,7 +109,71 @@ class ReservationService
         return $this->create($reservation);
     }
 
-    public function updateReservation(Reservation $reservation): Reservation
+    public function getAllByApiQueries(array $queries): array
+    {
+        return $this->reservationRepository->findAllByApiQueries($queries);
+    }
+
+    public function getAllByAuthorOrResponsible(User $user): array
+    {
+        return $this->reservationRepository->findAllByAuthorOrResponsible($user);
+    }
+
+    public function getAllByInvitee(User $user): array
+    {
+        return $this->reservationRepository->findAllByApiQueries(['invited' => $user->getId()]);
+    }
+
+    public function getAllGroupedForManager(User $user, bool $isAdmin): array
+    {
+        $allReservations = $this->reservationRepository->findAll();
+
+        /** @var Reservation[] $manageableReservations */
+        if ($isAdmin) {
+            $manageableReservations = $allReservations;
+        } else {
+            $manageableReservations = array_values(
+                array_filter(
+                    $allReservations,
+                    fn($reservation) => $this->roomService->isTransitiveManagerOf($user, $reservation->getRoom())
+                )
+            );
+        }
+
+        $toApprove = [];
+        $approvedCurrent = [];
+        $approvedComing = [];
+        $approvedPast = [];
+        foreach ($manageableReservations as $reservation) {
+            if (!$reservation->isApproved()) {
+                $toApprove[] = $reservation;
+            } elseif ($this->isCurrent($reservation)) {
+                $approvedCurrent[] = $reservation;
+            } elseif ($this->isComing($reservation)) {
+                $approvedComing[] = $reservation;
+            } elseif ($this->isPast($reservation)) {
+                $approvedPast[] = $reservation;
+            }
+        }
+
+        return [
+            'toApprove' => $toApprove,
+            'approvedCurrent' => $approvedCurrent,
+            'approvedComing' => $approvedComing,
+            'approvedPast' => $approvedPast,
+        ];
+    }
+
+    public function getOneById(int $id): Reservation
+    {
+        $reservation = $this->reservationRepository->find($id);
+        if (!$reservation) {
+            throw new NotFoundHttpException('Reservation with ID ' . $id . ' not found');
+        }
+        return $reservation;
+    }
+
+    public function update(Reservation $reservation): Reservation
     {
         return $this->reservationRepository->createOrUpdate($reservation);
     }

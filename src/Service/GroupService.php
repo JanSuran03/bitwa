@@ -37,7 +37,7 @@ class GroupService
         return $this->groupRepository->findOneBy(['name' => $name]);
     }
 
-    public function addGroup(Group $group): void
+    public function create(Group $group): void
     {
         $this->groupRepository->createOrUpdate($group);
     }

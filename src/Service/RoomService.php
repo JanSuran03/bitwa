@@ -32,39 +32,6 @@ class RoomService
         $this->security = $security;
     }
 
-    public function createRoom(string $name, string $building, bool $isPublic): Room
-    {
-        $room = new Room();
-        $room->setName($name);
-        $room->setBuilding($building);
-        $room->setPublic($isPublic);
-        $room->setLocked(true);
-
-        return $this->roomRepository->createOrUpdate($room);
-    }
-
-    public function updateRoom(Room $room): void
-    {
-        $this->roomRepository->createOrUpdate($room);
-    }
-
-    public function getAll(): array
-    {
-        if ($this->security->getUser() != null) {
-            return $this->roomRepository->findAll();
-        } else {
-            return $this->roomRepository->findAllByApiQueries(['public' => 'true']);
-        }
-    }
-
-    public function getOneByNameAndBuilding(string $name, string $building): ?Room
-    {
-        return $this->roomRepository->findOneBy([
-            "name" => $name,
-            "building" => $building
-        ]);
-    }
-
     public function isBookedBetween(Room $room, DateTimeInterface $from, DateTimeInterface $to, bool $onlyApproved = false): bool
     {
         $conditions = ['room' => $room];
@@ -165,6 +132,37 @@ class RoomService
         return null;
     }
 
+    public function getCurrentAvailabilityMap(array $rooms): array
+    {
+        $map = [];
+        foreach ($rooms as $room) {
+            $roomId = $room->getId();
+            if ($this->isOccupiedNow($room))
+                $map[$roomId] = false;
+            else
+                $map[$roomId] = true;
+        }
+        return $map;
+    }
+
+    public function create(Room $room): Room
+    {
+        return $this->roomRepository->createOrUpdate($room);
+    }
+
+    public function getAllByApiQueries(array $queries): array
+    {
+        if ($this->security->getUser() == null) {
+            $queries['public'] = 'true';
+        }
+        return $this->roomRepository->findAllByApiQueries($queries);
+    }
+
+    public function getAll(): array
+    {
+        return $this->getAllByApiQueries([]);
+    }
+
     public function getAllByFullNameSubstring(?string $query): array
     {
         $allRooms = $this->getAll();
@@ -178,36 +176,6 @@ class RoomService
                 fn($room) => str_contains(strtolower($room->getFullName()), strtolower($query))
             )
         );
-    }
-
-    public function getAllByNameAndBuilding(string $name, string $building): ?Room
-    {
-        return $this->roomRepository->findOneBy([
-            "name" => $name,
-            "building" => $building
-        ]);
-    }
-
-    public function getOneById(int $id): Room
-    {
-        $room = $this->roomRepository->find($id);
-        if (!$room) {
-            throw new NotFoundHttpException('Room with ID ' . $id . ' not found');
-        }
-        return $room;
-    }
-
-    public function getCurrentAvailabilityMap(array $rooms): array
-    {
-        $map = [];
-        foreach ($rooms as $room) {
-            $roomId = $room->getId();
-            if ($this->isOccupiedNow($room))
-                $map[$roomId] = false;
-            else
-                $map[$roomId] = true;
-        }
-        return $map;
     }
 
     public function getAllBookableBy(User $user): array
@@ -232,9 +200,26 @@ class RoomService
         );
     }
 
-    public function getAllByApiQueries(array $queries): array
+    public function getOneById(int $id): Room
     {
-        return $this->roomRepository->findAllByApiQueries($queries);
+        $room = $this->roomRepository->find($id);
+        if (!$room) {
+            throw new NotFoundHttpException('Room with ID ' . $id . ' not found');
+        }
+        return $room;
+    }
+
+    public function getOneByNameAndBuilding(string $name, string $building): ?Room
+    {
+        return $this->roomRepository->findOneBy([
+            "name" => $name,
+            "building" => $building
+        ]);
+    }
+
+    public function update(Room $room): void
+    {
+        $this->roomRepository->createOrUpdate($room);
     }
 
     private function switchLock(Room $room): LockResponse
