@@ -14,18 +14,50 @@
     </span>
 
     <h3><u>Správci:</u></h3>
-    <ul>
+    <table>
+        <thead>
+        <tr>
+            <th>Jméno</th>
+            <th><img class="fa" src="/images/trash-red.svg" alt="trash"></th>
+        </tr>
+        </thead>
+        <tbody>
         {% for manager in group.managers %}
-            <li><a href="/users/{{ manager.id }}">TODO: {{ manager.name }}</a></li>
+            <tr id="manager-{{ manager.id }}">
+                <td>
+                    <a href="/users/{{ manager.id }}">TODO: {{ manager.name }}</a>
+                </td>
+                <td>
+                    <img class="wide a" src="/images/trash-red.svg" alt="trash"
+                        onclick="deleteManagerFromGroup({{ group.id }}, '{{ group.name }}', {{ manager.id }}, '{{ manager.name }}')">
+                </td>
+            </tr>
         {% endfor %}
-    </ul>
+        </tbody>
+    </table>
 
     <h3><u>Členové:</u></h3>
-    <ul>
+    <table>
+        <thead>
+        <tr>
+            <th>Jméno</th>
+            <th><img class="fa" src="/images/trash-red.svg" alt="trash"></th>
+        </tr>
+        </thead>
+        <tbody>
         {% for member in group.members %}
-            <li><a href="/users/{{ member.id }}">TODO: {{ member.name }}</a></li>
+            <tr id="member-{{ member.id }}">
+                <td>
+                    <a href="/users/{{ member.id }}">TODO: {{ member.name }}</a>
+                </td>
+                <td>
+                    <img class="wide a" src="/images/trash-red.svg" alt="trash"
+                         onclick="deleteMemberFromGroup({{ group.id }}, '{{ group.name }}', {{ member.id }}, '{{ member.name }}')">
+                </td>
+            </tr>
         {% endfor %}
-    </ul>
+        </tbody>
+    </table>
 
     <h3><u>Místnosti:</u></h3>
     <ul>
@@ -41,18 +73,7 @@
         {% endfor %}
     </ul>
 
-
     {% if is_granted('ROLE_ADMIN') %}
-
-{#        {% set uniqueUsers = group.managers %}#}
-
-{#        {% for user in group.members %}#}
-{#            {% if user not in uniqueUsers %}#}
-{#                {% set uniqueUsers = uniqueUsers|merge([user]) %}#}
-{#            {% endif %}#}
-{#        {% endfor %}#}
-
-
         <form action="{{ path('app_group_new_admin_or_user', {'groupId' : group.id}) }}" method="post">
             <h4>Přidat správce/člena</h4>
             <div class="form-fields">
@@ -71,7 +92,65 @@
                     <option value="2">Člen</option>
                 </select>
             </div>
-            <button type="submit">Vytvořit skupinu</button>
+            <button type="submit">Přidat člena/správce</button>
         </form>
+
+        <script>
+            function deleteManagerFromGroup(groupId, groupName, managerId, managerName) {
+                if (confirm(`Skutečně chcete pro uživatele ${managerName} smazat skupinu ${groupName}?`)) {
+                    fetch(`/api/groups/${groupId}/managers/${managerId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: {}
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Nepodařilo se smazat skupinu ${groupName} pro uživatele ${managerName}: ${response.statusText}`);
+                        }
+
+                        if (response.status === 204) {
+                            return null;
+                        }
+
+                        console.warn(`Špatný návratový kód: ${response.status}`);
+                        return null;
+                    }).then(_ => {
+                        console.log(`Skupina ${groupName} byla úspěšně smazána z uživatele ${managerName}.`);
+                        document.getElementById(`manager-${managerId}`).remove();
+                    }).catch(error => {
+                        console.error(`Chyba při mazání skupiny ${groupName}: ${error.message}`)
+                    })
+                }
+            }
+
+            function deleteMemberFromGroup(groupId, groupName, memberId, memberName) {
+                if (confirm(`Skutečně chcete pro uživatele ${memberName} smazat skupinu ${groupName}?`)) {
+                    fetch(`/api/groups/${groupId}/members/${memberId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: {}
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Nepodařilo se smazat skupinu ${groupName} pro uživatele ${memberName}: ${response.statusText}`);
+                        }
+
+                        if (response.status === 204) {
+                            return null;
+                        }
+
+                        console.warn(`Špatný návratový kód: ${response.status}`);
+                        return null;
+                    }).then(_ => {
+                        console.log(`Skupina ${groupName} byla úspěšně smazána z uživatele ${memberName}.`);
+                        document.getElementById(`member-${memberId}`).remove();
+                    }).catch(error => {
+                        console.error(`Chyba při mazání skupiny ${groupName}: ${error.message}`)
+                    })
+                }
+            }
+        </script>
     {% endif %}
 {% endblock %}

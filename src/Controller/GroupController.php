@@ -40,7 +40,7 @@ class GroupController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function newAdminOrUser(Request $request, $groupId): Response
     {
-        $userId = $request->request->getString('_user_name');
+        $userId = $request->request->getInt('_user_name');
         $roleValue = $request->request->getInt('_role_option');
 
         if ($userId == -1 || $roleValue == -1) {
@@ -50,16 +50,13 @@ class GroupController extends AbstractController
 
         $user = $this->userService->getOneById($userId);
         $group = $this->groupRepository->findById($groupId);
-        foreach ($this->groupRepository->findById($groupId)->getManagers() as $p){
-            echo $p->getName();
-        }
 
-        if($roleValue == 1 && in_array($user, (array)$group->getManagers())){
+        if($roleValue == 1 && $group->getManagers()->contains($user)){
             $this->addFlash('error', 'Uživatel již má roli správce.');
             return $this->redirectToRoute('app_group', ['id' => $groupId]);
         }
 
-        if($roleValue == 2 && in_array($user, (array)$group->getMembers())){
+        if($roleValue == 2 && $group->getMembers()->contains($user)){
             $this->addFlash('error', 'Uživatel již má roli člena.');
             return $this->redirectToRoute('app_group', ['id' => $groupId]);
         }
@@ -67,15 +64,13 @@ class GroupController extends AbstractController
         switch ($roleValue){
             case 1:
                 $this->groupRepository->addManager($group, $user);
-                $this->userService->addManager($user, $group);
                 break;
             case 2:
                 $this->groupRepository->addMember($group, $user);
-                $this->userService->addMember($user, $group);
                 break;
         }
 
-        $this->addFlash('success', 'Uživatel ' . $user->getName() . ' byl upraven.');
+        $this->addFlash('success', 'Uživatel ' . $user->getName() . ' byl přidán.');
         return $this->redirectToRoute('app_group', ['id' => $groupId]);
     }
 
@@ -126,5 +121,31 @@ class GroupController extends AbstractController
             ['group' => $group,
              'users' => $this->userService->getAll()]
         );
+    }
+
+    #[Route('/groups/{groupId}/manager/{userId}', name: 'app_remove_manager_from_group')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function deleteManagerFromGroup(int $groupId, int $userId): Response{
+        $user = $this->userService->getOneById($userId);
+        $group = $this->groupRepository->findById($groupId);
+
+        $this->groupRepository->removeManager($group, $user);
+        $this->userService->removeManager($user, $group);
+
+        $this->addFlash('success', 'Uživatel ' . $user->getName() . ' již nadále nespravuje skupinu ' . $group->getName() . ".");
+        return $this->redirectToRoute('app_group', ['id' => $groupId]);
+    }
+
+    #[Route('/groups/{groupId}/member/{userId}', name: 'app_remove_member_from_group')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function deleteMemberFromGroup(int $groupId, int $userId): Response{
+        $user = $this->userService->getOneById($userId);
+        $group = $this->groupRepository->findById($groupId);
+
+        $this->groupRepository->removeMember($group, $user);
+        $this->userService->removeMember($user, $group);
+
+        $this->addFlash('success', 'Uživatel ' . $user->getName() . ' již nadále není členem skupiny ' . $group->getName() . ".");
+        return $this->redirectToRoute('app_group', ['id' => $groupId]);
     }
 }
