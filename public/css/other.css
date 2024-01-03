@@ -19,3 +19,8 @@
 .info > :nth-child(even) {
     justify-self: start;
 }
+
+.edit-icon {
+    width: 1em;
+    padding: 0.2em;
+}

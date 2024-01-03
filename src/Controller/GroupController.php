@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Group;
+use App\Entity\User;
 use App\Service\GroupService;
+use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +16,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class GroupController extends AbstractController
 {
     private GroupService $groupRepository;
+    private UserService $userService;
 
-    public function __construct(GroupService $groupRepository)
+    public function __construct(GroupService $groupRepository, UserService $userService)
     {
         $this->groupRepository = $groupRepository;
+
+        $this->userService = $userService;
     }
 
     #[Route('/groups', name: 'app_groups')]
@@ -30,6 +35,49 @@ class GroupController extends AbstractController
     }
 
     const NO_GROUP = -1;
+
+    #[Route('/groups/{groupId}/new', name: 'app_group_new_admin_or_user')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function newAdminOrUser(Request $request, $groupId): Response
+    {
+        $userId = $request->request->getString('_user_name');
+        $roleValue = $request->request->getInt('_role_option');
+
+        if ($userId == -1 || $roleValue == -1) {
+            $this->addFlash('error', 'Vyberte všechny údaje.');
+            return $this->redirectToRoute('app_group', ['id' => $groupId]);
+        }
+
+        $user = $this->userService->getOneById($userId);
+        $group = $this->groupRepository->findById($groupId);
+        foreach ($this->groupRepository->findById($groupId)->getManagers() as $p){
+            echo $p->getName();
+        }
+
+        if($roleValue == 1 && in_array($user, (array)$group->getManagers())){
+            $this->addFlash('error', 'Uživatel již má roli správce.');
+            return $this->redirectToRoute('app_group', ['id' => $groupId]);
+        }
+
+        if($roleValue == 2 && in_array($user, (array)$group->getMembers())){
+            $this->addFlash('error', 'Uživatel již má roli člena.');
+            return $this->redirectToRoute('app_group', ['id' => $groupId]);
+        }
+
+        switch ($roleValue){
+            case 1:
+                $this->groupRepository->addManager($group, $user);
+                $this->userService->addManager($user, $group);
+                break;
+            case 2:
+                $this->groupRepository->addMember($group, $user);
+                $this->userService->addMember($user, $group);
+                break;
+        }
+
+        $this->addFlash('success', 'Uživatel ' . $user->getName() . ' byl upraven.');
+        return $this->redirectToRoute('app_group', ['id' => $groupId]);
+    }
 
     #[Route('/groups/new', name: 'app_groups_new')]
     #[IsGranted('ROLE_ADMIN')]
@@ -75,7 +123,8 @@ class GroupController extends AbstractController
         }
 
         return $this->render('group.html.twig',
-            ['group' => $group]
+            ['group' => $group,
+             'users' => $this->userService->getAll()]
         );
     }
 }

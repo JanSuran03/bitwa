@@ -69,4 +69,16 @@ class UserService
         }
         $this->userRepository->delete($user);
     }
+
+    public function addMember($user, $group): User
+    {
+        $user->addGroupMembership($group);
+        return $this->userRepository->createOrUpdate($user);
+    }
+
+    public function addManager($user, $group): User
+    {
+        $user->addManagedGroup($group);
+        return $this->userRepository->createOrUpdate($user);
+    }
 }

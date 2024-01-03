@@ -16,6 +16,7 @@
             {% if is_granted("ROLE_ADMIN") %}
                 <th>Role</th>
                 <th><img class="fa" src="/images/trash-red.svg" alt="trash"></th>
+                <th><img class="edit-icon" src="/images/edit.svg" alt="edit"></th>
             {% endif %}
         </tr>
         </thead>
@@ -32,6 +33,11 @@
                     <td>
                         <img class="wide a" src="/images/trash-red.svg" alt="trash"
                              onclick="deleteUser({{ user.id }}, '{{ user.name }}')">
+                    </td>
+                    <td>
+                        <a id="edit-icon-link" href="{{ path('app_user_profile', {'userId' : user.id}) }}">
+                            <img class="edit-icon" src="/images/edit.svg" alt="edit user">
+                        </a>
                     </td>
                 {% endif %}
             </tr>

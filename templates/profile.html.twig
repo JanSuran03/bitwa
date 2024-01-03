@@ -5,7 +5,7 @@
 {% block content %}
     <h1>Uživatelský profil {{ user.name }} ({{ user.email }})</h1>
     <div class="form-block">
-        <form action="{{ path('app_change_user_name') }}" method="post">
+        <form action="{{ path('app_change_user_name', {'userId' : user.id}) }}" method="post">
             <h4>Změnit jméno</h4>
             <div class="form-fields">
                 <label>Původní jméno</label>
@@ -17,7 +17,7 @@
 
             <button type="submit">Změnit jméno</button>
         </form>
-        <form action="{{ path('app_change_user_email') }}" method="post">
+        <form action="{{ path('app_change_user_email', {'userId' : user.id}) }}" method="post">
             <h4>Změnit email</h4>
             <div class="form-fields">
                 <label>Starý email</label>
@@ -29,7 +29,7 @@
 
             <button type="submit">Změnit email</button>
         </form>
-        <form id="changePassword" action="{{ path('app_change_user_password') }}" method="post">
+        <form id="changePassword" action="{{ path('app_change_user_password', {'userId' : user.id}) }}" method="post">
             <h4>Změnit heslo</h4>
             <div class="form-fields">
                 <label for="old-password">Staré heslo</label>

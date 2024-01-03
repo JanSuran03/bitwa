@@ -36,7 +36,7 @@
     <div class="user-info">
         {% if is_granted('IS_AUTHENTICATED') %}
             <div class="login-info">Jste přihlášen jako <b>{{ app.user.name }}</b> ({{ app.user.email }})</div>
-            <a id="profile-icon-link" href="{{ path('app_user_profile') }}">
+            <a id="profile-icon-link" href="{{ path('app_user_profile', {"userId" : app.user.id}) }}">
                 <img id="profile-icon" src="/images/user-profile.svg" alt="Profil">
             </a>
             <form id="logout-form" action="{{ path('app_logout') }}" method="get">

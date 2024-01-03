@@ -40,4 +40,38 @@
             <li><a href="{{ path('app_group', {'id': subgroup.id}) }}">{{ subgroup.name }}</a></li>
         {% endfor %}
     </ul>
+
+
+    {% if is_granted('ROLE_ADMIN') %}
+
+{#        {% set uniqueUsers = group.managers %}#}
+
+{#        {% for user in group.members %}#}
+{#            {% if user not in uniqueUsers %}#}
+{#                {% set uniqueUsers = uniqueUsers|merge([user]) %}#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
+
+
+        <form action="{{ path('app_group_new_admin_or_user', {'groupId' : group.id}) }}" method="post">
+            <h4>Přidat správce/člena</h4>
+            <div class="form-fields">
+                <label for="user_name">Vyberte uživatele:</label>
+                <select name="_user_name" id="parent_group">
+                    <option value="-1">-----</option>
+                    {% for user in users | sort((a, b) => a.name <=> b.name) %}
+                        <option value="{{ user.id }}">{{ user.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="role_option">Vyberte roli:</label>
+                <select name="_role_option" id="parent_group">
+                    <option value="-1">Žádná</option>
+                    <option value="1">Správce</option>
+                    <option value="2">Člen</option>
+                </select>
+            </div>
+            <button type="submit">Vytvořit skupinu</button>
+        </form>
+    {% endif %}
 {% endblock %}

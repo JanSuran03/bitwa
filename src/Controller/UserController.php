@@ -34,105 +34,91 @@ class UserController extends AbstractController
             ['users' => $this->userService->getAll()]);
     }
 
-    #[Route('/profile', name: 'app_user_profile')]
+    #[Route('/profile/{userId}', name: 'app_user_profile')]
     #[IsGranted('ROLE_USER')]
-    public function profile(): Response
+    public function profile($userId): Response
     {
-        $user = $this->getUser();
-        if ($user instanceof User) {
-            return $this->render('profile.html.twig',
-                ['user' => [
-                    'name' => $user->getName(),
-                    'email' => $user->getEmail()]
-                ]);
+        if($this->getUser()->getId() !=  $userId && !$this->isGranted('ROLE_ADMIN')){
+            throw $this->createAccessDeniedException('Tohoto uživatele nemůžete editovat, protože nejste admin, ani nejste daný uživatel!');
         }
-        return $this->classError();
+
+        $user = $this->userService->getOneById($userId);
+
+        return $this->render('profile.html.twig',
+            ['user' => $user]);
     }
 
-    #[Route('/profile/change-name', name: 'app_change_user_name', methods: ['POST'])]
-    public function changeName(Request $request): Response
+    #[Route('/profile/{userId}/change-name', name: 'app_change_user_name', methods: ['POST'])]
+    public function changeName(Request $request, $userId): Response
     {
         $newName = $request->request->getString('_name');
         if (empty($newName)) {
             $this->addFlash('error', 'Jméno nemůže být prázdné.');
-            return $this->redirectToRoute('app_user_profile');
+            return $this->redirectToRoute('app_user_profile', ['userId' => $userId]);
         }
-        $requestUser = $this->getUser();
+        $dbUser = $this->userService->getOneById($userId);;
 
-        if ($requestUser instanceof User) {
-            $dbUser = $this->userService->getOneByEmail($requestUser->getEmail());
-            $dbUser->setName($newName);
-            $this->userService->update($dbUser);
-            $this->addFlash('success', 'Jméno bylo úspěšně změněno.');
-            return $this->redirectToRoute('app_user_profile');
-        } else {
-            return $this->classError();
-        }
+        $dbUser->setName($newName);
+        $this->userService->update($dbUser);
+        $this->addFlash('success', 'Jméno bylo úspěšně změněno.');
+        return $this->redirectToRoute('app_user_profile', ['userId' => $userId]);
     }
 
-    #[Route('/profile/change-email', name: 'app_change_user_email', methods: ['POST'])]
-    public function changeEmail(Request $request): Response
+    #[Route('/profile/{userId}/change-email', name: 'app_change_user_email', methods: ['POST'])]
+    public function changeEmail(Request $request, $userId): Response
     {
         $newEmail = $request->request->getString('_email');
         if (empty($newEmail)) {
             $this->addFlash('error', 'Email nemůže být prázdný.');
-            return $this->redirectToRoute('app_user_profile');
+            return $this->redirectToRoute('app_user_profile', ['userId' => $userId]);
         }
-        $requestUser = $this->getUser();
 
-        if ($requestUser instanceof User) {
-            $dbUser = $this->userService->getOneByEmail($requestUser->getEmail());
-            $dbUser->setEmail($newEmail);
-            $this->userService->update($dbUser);
-            $this->addFlash('success', 'Email byl úspěšně změněn.');
-            return $this->redirectToRoute('app_user_profile');
-        } else {
-            return $this->classError();
-        }
+        $dbUser = $this->userService->getOneById($userId);
+
+        $dbUser->setEmail($newEmail);
+        $this->userService->update($dbUser);
+        $this->addFlash('success', 'Email byl úspěšně změněn.');
+        return $this->redirectToRoute('app_user_profile', ['userId' => $userId]);
     }
 
-    #[Route('/profile/change-password', name: 'app_change_user_password', methods: ['POST'])]
-    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher): Response
+    #[Route('/profile/{userId}/change-password', name: 'app_change_user_password', methods: ['POST'])]
+    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, $userId): Response
     {
         $oldPassword = $request->request->getString('_old_password');
         $newPassword = $request->request->getString('_new_password');
         $confirmPassword = $request->request->getString('_confirm_password');
         if (empty($oldPassword) || empty($newPassword) || empty($confirmPassword)) {
             $this->addFlash('error', 'Hesla nemohou být prázdná.');
-            return $this->redirectToRoute('app_user_profile');
+            return $this->redirectToRoute('app_user_profile', ['userId' => $userId]);
         } else if ($newPassword != $confirmPassword) {
             $this->addFlash('error', 'Nová hesla se neshodují.');
-            return $this->redirectToRoute('app_user_profile');
+            return $this->redirectToRoute('app_user_profile', ['userId' => $userId]);
         }
 
-        $requestUser = $this->getUser();
-        if ($requestUser instanceof User) {
-            $dbUser = $this->userService->getOneByEmail($requestUser->getEmail());
-            if (!$passwordHasher->isPasswordValid($dbUser, $oldPassword)) {
-                $this->addFlash('error', 'Staré heslo se neshoduje.');
-                return $this->render('profile.html.twig',
-                    [
-                        'user' => [
-                            'name' => $dbUser->getName(),
-                            'email' => $dbUser->getEmail()],
-                        'previous_input' => [
-                            'old_password' => $oldPassword,
-                            'new_password' => $newPassword,
-                            'confirm_password' => $confirmPassword
-                        ]
-                    ]);
+        $dbUser = $this->userService->getOneById($userId);
 
-            }
+        if (!$passwordHasher->isPasswordValid($dbUser, $oldPassword)) {
+            $this->addFlash('error', 'Staré heslo se neshoduje.');
+            return $this->render('profile.html.twig',
+                [
+                    'user' => [
+                        'name' => $dbUser->getName(),
+                        'email' => $dbUser->getEmail()],
+                    'previous_input' => [
+                        'old_password' => $oldPassword,
+                        'new_password' => $newPassword,
+                        'confirm_password' => $confirmPassword
+                    ]
+                ]);
 
-            $hashed = $passwordHasher->hashPassword($dbUser, $newPassword);
-            $dbUser->setPassword($hashed);
-
-            $this->userService->update($dbUser);
-            $this->addFlash('success', 'Heslo bylo úspěšně změněno.');
-            return $this->redirectToRoute('app_user_profile');
-        } else {
-            return $this->classError();
         }
+
+        $hashed = $passwordHasher->hashPassword($dbUser, $newPassword);
+        $dbUser->setPassword($hashed);
+
+        $this->userService->update($dbUser);
+        $this->addFlash('success', 'Heslo bylo úspěšně změněno.');
+        return $this->redirectToRoute('app_user_profile', ['userId' => $userId]);
     }
 
     #[Route('/users/create-by-admin', name: 'app_admin_create_user', methods: ['POST'])]
