@@ -94,7 +94,7 @@
 
         {% if is_granted('ROLE_ADMIN') %}
             <form action="{{ path('app_room_change_room', {'id': room.id}) }}" method="post">
-                <h4>Změnit místnost</h4>
+                <h2>Změnit místnost</h2>
                 <div class="form-fields">
                     <label for="room">Nová místnost:</label>
                     <input type="text" id="room" name="_room" required>
@@ -104,7 +104,7 @@
             </form>
 
             <form action="{{ path('app_room_change_building', {'id': room.id}) }}" method="post">
-                <h4>Změnit budovu</h4>
+                <h2>Změnit budovu</h2>
                 <div class="form-fields">
                     <label for="building">Nová budova</label>
                     <input type="text" id="building" name="_building" required>
@@ -114,7 +114,7 @@
             </form>
 
             <form action="{{ path('app_room_change_availability_for_the_public', {'id': room.id}) }}" method="post">
-                <h4>Změnit přístupnost pro veřejnost</h4>
+                <h2>Změnit přístupnost pro veřejnost</h2>
                 <div class="form-fields">
                     <label for="is_public">Veřejná?</label>
                     <input type="checkbox" id="is_public" name="_is_public" {% if room.isPublic %}checked{% endif %}>
@@ -124,7 +124,7 @@
             </form>
 
             <form action="{{ path('app_room_change_group', {'roomId': room.id}) }}" method="post">
-                <h4>Změnit skupiny do které učebna spadá</h4>
+                <h2>Změnit skupiny do které učebna spadá</h2>
                 <div class="form-fields">
                     <label for="group">Vyberte skupinu.</label>
                     <select name="_group" id="group">

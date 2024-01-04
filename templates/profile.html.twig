@@ -10,7 +10,7 @@
     <h1>Uživatelský profil {{ user.name }} ({{ user.email }})</h1>
     <div class="form-block">
         <form action="{{ path('app_change_user_name', {'userId' : user.id}) }}" method="post">
-            <h4>Změnit jméno</h4>
+            <h2>Změnit jméno</h2>
             <div class="form-fields">
                 <label>Původní jméno</label>
                 <span>{{ user.name }}</span>
@@ -22,7 +22,7 @@
             <button type="submit">Změnit jméno</button>
         </form>
         <form action="{{ path('app_change_user_email', {'userId' : user.id}) }}" method="post">
-            <h4>Změnit email</h4>
+            <h2>Změnit email</h2>
             <div class="form-fields">
                 <label>Starý email</label>
                 <span>{{ user.email }}</span>
@@ -34,7 +34,7 @@
             <button type="submit">Změnit email</button>
         </form>
         <form id="changePassword" action="{{ path('app_change_user_password', {'userId' : user.id}) }}" method="post">
-            <h4>Změnit heslo</h4>
+            <h2>Změnit heslo</h2>
             <div class="form-fields">
                 <label for="old-password">Staré heslo</label>
                 <input type="password" id="old-password" name="_old_password" value="{{ previous_input.old_password | default('') }}" required>

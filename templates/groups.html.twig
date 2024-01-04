@@ -41,7 +41,7 @@
 
     {% if is_granted('ROLE_ADMIN') %}
         <form action="{{ path('app_groups_new') }}" method="post">
-            <h4>Nová skupina</h4>
+            <h2>Nová skupina</h2>
             <div class="form-fields">
                 <label for="group_name">Název skupiny:</label>
                 <input type="text" id="group_name" name="_group_name" required>

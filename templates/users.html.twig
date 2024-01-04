@@ -51,7 +51,7 @@
 
     {% if is_granted('ROLE_ADMIN') %}
         <form id="addUser" action="{{ path('app_admin_create_user') }}" method="post">
-            <h4>Nový uživatel</h4>
+            <h2>Nový uživatel</h2>
             <div class="form-fields">
                 <label for="username">Uživatelské jméno:</label>
                 <input type="text" id="username" name="_username"

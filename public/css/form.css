@@ -57,7 +57,7 @@ form .label-input {
     gap: 1.2em;
 }
 
-form > h4 {
+form > h2 {
     place-self: center;
     font-weight: bold;
     text-decoration: underline;

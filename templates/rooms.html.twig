@@ -88,7 +88,7 @@
 
     {% if is_granted('ROLE_ADMIN') %}
         <form action="{{ path('app_create_room') }}" method="post">
-            <h4>Nová místnost</h4>
+            <h2>Nová místnost</h2>
             <div class="form-fields">
                 <label for="building_name">Název budovy:</label>
                 <input type="text" id="building_name" name="_building_name"
