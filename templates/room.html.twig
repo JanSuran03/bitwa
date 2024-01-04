@@ -80,9 +80,11 @@
                         {% endif %}
                     </tr>
                 {% endfor %}
+                {% if is_granted('ROLE_ADMIN') or is_group_manageable %}
                     <tr>
-                        <td colspan="{% if is_granted('ROLE_ADMIN') or is_group_manageable %}2{% else %}1{% endif %}" class="center"><a id="new-manager-button" href="#">Přidat správce</a></td>
+                        <td colspan="2" class="center"><a id="new-manager-button" href="#">Přidat správce</a></td>
                     </tr>
+                {% endif %}
                 </tbody>
             </table>
 

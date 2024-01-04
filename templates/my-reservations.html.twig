@@ -37,9 +37,9 @@
                     <td>#{{ reservation.id }}</td>
                     <td>
                         {% if reservation.isApproved %}
-                            &#10003;
+                            &#10003; Ano
                         {% else %}
-                            &#10007;
+                            &#10007; Ne
                         {% endif %}
                     </td>
                     <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>
@@ -94,9 +94,9 @@
                     <td>#{{ reservation.id }}</td>
                     <td>
                         {% if reservation.isApproved %}
-                            &#10003;
+                            &#10003; Ano
                         {% else %}
-                            &#10007;
+                            &#10007; Ne
                         {% endif %}
                     </td>
                     <td>{{ reservation.room.building }}:<b>{{ reservation.room.name }}</b></td>

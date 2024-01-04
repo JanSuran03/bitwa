@@ -3,6 +3,7 @@
 @import 'elements.css';
 @import 'form.css';
 @import 'modal.css';
+@import 'reservation.css';
 @import 'other.css';
 
 body {
@@ -12,22 +13,26 @@ body {
 }
 
 main {
-    padding: 0 5em;
+    padding: 0 5em 5em 5em;
 }
 
 .flash {
+    position: fixed;
+    bottom: 3rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
     padding: 0.3em 1em;
-    margin: 0.8em;
-    border-radius: 2.6em 2.6em;
+    border-radius: 1em 1em;
     font-size: 1.2em;
+    color: white;
 }
 
 .flash-success {
-    background: hsl(120, 100%, 65%);
+    background-color: rgb(43, 114, 3);
 }
 
 .flash-error {
-    background: hsl(0, 100%, 65%);
+    background-color: rgb(148, 3, 3);
 }
 
 .danger {

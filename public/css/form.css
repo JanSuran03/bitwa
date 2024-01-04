@@ -1,11 +1,12 @@
 input {
+    box-sizing: border-box;
     border-radius: 0.35em;
-    border: 0.1em groove black;
+    border: 0.1em groove gray;
     font-size: 0.86em;
 }
 
 input:hover, input:focus {
-    border-width: 0.15em;
+    border-color: black;
 }
 
 input[type="checkbox"] {

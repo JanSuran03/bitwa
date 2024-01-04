@@ -3,7 +3,6 @@
     grid-template-columns: auto auto;
     align-items: center;
     grid-gap: 0.7em;
-    margin: 1em;
     background: white;
     box-shadow: 0 0 0.3em 0.3em #D6D6ff66;
     width: fit-content;

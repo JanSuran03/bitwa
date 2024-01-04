@@ -25,3 +25,5 @@ function deleteGroup(groupId, groupName) {
         })
     }
 }
+
+new Modal('new-group-modal', ['new-group-button'], [])

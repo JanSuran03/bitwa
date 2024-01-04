@@ -25,3 +25,5 @@ function deleteRoom(roomId, roomName) {
         })
     }
 }
+
+new Modal('new-room-modal', ['new-room-button'], [])

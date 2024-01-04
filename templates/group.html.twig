@@ -28,7 +28,7 @@
         <tbody>
         {% if group.managers is empty %}
             <tr>
-                <td colspan="{% if is_granted('ROLE_ADMIN') %} 2 {% else %} 1 {% endif %}">Žádní správci</td>
+                <td class="center" colspan="2">Žádní správci</td>
             </tr>
         {% endif %}
         {% for manager in group.managers %}
@@ -46,6 +46,11 @@
                 {% endif %}
             </tr>
         {% endfor %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <tr>
+                <td colspan="2" class="center"><a id="new-manager-button" href="#">Přidat správce</a></td>
+            </tr>
+        {% endif %}
         </tbody>
     </table>
 
@@ -60,7 +65,7 @@
         <tbody>
         {% if group.members is empty %}
             <tr>
-                <td colspan="{% if is_granted('ROLE_ADMIN') %} 2 {% else %} 1 {% endif %}">Žádní členové</td>
+                <td class="center" colspan="2">Žádní členové</td>
             </tr>
         {% endif %}
         {% for member in group.members %}
@@ -78,11 +83,19 @@
                 {% endif %}
             </tr>
         {% endfor %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <tr>
+                <td colspan="2" class="center"><a id="new-member-button" href="#">Přidat člena</a></td>
+            </tr>
+        {% endif %}
         </tbody>
     </table>
 
     <h2>Učebny</h2>
     <ul>
+        {% if group.rooms is empty %}
+            <li class="extra">Žádné učebny</li>
+        {% endif %}
         {% for room in group.rooms %}
             <li><a href="{{ path('app_room', {'id': room.id}) }}">{{ room.getFullName() }}</a></li>
         {% endfor %}
@@ -90,31 +103,36 @@
 
     <h2>Podskupiny</h2>
     <ul>
+        {% if group.childGroups is empty %}
+            <li class="extra">Žádné podskupiny</li>
+        {% endif %}
         {% for subgroup in group.childGroups %}
             <li><a href="{{ path('app_group', {'id': subgroup.id}) }}">{{ subgroup.name }}</a></li>
         {% endfor %}
     </ul>
 
     {% if is_granted('ROLE_ADMIN') %}
-        <form action="{{ path('app_group_new_admin_or_user', {'groupId' : group.id}) }}" method="post">
-            <h4>Přidat správce/člena</h4>
-            <div class="form-fields">
-                <label for="user_name">Vyberte uživatele:</label>
-                <select name="_user_name" id="parent_group">
-                    <option value="-1">-----</option>
-                    {% for user in users | sort((a, b) => a.name <=> b.name) %}
-                        <option value="{{ user.id }}">{{ user.name }}</option>
-                    {% endfor %}
-                </select>
+        <div id="new-user-modal" class="modal-shade">
+            <form class="modal-window" action="{{ path('app_group_new_admin_or_user', {'groupId' : group.id}) }}" method="post">
+                <h2>Přidat správce nebo člena</h2>
+                <div class="form-fields">
+                    <label for="user_name">Vyberte uživatele:</label>
+                    <select name="_user_name" id="parent_group">
+                        <option value="-1">-----</option>
+                        {% for user in users | sort((a, b) => a.name <=> b.name) %}
+                            <option value="{{ user.id }}">{{ user.name }}</option>
+                        {% endfor %}
+                    </select>
 
-                <label for="role_option">Vyberte roli:</label>
-                <select name="_role_option" id="parent_group">
-                    <option value="-1">Žádná</option>
-                    <option value="1">Správce</option>
-                    <option value="2">Člen</option>
-                </select>
-            </div>
-            <button type="submit">Přidat člena/správce</button>
-        </form>
+                    <label for="role_option">Vyberte roli:</label>
+                    <select name="_role_option" id="parent_group">
+                        <option value="-1">Žádná</option>
+                        <option value="1">Správce</option>
+                        <option value="2">Člen</option>
+                    </select>
+                </div>
+                <button type="submit">Přidat do skupiny</button>
+            </form>
+        </div>
     {% endif %}
 {% endblock %}

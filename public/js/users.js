@@ -36,3 +36,5 @@ function deleteUser(userId, userName) {
         })
     }
 }
+
+new Modal('new-user-modal', ['new-user-button'], [])

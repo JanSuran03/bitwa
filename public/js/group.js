@@ -53,3 +53,5 @@ function deleteMemberFromGroup(groupId, groupName, memberId, memberName) {
         })
     }
 }
+
+new Modal('new-user-modal', ['new-member-button', 'new-manager-button'], [])

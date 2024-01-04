@@ -1,5 +1,20 @@
 @import url("all.css");
 
+form[name="reservation"] {
+    margin: 0;
+}
+
+div#reservation {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    gap: 1rem;
+}
+
+div#reservation label {
+    display: block;
+}
+
 div#reservation_invitedUsers {
     display: grid;
     grid-template-columns: 2rem auto;
