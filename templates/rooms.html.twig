@@ -88,21 +88,21 @@
 
     {% if is_granted('ROLE_ADMIN') %}
         <form action="{{ path('app_create_room') }}" method="post">
-            <h4>Nová místnost</h4>
+            <h4>Nová učebna</h4>
             <div class="form-fields">
                 <label for="building_name">Název budovy:</label>
                 <input type="text" id="building_name" name="_building_name"
                        value="{{ previous_input.building_name | default('') }}" required>
 
-                <label for="room_name">Název místnosti:</label>
+                <label for="room_name">Název učebny:</label>
                 <input type="text" id="room_name" name="_room_name"
                        value="{{ previous_input.room_name | default('') }}" required>
 
-                <label for="is_public">Veřejná?</label>
+                <label for="is_public">Přístupná veřejnosti</label>
                 <input type="checkbox" id="is_public" name="_is_public"
                        {% if previous_input is defined and previous_input.is_public == 1 %}checked{% endif %}>
             </div>
-            <button type="submit">Vytvořit místnost</button>
+            <button type="submit">Vytvořit učebnu</button>
         </form>
     {% endif %}
 

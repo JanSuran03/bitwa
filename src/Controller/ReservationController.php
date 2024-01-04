@@ -106,7 +106,7 @@ class ReservationController extends AbstractController
         $reservation = $this->reservationService->getOneById($reservationId);
         $room = $reservation->getRoom();
         if (!$this->roomService->isTransitiveManagerOf($user, $room) && !$this->isGranted('ROLE_ADMIN')) {
-            throw $this->createAccessDeniedException('Tuto žádost nemůžete schválit, protože nejste správcem dotyčné místnosti!');
+            throw $this->createAccessDeniedException('Tuto žádost nemůžete schválit, protože nejste správcem dotyčné učebny!');
         }
 
         $this->reservationService->approveById($reservationId);

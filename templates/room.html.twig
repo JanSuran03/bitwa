@@ -13,7 +13,7 @@
             <span>Budova:</span>
             <span>{{ room.building }}</span>
 
-            <span>Místnost:</span>
+            <span>Učebna:</span>
             <span>{{ room.name }}</span>
 
             <span>Stav:</span>
@@ -94,23 +94,23 @@
 
         {% if is_granted('ROLE_ADMIN') %}
             <form action="{{ path('app_room_change_room', {'id': room.id}) }}" method="post">
-                <h4>Změnit místnost</h4>
+                <h4>Změnit název učebny</h4>
                 <div class="form-fields">
-                    <label for="room">Nová místnost:</label>
+                    <label for="room">Nový název učebny</label>
                     <input type="text" id="room" name="_room" required>
                 </div>
 
-                <button type="submit">Změnit místnost</button>
+                <button type="submit">Změnit název učebny</button>
             </form>
 
             <form action="{{ path('app_room_change_building', {'id': room.id}) }}" method="post">
-                <h4>Změnit budovu</h4>
+                <h4>Změnit název budovy</h4>
                 <div class="form-fields">
-                    <label for="building">Nová budova</label>
+                    <label for="building">Nový název budovy</label>
                     <input type="text" id="building" name="_building" required>
                 </div>
 
-                <button type="submit">Změnit budovu</button>
+                <button type="submit">Změnit název budovy</button>
             </form>
 
             <form action="{{ path('app_room_change_availability_for_the_public', {'id': room.id}) }}" method="post">
@@ -124,9 +124,9 @@
             </form>
 
             <form action="{{ path('app_room_change_group', {'roomId': room.id}) }}" method="post">
-                <h4>Změnit skupiny do které učebna spadá</h4>
+                <h4>Změnit skupinu, do které učebna spadá</h4>
                 <div class="form-fields">
-                    <label for="group">Vyberte skupinu.</label>
+                    <label for="group">Vyberte skupinu</label>
                     <select name="_group" id="group">
                         <option value="-1">Žádná</option>
                         {% for existingGroup in groups | sort((a, b) => a.name <=> b.name) %}
@@ -135,7 +135,7 @@
                     </select>
                 </div>
 
-                <button type="submit">Změnit skupinu místnosti</button>
+                <button type="submit">Změnit skupinu</button>
             </form>
         {% endif %}
     </div>

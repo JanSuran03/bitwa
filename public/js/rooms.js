@@ -1,5 +1,5 @@
 function deleteRoom(roomId, roomName) {
-    if (confirm(`Skutečně chcete smazat místnost ${roomName}?`)) {
+    if (confirm(`Skutečně chcete smazat učebnu ${roomName}?`)) {
         fetch(`/api/rooms/${roomId}`, {
             method: 'DELETE',
             headers: {
@@ -8,7 +8,7 @@ function deleteRoom(roomId, roomName) {
             body: {}
         }).then(response => {
             if (!response.ok) {
-                throw new Error(`Nepodařilo se smazat místnost ${roomName}: ${response.statusText}`);
+                throw new Error(`Nepodařilo se smazat učebnu ${roomName}: ${response.statusText}`);
             }
 
             if (response.status === 204) {
@@ -18,10 +18,10 @@ function deleteRoom(roomId, roomName) {
             console.warn(`Špatný návratový kód: ${response.status}`);
             return null;
         }).then(_ => {
-            console.log(`Místnost ${roomName} byla úspěšně smazána.`);
+            console.log(`Učebna ${roomName} byla úspěšně smazána.`);
             document.getElementById(`room-${roomId}`).remove();
         }).catch(error => {
-            console.error(`Chyba při mazání místnosti ${roomName}: ${error.message}`)
+            console.error(`Chyba při mazání učebny ${roomName}: ${error.message}`)
         })
     }
 }
