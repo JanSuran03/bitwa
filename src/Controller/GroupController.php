@@ -122,30 +122,4 @@ class GroupController extends AbstractController
              'users' => $this->userService->getAll()]
         );
     }
-
-    #[Route('/groups/{groupId}/manager/{userId}', name: 'app_remove_manager_from_group')]
-    #[IsGranted('ROLE_ADMIN')]
-    public function deleteManagerFromGroup(int $groupId, int $userId): Response{
-        $user = $this->userService->getOneById($userId);
-        $group = $this->groupRepository->findById($groupId);
-
-        $this->groupRepository->removeManager($group, $user);
-        $this->userService->removeManager($user, $group);
-
-        $this->addFlash('success', 'Uživatel ' . $user->getName() . ' již nadále nespravuje skupinu ' . $group->getName() . ".");
-        return $this->redirectToRoute('app_group', ['id' => $groupId]);
-    }
-
-    #[Route('/groups/{groupId}/member/{userId}', name: 'app_remove_member_from_group')]
-    #[IsGranted('ROLE_ADMIN')]
-    public function deleteMemberFromGroup(int $groupId, int $userId): Response{
-        $user = $this->userService->getOneById($userId);
-        $group = $this->groupRepository->findById($groupId);
-
-        $this->groupRepository->removeMember($group, $user);
-        $this->userService->removeMember($user, $group);
-
-        $this->addFlash('success', 'Uživatel ' . $user->getName() . ' již nadále není členem skupiny ' . $group->getName() . ".");
-        return $this->redirectToRoute('app_group', ['id' => $groupId]);
-    }
 }

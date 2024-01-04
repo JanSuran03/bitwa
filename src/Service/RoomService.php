@@ -200,7 +200,7 @@ class RoomService
         );
     }
 
-    public function getOneById(int $id): Room
+    public function getOneById(int $id): ?Room
     {
         $room = $this->roomRepository->find($id);
         if (!$room) {
