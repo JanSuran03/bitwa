@@ -25,7 +25,7 @@
             <th>Akce</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody  id="managers_table_body">
         {% if group.managers is empty %}
             <tr>
                 <td colspan="{% if is_granted('ROLE_ADMIN') %} 2 {% else %} 1 {% endif %}">Žádní správci</td>
@@ -57,7 +57,7 @@
             <th>Akce</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="members_table_body">
         {% if group.members is empty %}
             <tr>
                 <td colspan="{% if is_granted('ROLE_ADMIN') %} 2 {% else %} 1 {% endif %}">Žádní členové</td>
@@ -96,25 +96,23 @@
     </ul>
 
     {% if is_granted('ROLE_ADMIN') %}
-        <form action="{{ path('app_group_new_admin_or_user', {'groupId' : group.id}) }}" method="post">
+        <form id="new-group-form" action="{{ path('app_group_new_admin_or_user', {'groupId' : group.id}) }}" method="post">
             <h4>Přidat správce/člena</h4>
-            <div class="form-fields">
+            <div class="form-fields" id="group-form-add" data-group-id="{{ group.id }}" data-group-name="{{ group.name }}">
                 <label for="user_name">Vyberte uživatele:</label>
-                <select name="_user_name" id="parent_group">
-                    <option value="-1">-----</option>
+                <select name="_user_name" id="new_group">
                     {% for user in users | sort((a, b) => a.name <=> b.name) %}
                         <option value="{{ user.id }}">{{ user.name }}</option>
                     {% endfor %}
                 </select>
 
                 <label for="role_option">Vyberte roli:</label>
-                <select name="_role_option" id="parent_group">
-                    <option value="-1">Žádná</option>
+                <select name="_role_option" id="selected_role">
                     <option value="1">Správce</option>
                     <option value="2">Člen</option>
                 </select>
             </div>
-            <button type="submit">Přidat člena/správce</button>
+            <button type="submit" id="submit-new-manager-member">Přidat člena/správce</button>
         </form>
     {% endif %}
 {% endblock %}
