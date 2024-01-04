@@ -4,7 +4,7 @@
 
 {% block content %}
     <h1>Učebna {{ room.getFullName() }}</h1>
-    <div class="form-block">
+    <div id="top-block" class="form-block" data-room-id="{{ room.id }}" data-room-name="{{ room.getFullName() }}">
         <section class="info">
             <span>Budova:</span>
             <span>{{ room.building }}</span>
@@ -74,6 +74,18 @@
                 {% endfor %}
                 </tbody>
             </table>
+
+            {% if is_granted('ROLE_ADMIN') or is_group_manageable %}
+                <form id="new-manager-form">
+                    <label for="new-manager">Přidat správce</label>
+                    <select id="new-manager" name="new-manager">
+                        {% for manager_option in manager_options %}
+                            <option value="{{ manager_option.id }}">{{ manager_option.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" id="new-manager-save-button">Přidat správce</button>
+                </form>
+            {% endif %}
         </div>
 
         {% if is_granted('ROLE_ADMIN') %}
@@ -126,9 +138,9 @@
 
     {% if is_granted('ROLE_ADMIN') or is_group_manageable %}
         <script>
-            function reloadManagersTable(roomId, roomName) {
+            function reloadManagersTable() {
+                const roomId = document.getElementById('top-block').dataset.roomId
                 const managersTableBody = document.getElementById('managers-table-body')
-
                 fetch('/api/rooms/' + roomId + '/managers', {headers: {"Accept": "application/json"}})
                     .then(response => response.json())
                     .then(managers => {
@@ -145,27 +157,18 @@
                                 row.innerHTML += `<td>${manager.name}</td>`
                                 row.innerHTML += `<td>
                                                       <img class="wide a" src="/images/trash-red.svg" alt="Odebrat správce"
-                                                           onclick="deleteManagerFromRoom(${roomId}, '${roomName}', ${manager.id}, '${manager.name}')">
+                                                           onclick="deleteManagerFromRoom(${manager.id}, '${manager.name}')">
                                                   </td>`
                                 managersTableBody.appendChild(row)
                             })
                         }
-
-                        // const row = document.createElement('tr')
-                        // row.innerHTML = '<td colSpan="5"><a id="add-account-button" href="#">Přidat nový účet</a></td>'
-                        // managersTableBody.appendChild(row)
-
-                        // new Modal(
-                        //     'new-account-modal',
-                        //     ['add-account-button'],
-                        //     ['close-new-account-modal-button', 'new-account-save-button']
-                        // )
-
                     })
                 // .then(r => addDeleteButtonListeners())
             }
 
-            function deleteManagerFromRoom(roomId, roomName, managerId, managerName) {
+            function deleteManagerFromRoom(managerId, managerName) {
+                const roomId = document.getElementById('top-block').dataset.roomId
+                const roomName = document.getElementById('top-block').dataset.roomName
                 if (confirm(`Skutečně chcete odebrat uživateli ${managerName} správcovská práva pro učebnu ${roomName}?`)) {
                     fetch(`/api/rooms/${roomId}/managers/${managerId}`, {
                         method: 'DELETE',
@@ -179,40 +182,47 @@
                         }
 
                         if (response.status === 204) {
-                            return null;
+                            const newManagerSelect = document.getElementById("new-manager")
+                            const newOption = document.createElement('option')
+                            newOption.setAttribute("value", managerId)
+                            newOption.innerHTML = managerName
+                            newManagerSelect.appendChild(newOption)
+                            return;
                         }
 
                         console.warn(`Špatný návratový kód: ${response.status}`);
-                        return null;
+                        return;
                     }).then(_ => {
                         console.log(`Uživateli ${managerName} byla úspěšně odebrána správcovská práva pro učebnu ${roomName}.`);
-                        reloadManagersTable(roomId, roomName)
+                        reloadManagersTable()
                     }).catch(error => {
                         console.error(`Chyba při odebírání správcovských práv uživatele ${managerName} pro učebnu ${roomName}: ${error.message}`)
                     })
                 }
             }
 
-            document.addEventListener('DOMContentLoaded', () => {
+            function addRoomManager(roomId, managerId) {
+                return fetch(`/api/rooms/${roomId}/managers/${managerId}`, {method: 'PUT'})
+            }
 
+
+            document.addEventListener('DOMContentLoaded', () => {
                 const addManagerButton = document.getElementById('new-manager-save-button')
                 if (addManagerButton != null) {
                     addManagerButton.addEventListener('click', event => {
                         event.preventDefault()
-                        const userId = document.getElementById('account-table-body').dataset.userId
-                        const addAccountForm = document.getElementById('new-account-form')
-                        const accountData = new FormData(addAccountForm)
-                        const account = {
-                            'name': accountData.get('name'),
-                            'type': accountData.get('type'),
-                            'valid_until': `${accountData.get('year')}-${accountData.get('month')}-${accountData.get('day')}`
-                        }
-                        createAccount(userId, account)
-                            .then(() => reloadAccountTable())
+                        const roomId = document.getElementById('top-block').dataset.roomId
+                        const addManagerForm = document.getElementById('new-manager-form')
+                        const newManagerData = new FormData(addManagerForm)
+                        const newManagerId = newManagerData.get('new-manager')
+                        const optionToRemove = document.querySelector(`option[value="${newManagerId}"]`)
+                        optionToRemove.remove()
+                        addRoomManager(roomId, newManagerId)
+                            .then(() => reloadManagersTable())
                     })
                 }
 
-                new SearchBar('searchbar', 'searchbar-button', 'searchbar-results')
+                reloadManagersTable()
             })
         </script>
     {% endif %}

@@ -6,6 +6,7 @@ use App\Entity\Room;
 use App\Entity\User;
 use App\Service\GroupService;
 use App\Service\RoomService;
+use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,11 +18,13 @@ class RoomController extends AbstractController
 
     private RoomService $roomService;
     private GroupService $groupService;
+    private UserService $userService;
 
-    public function __construct(RoomService $roomService, GroupService $groupService)
+    public function __construct(RoomService $roomService, GroupService $groupService, UserService $userService)
     {
         $this->roomService = $roomService;
         $this->groupService = $groupService;
+        $this->userService = $userService;
     }
 
     #[Route('/rooms', name: 'app_rooms')]
@@ -109,6 +112,7 @@ class RoomController extends AbstractController
             [
                 'room' => $room,
                 'groups' => $groups,
+                'manager_options' => $this->userService->getPossibleManagers($room->getManagers()->toArray()),
                 'is_group_manageable' => $user && $room->getGroup() && $this->groupService->isTransitiveManagerOf($user, $room->getGroup()),
                 'is_manageable' => $user !== null && $this->roomService->isTransitiveManagerOf($user, $room),
                 'is_bookable' => $user !== null && $this->roomService->isBookableBy($room, $user),

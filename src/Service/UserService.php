@@ -56,6 +56,18 @@ class UserService
         return $responsibleChoices;
     }
 
+    public function getPossibleManagers(array $alreadyManagers): array
+    {
+        $allUsers = $this->getAll();
+        $possibleManagers = [];
+        foreach ($allUsers as $possibleManager) {
+            if (!in_array($possibleManager, $alreadyManagers)) {
+                $possibleManagers[$possibleManager->getName()] = $possibleManager;
+            }
+        }
+        return $possibleManagers;
+    }
+
     public function update(User $user): void
     {
         $this->userRepository->createOrUpdate($user);
