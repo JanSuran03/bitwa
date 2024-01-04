@@ -17,6 +17,7 @@
                 <th>Učebna</th>
                 <th>Stav</th>
                 <th>Přístupnost</th>
+                <th>Skupina</th>
                 <th>Mám přístup</th>
                 <th>Akce</th>
                 <th><img class="fa" src="/images/trash-red.svg" alt="trash"></th>
@@ -39,7 +40,14 @@
                         {% if room.public %}
                             Veřejná
                         {% else %}
-                            Soukromá{% if room.group %} (spravuje {{ room.group.name }}){% endif %}
+                            Soukromá
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if room.group %}
+                            {{ room.group.name }}
+                        {% else %}
+                            Žádná skupina
                         {% endif %}
                     </td>
                     <td>

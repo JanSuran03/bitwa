@@ -21,9 +21,15 @@
                     Veřejná
                 {% else %}
                     Soukromá
-                    {% if room.group %}
-                        (spravuje {{ room.group.name }})
-                    {% endif %}
+                {% endif %}
+            </span>
+
+            <span>Skupina</span>
+            <span>
+                {% if room.group %}
+                    {{ room.group.name }}
+                {% else %}
+                    Žádná skupina
                 {% endif %}
             </span>
 
@@ -67,6 +73,21 @@
                 </div>
 
                 <button type="submit">Změnit přístupnost pro veřejnost</button>
+            </form>
+
+            <form action="{{ path('app_room_change_group', {'roomId': room.id}) }}" method="post">
+                <h4>Změnit skupiny do které učebna spadá</h4>
+                <div class="form-fields">
+                    <label for="group">Vyberte skupinu.</label>
+                    <select name="_group" id="group">
+                        <option value="-1">Žádná</option>
+                        {% for existingGroup in groups | sort((a, b) => a.name <=> b.name) %}
+                            <option value="{{ existingGroup.id }}">{{ existingGroup.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit">Změnit skupinu místnosti</button>
             </form>
         {% endif %}
     </div>
