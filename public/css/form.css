@@ -68,6 +68,6 @@ form > h2 {
     gap: 2em;
 }
 
-form#login-form {
+form#login-form, form#new-group-form {
     width: fit-content;
 }
