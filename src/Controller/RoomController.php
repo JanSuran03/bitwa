@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Room;
 use App\Entity\User;
+use App\Service\GroupService;
 use App\Service\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +16,12 @@ class RoomController extends AbstractController
 {
 
     private RoomService $roomService;
+    private GroupService $groupService;
 
-    public function __construct(RoomService $roomService)
+    public function __construct(RoomService $roomService, GroupService $groupService)
     {
         $this->roomService = $roomService;
+        $this->groupService = $groupService;
     }
 
     #[Route('/rooms', name: 'app_rooms')]
@@ -104,9 +107,11 @@ class RoomController extends AbstractController
         return $this->render('room.html.twig',
             [
                 'room' => $room,
+                'is_group_manageable' => $user && $room->getGroup() && $this->groupService->isTransitiveManagerOf($user, $room->getGroup()),
                 'is_manageable' => $user !== null && $this->roomService->isTransitiveManagerOf($user, $room),
                 'is_bookable' => $user !== null && $this->roomService->isBookableBy($room, $user),
-                'is_occupied' => $this->roomService->isOccupiedNow($room)]);
+                'is_occupied' => $this->roomService->isOccupiedNow($room),
+            ]);
     }
 
     #[Route('/rooms/{id}/change-room', name: 'app_room_change_room', methods: ['POST'])]

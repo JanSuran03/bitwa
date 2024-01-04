@@ -17,6 +17,17 @@ class GroupService
         $this->groupRepository = $groupRepository;
     }
 
+    public function isTransitiveManagerOf(User $user, Group $group): bool
+    {
+        while ($group !== null) {
+            if ($group->getManagers()->contains($user)) {
+                return true;
+            }
+            $group = $group->getParent();
+        }
+        return false;
+    }
+
     public function findAll(): array
     {
         return $this->groupRepository->findAll();

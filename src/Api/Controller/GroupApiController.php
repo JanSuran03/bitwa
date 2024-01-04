@@ -49,8 +49,8 @@ class GroupApiController extends AbstractFOSRestController
     #[Put("/groups/{groupId}/members/{userId}")]
     public function addMember(Group $group, User $member): GroupResponse
     {
-        $group = $this->groupService->addMember($group, $member);
-        return GroupResponse::fromEntity($group);
+        $updatedGroup = $this->groupService->addMember($group, $member);
+        return GroupResponse::fromEntity($updatedGroup);
     }
 
     #[View]
@@ -68,8 +68,8 @@ class GroupApiController extends AbstractFOSRestController
     #[Put("/groups/{groupId}/managers/{userId}")]
     public function addManager(Group $group, User $manager): GroupResponse
     {
-        $group = $this->groupService->addManager($group, $manager);
-        return GroupResponse::fromEntity($group);
+        $updatedGroup = $this->groupService->addManager($group, $manager);
+        return GroupResponse::fromEntity($updatedGroup);
     }
 
     #[View]
@@ -87,8 +87,8 @@ class GroupApiController extends AbstractFOSRestController
     #[Put("/groups/{groupId}/rooms/{roomId}")]
     public function addRoom(Group $group, Room $room): GroupResponse
     {
-        $group = $this->groupService->addRoom($group, $room);
-        return GroupResponse::fromEntity($group);
+        $updatedGroup = $this->groupService->addRoom($group, $room);
+        return GroupResponse::fromEntity($updatedGroup);
     }
 
     #[View]

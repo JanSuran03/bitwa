@@ -217,9 +217,39 @@ class RoomService
         ]);
     }
 
-    public function update(Room $room): void
+    public function update(Room $room): Room
     {
-        $this->roomRepository->createOrUpdate($room);
+        return $this->roomRepository->createOrUpdate($room);
+    }
+
+    public function addMember(Room $room, User $member): Room
+    {
+        $room->addMember($member);
+        return $this->roomRepository->createOrUpdate($room);
+    }
+
+    public function removeMember(Room $room, User $member): Room
+    {
+        if (!in_array($member, $room->getMembers()->toArray())) {
+            throw new NotFoundHttpException('User with ID ' . $member->getId() . ' not found in the list of members');
+        }
+        $room->removeMember($member);
+        return $this->roomRepository->createOrUpdate($room);
+    }
+
+    public function addManager(Room $room, User $manager): Room
+    {
+        $room->addManager($manager);
+        return $this->roomRepository->createOrUpdate($room);
+    }
+
+    public function removeManager(Room $room, User $manager): Room
+    {
+        if (!in_array($manager, $room->getManagers()->toArray())) {
+            throw new NotFoundHttpException('User with ID ' . $manager->getId() . ' not found in the list of managers');
+        }
+        $room->removeManager($manager);
+        return $this->roomRepository->createOrUpdate($room);
     }
 
     private function switchLock(Room $room): LockResponse

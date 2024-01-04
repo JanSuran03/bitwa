@@ -2,9 +2,13 @@
 
 namespace App\Api\Controller;
 
+use App\Api\DTO\GroupResponse;
 use App\Api\DTO\LockResponse;
 use App\Api\DTO\RoomResponse;
+use App\Api\DTO\UserResponse;
+use App\Entity\Group;
 use App\Entity\Room;
+use App\Entity\User;
 use App\Service\RoomService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations\Delete;
@@ -44,6 +48,17 @@ class RoomApiController extends AbstractFOSRestController
     }
 
     #[View]
+    #[ParamConverter('room', class: 'App\Entity\Room')]
+    #[Get("/rooms/{id}/managers")]
+    public function managersList(Room $room): array
+    {
+        return array_map(
+            fn(User $user) => UserResponse::fromEntity($user),
+            $room->getManagers()->toArray()
+        );
+    }
+
+    #[View]
     #[Get("/rooms/{roomId}/allowed-users/{userId}")]
     public function checkIfAllowed(int $roomId, int $userId): bool
     {
@@ -59,6 +74,44 @@ class RoomApiController extends AbstractFOSRestController
             throw new BadRequestHttpException('Missing mandatory query parameter user');
         }
         return $this->roomService->doubleTapById($roomId, $userId);
+    }
+
+    #[View]
+    #[ParamConverter('room', class: 'App\Entity\Room', options: ['mapping' => ['roomId' => 'id']])]
+    #[ParamConverter('member', class: 'App\Entity\User', options: ['mapping' => ['userId' => 'id']])]
+    #[Put("/rooms/{roomId}/members/{userId}")]
+    public function addMember(Room $room, User $member): RoomResponse
+    {
+        $updatedRoom = $this->roomService->addMember($room, $member);
+        return RoomResponse::fromEntity($updatedRoom);
+    }
+
+    #[View]
+    #[ParamConverter('room', class: 'App\Entity\Room', options: ['mapping' => ['roomId' => 'id']])]
+    #[ParamConverter('member', class: 'App\Entity\User', options: ['mapping' => ['userId' => 'id']])]
+    #[Delete("/rooms/{roomId}/members/{userId}")]
+    public function removeMember(Room $room, User $member): void
+    {
+        $this->roomService->removeMember($room, $member);
+    }
+
+    #[View]
+    #[ParamConverter('room', class: 'App\Entity\Room', options: ['mapping' => ['roomId' => 'id']])]
+    #[ParamConverter('manager', class: 'App\Entity\User', options: ['mapping' => ['userId' => 'id']])]
+    #[Put("/rooms/{roomId}/managers/{userId}")]
+    public function addManager(Room $room, User $manager): RoomResponse
+    {
+        $updatedRoom = $this->roomService->addManager($room, $manager);
+        return RoomResponse::fromEntity($updatedRoom);
+    }
+
+    #[View]
+    #[ParamConverter('room', class: 'App\Entity\Room', options: ['mapping' => ['roomId' => 'id']])]
+    #[ParamConverter('manager', class: 'App\Entity\User', options: ['mapping' => ['userId' => 'id']])]
+    #[Delete("/rooms/{roomId}/managers/{userId}")]
+    public function removeManager(Room $room, User $manager): void
+    {
+        $this->roomService->removeManager($room, $manager);
     }
 
     #[View]
