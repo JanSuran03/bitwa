@@ -9,6 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 #[ORM\Table(name: 'rooms')]
+#[ORM\UniqueConstraint(
+    name: 'room_name_unique_constraint',
+    columns: ['building', 'name']
+)]
 class Room
 {
     #[ORM\Id]
@@ -23,19 +27,19 @@ class Room
     private Collection $managers;
 
     #[ORM\Column]
-    private ?string $building = null;
+    private ?string $building;
 
     #[ORM\Column]
-    private ?string $name = null;
+    private ?string $name;
 
     #[ORM\ManyToOne(inversedBy: 'rooms')]
     private ?Group $group = null;
 
     #[ORM\Column]
-    private ?bool $isPublic = false;
+    private ?bool $isPublic;
 
     #[ORM\Column]
-    private ?bool $isLocked = true;
+    private ?bool $isLocked;
 
     public function __construct(?string $building = null, ?string $name = null, ?bool $isPublic = null)
     {
