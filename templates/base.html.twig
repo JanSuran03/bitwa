@@ -15,9 +15,8 @@
 <header>
 
     <nav>
-        <span class="nav-item"><a href="{{ path('app_index') }}">Domů</a></span>
-        <span class="nav-item"><a href="{{ path('app_rooms') }}">Učebny</a></span>
         {% if is_granted('IS_AUTHENTICATED') %}
+            <span class="nav-item"><a href="{{ path('app_rooms') }}">Učebny</a></span>
             <span class="nav-item"><a href="{{ path('app_users') }}">Uživatelé</a></span>
             <span class="nav-item"><a href="{{ path('app_reservations_my') }}">Moje rezervace</a></span>
             <span class="nav-item">
