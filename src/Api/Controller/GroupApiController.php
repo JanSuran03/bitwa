@@ -3,6 +3,7 @@
 namespace App\Api\Controller;
 
 use App\Api\DTO\GroupResponse;
+use App\Api\DTO\UserResponse;
 use App\Entity\Group;
 use App\Entity\Room;
 use App\Entity\User;
@@ -41,6 +42,28 @@ class GroupApiController extends AbstractFOSRestController
     public function detail(Group $group): GroupResponse
     {
         return GroupResponse::fromEntity($group);
+    }
+
+    #[View]
+    #[ParamConverter('group', class: 'App\Entity\Group')]
+    #[Get("/group/{id}/members")]
+    public function membersList(Group $group): array
+    {
+        return array_map(
+            fn(User $user) => UserResponse::fromEntity($user),
+            $group->getMembers()->toArray()
+        );
+    }
+
+    #[View]
+    #[ParamConverter('group', class: 'App\Entity\Group')]
+    #[Get("/group/{id}/managers")]
+    public function managersList(Group $group): array
+    {
+        return array_map(
+            fn(User $user) => UserResponse::fromEntity($user),
+            $group->getManagers()->toArray()
+        );
     }
 
     #[View]
