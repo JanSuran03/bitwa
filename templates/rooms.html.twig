@@ -20,7 +20,7 @@
                 <th>Skupina</th>
                 <th>Mám přístup</th>
                 <th>Akce</th>
-                <th><img class="fa" src="/images/trash-red.svg" alt="trash"></th>
+                <th><img class="fa" src="/images/trash-red.svg" alt="delete room"></th>
             </tr>
             </thead>
             <tbody>
@@ -65,7 +65,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        <img class="wide a" src="/images/trash-red.svg" alt="trash"
+                        <img class="wide a" src="/images/trash-red.svg" alt="delete room"
                              onclick="deleteRoom({{ room.id }}, '{{ room.getFullName() }}')">
 
                     </td>
