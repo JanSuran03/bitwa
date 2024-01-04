@@ -48,12 +48,19 @@
                     <td>{{ reservation.author.name }}</td>
                     <td>{{ reservation.responsibleUser.name }}</td>
                     <td>{{ reservation.invitedUsers | length }}</td>
-                    <td><a href="{{ path('app_reservation_edit', {'reservationId': reservation.id}) }}">Upravit
-                            osoby</a></td>
-                    <td><span class="a"
-                              onclick="deleteReservation({{ reservation.id }}, '{{ reservation.room.getFullName() }}',
+                    <td>
+                        <a href="{{ path('app_reservation_edit', {'reservationId': reservation.id}) }}">
+                            <img class="edit-icon" src="/images/edit.svg" alt="Upravit osoby">
+                            <span>Upravit osoby</span>
+                        </a>
+                    </td>
+                    <td>
+                        <button class="danger" onclick="deleteReservation({{ reservation.id }}, '{{ reservation.room.getFullName() }}',
                               '{{ reservation.timeFrom | date('d. m. Y H:i') }}')">
-                            Smazat</span></td>
+                            <img class="wide a" src="/images/trash-red.svg" alt="Zrušit rezervaci">
+                            <span>Zrušit</span>
+                        </button>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>

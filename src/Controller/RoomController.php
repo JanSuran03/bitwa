@@ -59,16 +59,16 @@ class RoomController extends AbstractController
         $isPublic = $request->request->has('_is_public') ? 1 : 0;
 
         if (empty($roomName) || empty($buildingName)) {
-            $this->addFlash('error', 'Vyplňte budovu a místnost.');
+            $this->addFlash('error', 'Vyplňte budovu a učebnu.');
             return $this->redirectToRoute('app_rooms');
         } else if ($this->roomService->getOneByNameAndBuilding($roomName, $buildingName) === null) {
             $room = new Room($buildingName, $roomName, $isPublic === 1);
             $this->roomService->create($room);
 
-            $this->addFlash('success', 'Místnost úspěšně vytvořena.');
+            $this->addFlash('success', 'Učebna úspěšně vytvořena.');
             return $this->redirectToRoute('app_rooms');
         } else {
-            $this->addFlash('error', 'Místnost s touto budovou a jménem již existuje.');
+            $this->addFlash('error', 'Učebna s touto budovou a jménem již existuje.');
 
             $rooms = $this->roomService->getAll();
             $currentAvailabilityMap = $this->roomService->getCurrentAvailabilityMap($rooms);
@@ -101,10 +101,10 @@ class RoomController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         if ($room == null) {
-            $this->addFlash('error', 'Místnost s identifikátorem ' . $id . ' nebyla nalezena.');
+            $this->addFlash('error', 'Učebna s identifikátorem ' . $id . ' nebyla nalezena.');
             return $this->redirectToRoute('app_rooms');
         } else if ($user == null && !$room->isPublic()) {
-            $this->addFlash('error', 'Neoprávněný přístup k místnosti s identifikátorem ' . $id . ' - prosíme, přihlaste se.');
+            $this->addFlash('error', 'Neoprávněný přístup k učebně s identifikátorem ' . $id . ' - prosíme, přihlaste se.');
             return $this->redirectToRoute('app_rooms');
         }
 
@@ -126,24 +126,24 @@ class RoomController extends AbstractController
     {
         $newName = $request->request->get('_room');
         if (empty($newName)) {
-            $this->addFlash('error', 'Název místnosti nemůže být prázdné.');
+            $this->addFlash('error', 'Název učebny nemůže být prázdné.');
             return $this->redirectToRoute('app_room', ['id' => $id]);
         }
 
         $room = $this->roomService->getOneById($id);
         if ($room == null) {
-            $this->addFlash('error', 'Špatný požadavek, místnost s identifikátorem ' . $id . ' neexistuje.');
+            $this->addFlash('error', 'Špatný požadavek, učebna s identifikátorem ' . $id . ' neexistuje.');
             return $this->redirectToRoute('app_rooms');
         }
 
         if ($this->roomService->getOneByNameAndBuilding($newName, $room->getBuilding()) != null) {
-            $this->addFlash('error', 'Místnost s touto budovou a jménem již existuje.');
+            $this->addFlash('error', 'Učebna s touto budovou a jménem již existuje.');
             return $this->redirectToRoute('app_room', ['id' => $id]);
         }
 
         $room->setName($newName);
         $this->roomService->update($room);
-        $this->addFlash('success', 'Název místnosti změněn.');
+        $this->addFlash('success', 'Název učebny změněn.');
         return $this->redirectToRoute('app_room', ['id' => $id]);
     }
 
@@ -159,12 +159,12 @@ class RoomController extends AbstractController
 
         $room = $this->roomService->getOneById($id);
         if ($room == null) {
-            $this->addFlash('error', 'Špatný požadavek, místnost s identifikátorem ' . $id . ' neexistuje.');
+            $this->addFlash('error', 'Špatný požadavek, učebna s identifikátorem ' . $id . ' neexistuje.');
             return $this->redirectToRoute('app_rooms');
         }
 
         if ($this->roomService->getOneByNameAndBuilding($room->getName(), $newBuilding) != null) {
-            $this->addFlash('error', 'Místnost s touto budovou a jménem již existuje.');
+            $this->addFlash('error', 'Učebna s touto budovou a jménem již existuje.');
             return $this->redirectToRoute('app_room', ['id' => $id]);
         }
 
@@ -182,7 +182,7 @@ class RoomController extends AbstractController
         $room = $this->roomService->getOneById($id);
 
         if ($room == null) {
-            $this->addFlash('error', 'Špatný požadavek, místnost s identifikátorem ' . $id . ' neexistuje.');
+            $this->addFlash('error', 'Špatný požadavek, učebna s identifikátorem ' . $id . ' neexistuje.');
             return $this->redirectToRoute('app_rooms');
         }
 
@@ -202,13 +202,13 @@ class RoomController extends AbstractController
         $room = $this->roomService->getOneById($roomId);
 
         if ($room == null) {
-            $this->addFlash('error', 'Špatný požadavek, místnost s identifikátorem ' . $roomId . ' neexistuje.');
+            $this->addFlash('error', 'Špatný požadavek, učebna s identifikátorem ' . $roomId . ' neexistuje.');
             return $this->redirectToRoute('app_rooms');
         }
 
         $room->setGroup($group);
         $this->roomService->update($room);
-        $this->addFlash('success', 'Skupina pro místnost ' . $room->getName() . ' byla změněna .');
+        $this->addFlash('success', 'Skupina pro učebnu ' . $room->getName() . ' byla změněna .');
         return $this->redirectToRoute('app_room', ['id' => $roomId]);
     }
 

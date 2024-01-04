@@ -26,15 +26,14 @@
                 <th>Přístupnost</th>
                 <th>Skupina</th>
                 <th>Mám přístup</th>
-                <th>Akce</th>
-                <th><img class="fa" src="/images/trash-red.svg" alt="delete room"></th>
+                <th colspan="2">Akce</th>
             </tr>
             </thead>
             <tbody>
             {% for room in rooms | sort((a, b) => a.fullName <=> b.fullName) %}
                 <tr id="room-{{ room.id }}">
                     {% if is_granted('ROLE_ADMIN') %}
-                        <th>{{ room.id }}</th>
+                        <td class="extra">{{ room.id }}</td>
                     {% endif %}
                     <td>
                         <a href="{{ path('app_room', {'id': room.id}) }}">{{ room.building }}:<b>{{ room.name }}</b></a>
@@ -62,9 +61,9 @@
                     </td>
                     <td>
                         {% if room in bookableRooms %}
-                            &#10003;
+                            &#10003; Ano
                         {% else %}
-                            &#10007;
+                            &#10007; Ne
                         {% endif %}
                     </td>
                     <td>
@@ -75,8 +74,10 @@
                         {% endif %}
                     </td>
                     <td>
-                        <img class="wide a" src="/images/trash-red.svg" alt="delete room"
-                             onclick="deleteRoom({{ room.id }}, '{{ room.getFullName() }}')">
+                        <button class="danger" onclick="deleteRoom({{ room.id }}, '{{ room.getFullName() }}')">
+                            <img class="wide a" src="/images/trash-red.svg" alt="Odebrat místnost">
+                            <span>Odebrat</span>
+                        </button>
 
                     </td>
                 </tr>
@@ -88,21 +89,21 @@
 
     {% if is_granted('ROLE_ADMIN') %}
         <form action="{{ path('app_create_room') }}" method="post">
-            <h2>Nová místnost</h2>
+            <h2>Nová učebna</h2>
             <div class="form-fields">
                 <label for="building_name">Název budovy:</label>
                 <input type="text" id="building_name" name="_building_name"
                        value="{{ previous_input.building_name | default('') }}" required>
 
-                <label for="room_name">Název místnosti:</label>
+                <label for="room_name">Název učebny:</label>
                 <input type="text" id="room_name" name="_room_name"
                        value="{{ previous_input.room_name | default('') }}" required>
 
-                <label for="is_public">Veřejná?</label>
+                <label for="is_public">Přístupná veřejnosti</label>
                 <input type="checkbox" id="is_public" name="_is_public"
                        {% if previous_input is defined and previous_input.is_public == 1 %}checked{% endif %}>
             </div>
-            <button type="submit">Vytvořit místnost</button>
+            <button type="submit">Vytvořit učebnu</button>
         </form>
     {% endif %}
 
