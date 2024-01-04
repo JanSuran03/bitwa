@@ -18,18 +18,18 @@
         <thead>
         <tr>
             <th>Jméno</th>
-            <th><img class="fa" src="/images/trash-red.svg" alt="trash"></th>
+            <th><img class="fa" src="/images/trash-red.svg" alt="delete manager from group"></th>
         </tr>
         </thead>
         <tbody>
         {% for manager in group.managers %}
             <tr id="manager-{{ manager.id }}">
                 <td>
-                    <a href="/users/{{ manager.id }}">TODO: {{ manager.name }}</a>
+                    <a href="/users/{{ manager.id }}">{{ manager.name }}</a>
                 </td>
                 {% if is_granted('ROLE_ADMIN') %}
                 <td>
-                    <img class="wide a" src="/images/trash-red.svg" alt="trash"
+                    <img class="wide a" src="/images/trash-red.svg" alt="delete manager from group"
                         onclick="deleteManagerFromGroup({{ group.id }}, '{{ group.name }}', {{ manager.id }}, '{{ manager.name }}')">
                 </td>
                 {% endif %}
@@ -43,18 +43,18 @@
         <thead>
         <tr>
             <th>Jméno</th>
-            <th><img class="fa" src="/images/trash-red.svg" alt="trash"></th>
+            <th><img class="fa" src="/images/trash-red.svg" alt="delete member from group"></th>
         </tr>
         </thead>
         <tbody>
         {% for member in group.members %}
             <tr id="member-{{ member.id }}">
                 <td>
-                    <a href="/users/{{ member.id }}">TODO: {{ member.name }}</a>
+                    <a href="/users/{{ member.id }}">{{ member.name }}</a>
                 </td>
                 {% if is_granted('ROLE_ADMIN') %}
                 <td>
-                        <img class="wide a" src="/images/trash-red.svg" alt="trash"
+                        <img class="wide a" src="/images/trash-red.svg" alt="delete member from group"
                              onclick="deleteMemberFromGroup({{ group.id }}, '{{ group.name }}', {{ member.id }}, '{{ member.name }}')">
                 </td>
                 {% endif %}

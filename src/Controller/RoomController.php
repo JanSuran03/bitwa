@@ -94,6 +94,7 @@ class RoomController extends AbstractController
     public function room(int $id): Response
     {
         $room = $this->roomService->getOneById($id);
+        $groups = $this->groupService->findAll();
         /** @var User $user */
         $user = $this->getUser();
         if ($room == null) {
@@ -107,6 +108,7 @@ class RoomController extends AbstractController
         return $this->render('room.html.twig',
             [
                 'room' => $room,
+                'groups' => $groups,
                 'is_group_manageable' => $user && $room->getGroup() && $this->groupService->isTransitiveManagerOf($user, $room->getGroup()),
                 'is_manageable' => $user !== null && $this->roomService->isTransitiveManagerOf($user, $room),
                 'is_bookable' => $user !== null && $this->roomService->isBookableBy($room, $user),
@@ -184,6 +186,26 @@ class RoomController extends AbstractController
         $this->roomService->update($room);
         $this->addFlash('success', ' Přístupnost pro veřejnost změněna.');
         return $this->redirectToRoute('app_room', ['id' => $id]);
+    }
+
+    #[Route('/rooms/{roomId}/change-group', name: 'app_room_change_group', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function changeRoomGroup(Request $request, int $roomId): Response
+    {
+        $groupId = $request->request->getInt('_group');
+
+        $group = $this->groupService->findById($groupId);
+        $room = $this->roomService->getOneById($roomId);
+
+        if ($room == null) {
+            $this->addFlash('error', 'Špatný požadavek, místnost s identifikátorem ' . $roomId . ' neexistuje.');
+            return $this->redirectToRoute('app_rooms');
+        }
+
+        $room->setGroup($group);
+        $this->roomService->update($room);
+        $this->addFlash('success', 'Skupina pro místnost ' . $room->getName() . ' byla změněna .');
+        return $this->redirectToRoute('app_room', ['id' => $roomId]);
     }
 
 }

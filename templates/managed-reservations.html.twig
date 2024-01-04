@@ -102,7 +102,7 @@
                 <th>Vytvořil</th>
                 <th>Na jméno</th>
                 <th>Počet osob</th>
-                <th><img class="fa" src="/images/trash-red.svg" alt="trash"></th>
+                <th><img class="fa" src="/images/trash-red.svg" alt="delete managed reservation"></th>
             </tr>
             </thead>
             <tbody>
@@ -116,7 +116,7 @@
                     <td>{{ reservation.responsibleUser.name }}</td>
                     <td>{{ reservation.invitedUsers | length }}</td>
                     <td>
-                        <img class="wide a" src="/images/trash-red.svg" alt="trash"
+                        <img class="wide a" src="/images/trash-red.svg" alt="delete managed reservation"
                              onclick="deleteReservation({{ reservation.id }}, '{{ reservation.room.getFullName() }}',
                                      '{{ reservation.timeFrom | date('d. m. Y H:i') }}')">
                     </td>
