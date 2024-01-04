@@ -19,11 +19,8 @@ form:not(#logout-form) {
     background: white;
     align-self: center;
     justify-self: center;
-    width: fit-content;
     margin: 1em 0.6em;
-    padding: 0.3em;
     border-radius: 0.4em;
-    box-shadow: 0 0 0.3em 0.3em #D6D6ff66;
 }
 
 form:not(#logout-form) button {
@@ -60,7 +57,6 @@ form .label-input {
 form > h2 {
     place-self: center;
     font-weight: bold;
-    text-decoration: underline;
     margin: 0.2em;
 }
 

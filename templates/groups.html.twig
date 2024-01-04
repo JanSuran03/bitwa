@@ -12,6 +12,9 @@
     <table>
         <thead>
         <tr>
+            {% if is_granted('ROLE_ADMIN') %}
+                <th class="id-col">ID</th>
+            {% endif %}
             <th>Skupina</th>
             <th>Nadřazená skupina</th>
             <th>Akce</th>
@@ -21,6 +24,9 @@
             | sort((a, b) => a.name <=> b.name)
             | sort((a, b) => (a.parent ? 1 : 0) <=> (b.parent ? 1 : 0)) %} <!-- groups without parent come first-->
             <tr id="group-{{ group.id }}">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <td class="id-col">{{ group.id }}</td>
+                {% endif %}
                 <td>
                     <a href="{{ path('app_group', {'id': group.id }) }}">{{ group.name }}</a>
                 </td>

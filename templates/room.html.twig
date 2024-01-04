@@ -11,21 +11,22 @@
     <div id="top-block" class="form-block" data-room-id="{{ room.id }}" data-room-name="{{ room.getFullName() }}">
         <section class="info">
             <span>Budova:</span>
-            <span>{{ room.building }}</span>
+            <span>{{ room.building }}{% if is_granted('ROLE_ADMIN') %} <a href="#" class="modal-link" id="change-building-name-button">(změnit)</a>{% endif %}</span>
 
             <span>Učebna:</span>
-            <span>{{ room.name }}</span>
+            <span>{{ room.name }}{% if is_granted('ROLE_ADMIN') %} <a href="#" class="modal-link" id="change-room-name-button">(změnit)</a>{% endif %}</span>
 
             <span>Stav:</span>
             <span>{% if is_occupied %}Obsazená{% else %}Volná{% endif %}</span>
 
-            <span>Dostupnost</span>
+            <span>Přístupnost</span>
             <span>
                 {% if room.isPublic %}
                     Veřejná
                 {% else %}
                     Soukromá
                 {% endif %}
+                {% if is_granted('ROLE_ADMIN') %} <a href="#" class="modal-link" id="change-public-button">(změnit)</a>{% endif %}
             </span>
 
             <span>Skupina</span>
@@ -35,6 +36,7 @@
                 {% else %}
                     Žádná skupina
                 {% endif %}
+                {% if is_granted('ROLE_ADMIN') %} <a href="#" class="modal-link" id="change-group-button">(změnit)</a>{% endif %}
             </span>
 
             <span>Mám přístup?</span>
@@ -62,7 +64,7 @@
                 <tbody id="managers-table-body">
                 {% if room.managers is empty %}
                     <tr>
-                        <td colSpan="2">Žádný správce</td>
+                        <td colSpan="{% if is_granted('ROLE_ADMIN') or is_group_manageable %}2{% else %}1{% endif %}">Žádný správce</td>
                     </tr>
                 {% endif %}
                 {% for manager in room.managers %}
@@ -78,67 +80,81 @@
                         {% endif %}
                     </tr>
                 {% endfor %}
+                    <tr>
+                        <td colspan="{% if is_granted('ROLE_ADMIN') or is_group_manageable %}2{% else %}1{% endif %}" class="center"><a id="new-manager-button" href="#">Přidat správce</a></td>
+                    </tr>
                 </tbody>
             </table>
 
             {% if is_granted('ROLE_ADMIN') or is_group_manageable %}
-                <form id="new-manager-form">
-                    <label for="new-manager">Přidat správce</label>
-                    <select id="new-manager" name="new-manager">
-                        {% for manager_option in manager_options %}
-                            <option value="{{ manager_option.id }}">{{ manager_option.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <button type="submit" id="new-manager-save-button">Přidat správce</button>
-                </form>
+                <div id="new-manager-modal" class="modal-shade">
+                    <form id="new-manager-form" class="modal-window">
+                        <h2>Přidat správce</h2>
+                        <label for="new-manager">Vyberte nového správce</label>
+                        <select id="new-manager" name="new-manager">
+                            {% for manager_option in manager_options %}
+                                <option value="{{ manager_option.id }}">{{ manager_option.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" id="new-manager-save-button">Přidat správce</button>
+                    </form>
+                </div>
             {% endif %}
         </div>
 
         {% if is_granted('ROLE_ADMIN') %}
-            <form action="{{ path('app_room_change_room', {'id': room.id}) }}" method="post">
-                <h2>Změnit název učebny</h2>
-                <div class="form-fields">
-                    <label for="room">Nový název učebny</label>
-                    <input type="text" id="room" name="_room" required>
-                </div>
+            <div id="change-room-name-modal" class="modal-shade">
+                <form class="modal-window" action="{{ path('app_room_change_room', {'id': room.id}) }}" method="post">
+                    <h2>Změnit název učebny</h2>
+                    <div class="form-fields">
+                        <label for="room">Nový název učebny</label>
+                        <input type="text" id="room" name="_room" required>
+                    </div>
 
-                <button type="submit">Změnit název učebny</button>
-            </form>
+                    <button type="submit">Změnit název učebny</button>
+                </form>
+            </div>
 
-            <form action="{{ path('app_room_change_building', {'id': room.id}) }}" method="post">
-                <h2>Změnit název budovy</h2>
-                <div class="form-fields">
-                    <label for="building">Nový název budovy</label>
-                    <input type="text" id="building" name="_building" required>
-                </div>
+            <div id="change-building-name-modal" class="modal-shade">
+                <form class="modal-window" action="{{ path('app_room_change_building', {'id': room.id}) }}" method="post">
+                    <h2>Změnit název budovy</h2>
+                    <div class="form-fields">
+                        <label for="building">Nový název budovy</label>
+                        <input type="text" id="building" name="_building" required>
+                    </div>
 
-                <button type="submit">Změnit název budovy</button>
-            </form>
+                    <button type="submit">Změnit název budovy</button>
+                </form>
+            </div>
 
-            <form action="{{ path('app_room_change_availability_for_the_public', {'id': room.id}) }}" method="post">
-                <h2>Změnit přístupnost pro veřejnost</h2>
-                <div class="form-fields">
-                    <label for="is_public">Veřejná?</label>
-                    <input type="checkbox" id="is_public" name="_is_public" {% if room.isPublic %}checked{% endif %}>
-                </div>
+            <div id="change-public-modal" class="modal-shade">
+                <form class="modal-window" action="{{ path('app_room_change_availability_for_the_public', {'id': room.id}) }}" method="post">
+                    <h2>Změnit přístupnost</h2>
+                    <div class="form-fields">
+                        <label for="is_public">Je veřejnosti přístupná</label>
+                        <input type="checkbox" id="is_public" name="_is_public" {% if room.isPublic %}checked{% endif %}>
+                    </div>
 
-                <button type="submit">Změnit přístupnost pro veřejnost</button>
-            </form>
+                    <button type="submit">Změnit přístupnost pro veřejnost</button>
+                </form>
+            </div>
 
-            <form action="{{ path('app_room_change_group', {'roomId': room.id}) }}" method="post">
-                <h2>Změnit skupinu, do které učebna spadá</h2>
-                <div class="form-fields">
-                    <label for="group">Vyberte skupinu</label>
-                    <select name="_group" id="group">
-                        <option value="-1">Žádná</option>
-                        {% for existingGroup in groups | sort((a, b) => a.name <=> b.name) %}
-                            <option value="{{ existingGroup.id }}">{{ existingGroup.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+            <div id="change-group-modal" class="modal-shade">
+                <form class="modal-window" action="{{ path('app_room_change_group', {'roomId': room.id}) }}" method="post">
+                    <h2>Změnit skupinu</h2>
+                    <div class="form-fields">
+                        <label for="group">Vyberte skupinu, do které má učebna spadat</label>
+                        <select name="_group" id="group">
+                            <option value="-1">Žádná</option>
+                            {% for existingGroup in groups | sort((a, b) => a.name <=> b.name) %}
+                                <option value="{{ existingGroup.id }}">{{ existingGroup.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-                <button type="submit">Změnit skupinu</button>
-            </form>
+                    <button type="submit">Změnit skupinu</button>
+                </form>
+            </div>
         {% endif %}
     </div>
 {% endblock %}

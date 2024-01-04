@@ -19,7 +19,7 @@
             <thead>
             <tr>
                 {% if is_granted('ROLE_ADMIN') %}
-                    <th>ID</th>
+                    <th class="id-col">ID</th>
                 {% endif %}
                 <th>Učebna</th>
                 <th>Stav</th>
@@ -33,7 +33,7 @@
             {% for room in rooms | sort((a, b) => a.fullName <=> b.fullName) %}
                 <tr id="room-{{ room.id }}">
                     {% if is_granted('ROLE_ADMIN') %}
-                        <td class="extra">{{ room.id }}</td>
+                        <td class="id-col">{{ room.id }}</td>
                     {% endif %}
                     <td>
                         <a href="{{ path('app_room', {'id': room.id}) }}">{{ room.building }}:<b>{{ room.name }}</b></a>

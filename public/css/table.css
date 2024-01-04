@@ -5,17 +5,18 @@ table {
 
 td, th {
     border: 0.1em solid black;
-    padding: 0.2em;
+    padding: 0.2em 0.5em;
+}
+
+.id-col {
+    text-align: right;
+    color: rgb(110, 110, 110);
 }
 
 thead tr {
-    background: rgba(238, 232, 118, 0.3);
+    background: hsl(208, 90%, 75%);
 }
 
 tbody tr:nth-child(odd) {
-    background: rgba(0, 255, 243, 0.13);
-}
-
-tbody tr:nth-child(even) {
-    background: rgba(26, 255, 0, 0.13);
+    background: rgba(0, 0, 0, 0.05);
 }

@@ -24,6 +24,13 @@ function reloadManagersTable() {
                     managersTableBody.appendChild(row)
                 })
             }
+
+            managersTableBody.innerHTML +=
+                `<tr>
+                    <td colspan="2" class="center"><a id="new-manager-button" href="#">Přidat správce</a></td>
+                </tr>`
+
+            new Modal('new-manager-modal', ['new-manager-button'], ['new-manager-save-button'])
         })
 }
 
@@ -82,6 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(() => reloadManagersTable())
         })
     }
+
+    new Modal('change-room-name-modal', ['change-room-name-button'], [])
+    new Modal('change-building-name-modal', ['change-building-name-button'], [])
+    new Modal('change-public-modal', ['change-public-button'], [])
+    new Modal('change-group-modal', ['change-group-button'], [])
 
     reloadManagersTable()
 })
