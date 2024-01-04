@@ -3,6 +3,9 @@ class Modal {
     constructor(modalId, openButtonIds, closeButtonIds) {
 
         this.modal = document.getElementById(modalId)
+        if (this.modal === null)
+            return
+
         const modalWindow = this.modal.children[0]
         if (modalWindow.querySelector(`#close-button-${modalId}`) === null) {
             const closeButton = document.createElement('button')
@@ -26,7 +29,6 @@ class Modal {
             closeButton.addEventListener('click', this.closeModal.bind(this))
             this.closeButtons.push(closeButton)
         })
-        console.log({modalId, 'this.closeButtons': this.closeButtons})
 
     }
 
@@ -40,7 +42,6 @@ class Modal {
 
     closeModal(event) {
         event.preventDefault()
-        console.log("Close clicked")
         setTimeout(() => {this.modal.style.display = 'none'}, 100)
     }
 

@@ -7,11 +7,10 @@
     <h1>Přihlášení</h1>
 
     {% if error %}
-        <p>Chyba s přihlášením: {{ error.messageKey|trans(error.messageData, 'security') }}</p>
+        <p class="danger">Chyba s přihlášením, zkontrolujte si přihlašovací údaje</p>
     {% endif %}
 
-    <form action="{{ path('app_login') }}" method="post">
-        <h2>Přihlášení</h2>
+    <form id="login-form" action="{{ path('app_login') }}" method="post">
         <div class="form-fields">
             <label for="username">E-mail:</label>
             <input type="text" id="username" name="_username" value="{{ last_username }}">

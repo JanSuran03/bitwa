@@ -28,7 +28,7 @@
                     <td class="id-col">{{ group.id }}</td>
                 {% endif %}
                 <td>
-                    <a href="{{ path('app_group', {'id': group.id }) }}">{{ group.name }}</a>
+                    <a href="{{ path('app_group', {'id': group.id }) }}"><b>{{ group.name }}</b></a>
                 </td>
                 <td>
                     {% if group.parent %}

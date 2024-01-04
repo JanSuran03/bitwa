@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Žádosti ke schválení{% endblock %}
+{% block title %}
+    {% if is_granted('ROLE_ADMIN') %}
+        Všechny žádosti a rezervace
+    {% else %}
+        Žádosti a rezervace pod mojí správou
+    {% endif %}
+{% endblock %}
 
 {% block js %}
     <script src="/js/managed-reservations.js" defer></script>
@@ -19,7 +25,7 @@
     <h2>Žádosti ke schválení</h2>
 
     {% if managedReservations.toApprove is empty %}
-        <p>Na schválení aktuálně nečekají žádné žádosti o rezervace učeben pod vaší správou.</p>
+        <p class="extra">Na schválení aktuálně nečekají žádné žádosti o rezervace učeben pod vaší správou.</p>
     {% else %}
         <table>
             <thead>
@@ -64,7 +70,7 @@
     <h3>Právě probíhající rezervace</h3>
 
     {% if managedReservations.approvedCurrent is empty %}
-        <p>Aktuálně neprobíhají žádné rezervace učeben pod vaší správou.</p>
+        <p class="extra">Aktuálně neprobíhají žádné rezervace učeben pod vaší správou.</p>
     {% else %}
         <table>
             <thead>
@@ -97,7 +103,7 @@
     <h3>Nadcházející rezervace</h3>
 
     {% if managedReservations.approvedComing is empty %}
-        <p>Nejsou naplánovány žádné rezervace učeben pod vaší správou.</p>
+        <p class="extra">Nejsou naplánovány žádné rezervace učeben pod vaší správou.</p>
     {% else %}
         <table>
             <thead>
@@ -138,7 +144,7 @@
     <h3>Proběhlé rezervace</h3>
 
     {% if managedReservations.approvedPast is empty %}
-        <p>Zatím neproběhly žádné rezervace učeben pod vaší správou.</p>
+        <p class="extra">Zatím neproběhly žádné rezervace učeben pod vaší správou.</p>
     {% else %}
         <table>
             <thead>

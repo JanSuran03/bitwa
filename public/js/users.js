@@ -1,4 +1,4 @@
-document.getElementById('addUser').addEventListener('submit', function (event) {
+document.getElementById('addUser')?.addEventListener('submit', function (event) {
         let password = document.getElementById('password').value;
         let confirm_password = document.getElementById('confirm_password').value;
 

@@ -26,7 +26,9 @@
                 <th>Přístupnost</th>
                 <th>Skupina</th>
                 <th>Mám přístup</th>
-                <th colspan="2">Akce</th>
+                {% if app.user %}
+                    <th colspan="2">Akce</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
@@ -36,7 +38,7 @@
                         <td class="id-col">{{ room.id }}</td>
                     {% endif %}
                     <td>
-                        <a href="{{ path('app_room', {'id': room.id}) }}">{{ room.building }}:<b>{{ room.name }}</b></a>
+                        <a href="{{ path('app_room', {'id': room.id}) }}"><b>{{ room.building }}:{{ room.name }}</b></a>
                     </td>
                     <td>
                         {% if currentAvailabilityMap[room.id] %}
@@ -66,20 +68,23 @@
                             &#10007; Ne
                         {% endif %}
                     </td>
-                    <td>
-                        {% if room in bookableRooms or is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('app_book', {'room': room.id}) }}">
-                                Rezervovat{% if room in manageableRooms or is_granted('ROLE_ADMIN') %} jako správce{% endif %}
-                            </a>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <button class="danger" onclick="deleteRoom({{ room.id }}, '{{ room.getFullName() }}')">
-                            <img class="wide a" src="/images/trash-red.svg" alt="Odebrat místnost">
-                            <span>Odebrat</span>
-                        </button>
-
-                    </td>
+                    {% if app.user %}
+                        <td>
+                            {% if room in bookableRooms or is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('app_book', {'room': room.id}) }}">
+                                    Rezervovat{% if room in manageableRooms or is_granted('ROLE_ADMIN') %} jako správce{% endif %}
+                                </a>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <td>
+                            <button class="danger" onclick="deleteRoom({{ room.id }}, '{{ room.getFullName() }}')">
+                                <img class="wide a" src="/images/trash-red.svg" alt="Odebrat místnost">
+                                <span>Odebrat</span>
+                            </button>
+                        </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             {% if is_granted('ROLE_ADMIN') %}
