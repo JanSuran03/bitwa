@@ -13,7 +13,7 @@
         {% if group.parent %}
             <a href="{{ path('app_group', {'id': group.parent.id}) }}">{{ group.parent.name }}</a>
         {% else %}
-            ---
+            <span class="extra">žádná</span>
         {% endif %}
     </span>
 
@@ -22,10 +22,15 @@
         <thead>
         <tr>
             <th>Jméno</th>
-            <th><img class="fa" src="/images/trash-red.svg" alt="delete manager from group"></th>
+            <th>Akce</th>
         </tr>
         </thead>
         <tbody>
+        {% if group.managers is empty %}
+            <tr>
+                <td colspan="{% if is_granted('ROLE_ADMIN') %} 2 {% else %} 1 {% endif %}">Žádní správci</td>
+            </tr>
+        {% endif %}
         {% for manager in group.managers %}
             <tr id="manager-{{ manager.id }}">
                 <td>
@@ -33,8 +38,10 @@
                 </td>
                 {% if is_granted('ROLE_ADMIN') %}
                 <td>
-                    <img class="wide a" src="/images/trash-red.svg" alt="delete manager from group"
-                        onclick="deleteManagerFromGroup({{ group.id }}, '{{ group.name }}', {{ manager.id }}, '{{ manager.name }}')">
+                    <button class="danger" onclick="deleteManagerFromGroup({{ group.id }}, '{{ group.name }}', {{ manager.id }}, '{{ manager.name }}')">
+                        <img class="wide a" src="/images/trash-red.svg" alt="Odebrat správce ze skupiny">
+                        <span>Odebrat</span>
+                    </button>
                 </td>
                 {% endif %}
             </tr>
@@ -47,20 +54,27 @@
         <thead>
         <tr>
             <th>Jméno</th>
-            <th><img class="fa" src="/images/trash-red.svg" alt="delete member from group"></th>
+            <th>Akce</th>
         </tr>
         </thead>
         <tbody>
+        {% if group.members is empty %}
+            <tr>
+                <td colspan="{% if is_granted('ROLE_ADMIN') %} 2 {% else %} 1 {% endif %}">Žádní členové</td>
+            </tr>
+        {% endif %}
         {% for member in group.members %}
             <tr id="member-{{ member.id }}">
                 <td>
                     <a href="/users/{{ member.id }}">{{ member.name }}</a>
                 </td>
                 {% if is_granted('ROLE_ADMIN') %}
-                <td>
-                        <img class="wide a" src="/images/trash-red.svg" alt="delete member from group"
-                             onclick="deleteMemberFromGroup({{ group.id }}, '{{ group.name }}', {{ member.id }}, '{{ member.name }}')">
-                </td>
+                    <td>
+                        <button class="danger" onclick="deleteMemberFromGroup({{ group.id }}, '{{ group.name }}', {{ member.id }}, '{{ member.name }}')">
+                            <img class="wide a" src="/images/trash-red.svg" alt="Odebrat člena ze skupiny">
+                            <span>Odebrat</span>
+                        </button>
+                    </td>
                 {% endif %}
             </tr>
         {% endfor %}

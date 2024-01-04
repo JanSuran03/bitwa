@@ -46,10 +46,13 @@
                     <td>{{ reservation.invitedUsers | length }}</td>
                     <td><a href="{{ path('app_reservations_approve', {'reservationId': reservation.id}) }}">Schválit</a>
                     </td>
-                    <td><span class="a"
-                              onclick="deleteReservation({{ reservation.id }}, '{{ reservation.room.getFullName() }}',
-                                      '{{ reservation.timeFrom | date('d. m. Y H:i') }}')">
-                            Zamítnout a smazat</span></td>
+                    <td>
+                        <button class="danger" onclick="deleteReservation({{ reservation.id }}, '{{ reservation.room.getFullName() }}',
+                                '{{ reservation.timeFrom | date('d. m. Y H:i') }}')">
+                            <img class="wide a" src="/images/trash-red.svg" alt="Zamítnout a smazat">
+                            <span>Zamítnout a smazat</span>
+                        </button>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -106,7 +109,7 @@
                 <th>Vytvořil</th>
                 <th>Na jméno</th>
                 <th>Počet osob</th>
-                <th><img class="fa" src="/images/trash-red.svg" alt="delete managed reservation"></th>
+                <th>Akce</th>
             </tr>
             </thead>
             <tbody>
@@ -120,9 +123,11 @@
                     <td>{{ reservation.responsibleUser.name }}</td>
                     <td>{{ reservation.invitedUsers | length }}</td>
                     <td>
-                        <img class="wide a" src="/images/trash-red.svg" alt="delete managed reservation"
-                             onclick="deleteReservation({{ reservation.id }}, '{{ reservation.room.getFullName() }}',
-                                     '{{ reservation.timeFrom | date('d. m. Y H:i') }}')">
+                        <button class="danger" onclick="deleteReservation({{ reservation.id }}, '{{ reservation.room.getFullName() }}',
+                                '{{ reservation.timeFrom | date('d. m. Y H:i') }}')">
+                            <img class="wide a" src="/images/trash-red.svg" alt="Zrušit rezervaci">
+                            <span>Zrušit</span>
+                        </button>
                     </td>
                 </tr>
             {% endfor %}

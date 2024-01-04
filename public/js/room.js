@@ -16,9 +16,11 @@ function reloadManagersTable() {
                     const row = document.createElement('tr')
                     row.innerHTML += `<td>${manager.name}</td>`
                     row.innerHTML += `<td>
-                                                      <img class="wide a" src="/images/trash-red.svg" alt="Odebrat správce"
-                                                           onclick="deleteManagerFromRoom(${manager.id}, '${manager.name}')">
-                                                  </td>`
+                                          <button class="danger" onclick="deleteManagerFromRoom(${manager.id}, '${manager.name}')">
+                                              <img class="wide a" src="/images/trash-red.svg" alt="Odebrat správce">
+                                              <span>Odebrat</span>
+                                          </button>
+                                      </td>`
                     managersTableBody.appendChild(row)
                 })
             }

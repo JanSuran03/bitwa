@@ -55,7 +55,7 @@
                 <tr>
                     <th>Jméno</th>
                     {% if is_granted('ROLE_ADMIN') or is_group_manageable %}
-                        <th><img class="fa" src="/images/trash-red.svg" alt="Odebrat správce"></th>
+                        <th>Akce</th>
                     {% endif %}
                 </tr>
                 </thead>
@@ -70,8 +70,10 @@
                         <td>{{ manager.name }}</td>
                         {% if is_granted('ROLE_ADMIN') or is_group_manageable %}
                             <td>
-                                <img class="wide a" src="/images/trash-red.svg" alt="Odebrat správce"
-                                     onclick="deleteManagerFromRoom({{ room.id }}, '{{ room.name }}', {{ manager.id }}, '{{ manager.name }}')">
+                                <button class="danger" onclick="deleteManagerFromRoom({{ room.id }}, '{{ room.name }}', {{ manager.id }}, '{{ manager.name }}')">
+                                    <img class="wide a" src="/images/trash-red.svg" alt="Odebrat správce">
+                                    <span>Odebrat</span>
+                                </button>
                             </td>
                         {% endif %}
                     </tr>

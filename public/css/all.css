@@ -25,6 +25,15 @@ body {
     background: hsl(0, 100%, 65%);
 }
 
+.danger {
+    color: rgb(148, 3, 3);
+}
+
+.extra {
+    font-style: italic;
+    color: rgb(110, 110, 110);
+}
+
 .wide {
     padding: 0 0.27em;
 }
